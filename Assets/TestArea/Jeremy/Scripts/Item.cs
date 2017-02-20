@@ -6,6 +6,8 @@ public class Item {
     private int id = 0;
     private string name = string.Empty;
     private EItemType itemType;
+    private EEquipmentType equipmentType;
+    private EItemRarity itemRarity;
     private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
     private float weight = 0;
     private float health = 0; //These will work like stat modifyers
@@ -29,6 +31,16 @@ public class Item {
     public EItemType ItemType {
         get {
             return itemType;
+        }
+    }
+    public EEquipmentType EquipmentType {
+        get {
+            return equipmentType;
+        }
+    }
+    public EItemRarity ItemRarity {
+        get {
+            return itemRarity;
         }
     }
     public string IconName {
@@ -68,10 +80,13 @@ public class Item {
     }    
     #endregion
 
-    public Item(int id, string name, EItemType type, string iconName, float weight, float health, float strength, float intelect, float dexterity, float equipLoad) {
+    public Item(int id, string name, EItemType itemType, EEquipmentType equipmentType, EItemRarity itemRarity, string iconName, float weight, float health, 
+            float strength, float intelect, float dexterity, float equipLoad) {
         this.id = id;
         this.name = name;
-        this.itemType = type;
+        this.itemType = itemType;
+        this.equipmentType = equipmentType;
+        this.itemRarity = itemRarity;
         this.iconName = iconName;
         this.weight = weight;
         this.health = health;
@@ -87,7 +102,9 @@ public class Item {
         Debug.Log(
             "ID: " + id + spacing +
             "Name: " + name + spacing +
-            "Type: " + itemType + spacing +
+            "Item Type: " + itemType + spacing +
+            "Equipment Type: " + equipmentType + spacing +
+            "Rarity: " + itemRarity + spacing +
             "Icon Name: " + iconName + spacing +
             "Weight: " + weight + spacing +
             "Health: " + health + spacing +
