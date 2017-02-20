@@ -3,18 +3,7 @@ using System.Collections;
 
 public class ItemGenerator : MonoSingleton<ItemGenerator> {
     #region Variables
-    private int id = 0;
-    private EItemRarity itemRarity = EItemRarity.COMMON;
-    private string itemName = string.Empty;
-    private EItemType itemType = EItemType.AMULET; //Amulet as a default
-    private EEquipmentType equipmentType = EEquipmentType.AMOR; //Armor as default
-    private string icon = string.Empty;
-    private float weight = 0;
-    private float health = 0; //These will work like stat modifyers
-    private float strength = 0;
-    private float intelect = 0;
-    private float dexterity = 0;
-    private float equipLoad = 0;
+    private Item item = new Item(false);
 
     private int etConsumable = 0;
     private int etWeapon = 2;
@@ -29,6 +18,7 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         GenerateItemRarity();
         GenerateItemType();
         GenereteEquipmentType();
+        GenerateItemLevel();
         GenerateItemName();
         GenerateIcon();
         GenerateWeight();
@@ -37,13 +27,13 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         GenereateIntelect();
         GenerateDexterity();
         GenerateEquipLoad();
-        return new Item(id, itemName, itemType, equipmentType, itemRarity, icon, weight, health, strength, intelect, dexterity, equipLoad);
+        return new Item(item);
     }
     private void GenerateItemID() { //The idea is that we need id to diferentiate items. This will check agaist all current items for id's and assign one that isn't taken
-        id = Random.Range(1, int.MaxValue);
+        item.ID = Random.Range(1, int.MaxValue);
     }
     private void GenerateItemRarity() {
-        itemRarity = (EItemRarity)Random.Range(0, 4);
+        item.ItemRarity = (EItemRarity)Random.Range(0, 4);
         /*switch (Random.Range(0, 4)) {
             case 0:
                 itemRarity = EItemRarity.COMMON;
@@ -63,7 +53,7 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         }*/
     }
     private void GenerateItemType() {
-        itemType = (EItemType)Random.Range(0, 4);
+        item.ItemType = (EItemType)Random.Range(0, 4);
         /*switch (Random.Range(0, 4)) {
             case 0:
                 itemType = EItemType.AMULET;
@@ -83,50 +73,53 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         }*/
     }
     private void GenereteEquipmentType() {
-        switch(itemType) {
+        switch(item.ItemType) {
             case EItemType.CONSUMABLE:
-                equipmentType = (EEquipmentType)Random.Range(etConsumable, etWeapon);
+                item.EquipmentType = (EEquipmentType)Random.Range(etConsumable, etWeapon);
                 break;
             case EItemType.WEAPON:
-                equipmentType = (EEquipmentType)Random.Range(etWeapon, etArmor);
+                item.EquipmentType = (EEquipmentType)Random.Range(etWeapon, etArmor);
                 break;
             case EItemType.ARMOR:
-                equipmentType = (EEquipmentType)Random.Range(etArmor, etAmulet);
+                item.EquipmentType = (EEquipmentType)Random.Range(etArmor, etAmulet);
                 break;
             case EItemType.AMULET:
-                equipmentType = (EEquipmentType)Random.Range(etAmulet, etQuest);
+                item.EquipmentType = (EEquipmentType)Random.Range(etAmulet, etQuest);
                 break;
             case EItemType.QUEST:
-                equipmentType = (EEquipmentType)Random.Range(etQuest, etEnd);
+                item.EquipmentType = (EEquipmentType)Random.Range(etQuest, etEnd);
                 break;
             default:
                 Debug.LogError("Invalid case.");
                 break;
         }
     }
+    private void GenerateItemLevel() {
+        item.ItemLevel = 1;
+    }
     private void GenerateItemName() {
-        itemName = "Default Name"; 
+        item.Name = "Default Name"; 
     }
     private void GenerateIcon() {
-        icon = "Default_Icon";
+        item.IconName = "Default_Icon";
     }
     //Following are all set to 1, for testing purposes
     private void GenerateWeight() {
-        weight = 1;
+        item.Weight = 1;
     }
     private void GenerateHealth() {
-        health = 1;
+        item.Health = 1;
     }
     private void GenereateStrength() {
-        strength = 1;
+        item.Strength = 1;
     }
     private void GenereateIntelect() {
-        intelect = 1;
+        item.Intelect = 1;
     }
     private void GenerateDexterity() {
-        dexterity = 1;
+        item.Dexterity = 1;
     }
     private void GenerateEquipLoad() {
-        equipLoad = 1;
+        item.EquipLoad = 1;
     }
 }
