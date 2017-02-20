@@ -4,6 +4,7 @@ using System.Collections;
 public class ItemGenerator : MonoSingleton<ItemGenerator> {
     #region Variables
     private Item item = new Item(false);
+    private NameGenerator nameGenerator = new NameGenerator();
 
     private int etConsumable = 0;
     private int etWeapon = 2;
@@ -98,7 +99,10 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         item.ItemLevel = 1;
     }
     private void GenerateItemName() {
-        item.Name = "Default Name"; 
+        item.Name = nameGenerator.GenerateName(item);
+    }
+    private void GenerateFlavorText() {
+        item.FlavorText = "Mild flavor";
     }
     private void GenerateIcon() {
         item.IconName = "Default_Icon";
