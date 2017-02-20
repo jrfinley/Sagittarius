@@ -5,11 +5,12 @@ public class Item {
     #region Variables
     private int id = 0;
     private string name = string.Empty;
+    private string flavorText = string.Empty;
+    private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
     private EItemType itemType = EItemType.AMULET;
     private EEquipmentType equipmentType = EEquipmentType.AMULET;
     private EItemRarity itemRarity = EItemRarity.COMMON;
     private int itemLevel = 0;
-    private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
     private float weight = 0;
     private float health = 0; //These will work like stat modifyers
     private float strength = 0;
@@ -37,6 +38,24 @@ public class Item {
         set {
             if(!statProtection)
                 name = value;
+        }
+    }
+    public string FlavorText {
+        get {
+            return flavorText;
+        }
+        set {
+            if(!statProtection)
+                flavorText = value;
+        }
+    }
+    public string IconName {
+        get {
+            return iconName;
+        }
+        set {
+            if(!statProtection)
+                iconName = value;
         }
     }
     public EItemType ItemType {
@@ -73,15 +92,6 @@ public class Item {
         set {
             if(!statProtection)
                 itemLevel = value;
-        }
-    }
-    public string IconName {
-        get {
-            return iconName;
-        }
-        set {
-            if(!statProtection)
-                iconName = value;
         }
     }
     public float Weight {
@@ -143,18 +153,20 @@ public class Item {
             return statProtection;
         }
     }
+    
     #endregion
 
     #region Constructors
-    public Item(int id, string name, EItemType itemType, EEquipmentType equipmentType, EItemRarity itemRarity, int itemLevel, string iconName, 
+    public Item(int id, string name, string flavorText, string iconName, EItemType itemType, EEquipmentType equipmentType, EItemRarity itemRarity, int itemLevel,  
             float weight, float health, float strength, float intelect, float dexterity, float equipLoad) {
         this.id = id;
         this.name = name;
+        this.flavorText = flavorText;
+        this.iconName = iconName;
         this.itemType = itemType;
         this.equipmentType = equipmentType;
         this.itemRarity = itemRarity;
         this.itemLevel = itemLevel;
-        this.iconName = iconName;
         this.weight = weight;
         this.health = health;
         this.strength = strength;
@@ -166,11 +178,12 @@ public class Item {
     public Item(Item item) {
         this.id = item.id;
         this.name = item.name;
+        this.flavorText = item.flavorText;
+        this.iconName = item.iconName;
         this.itemType = item.itemType;
         this.equipmentType = item.equipmentType;
         this.itemRarity = item.itemRarity;
         this.itemLevel = item.itemLevel;
-        this.iconName = item.iconName;
         this.weight = item.weight;
         this.health = item.health;
         this.strength = item.strength;
@@ -190,10 +203,11 @@ public class Item {
         Debug.Log(
             "ID: " + id + spacing +
             "Name: " + name + spacing +
+            "Flavor Text: " + flavorText + spacing +
+            "Icon Name: " + iconName + spacing +
             "Item Type: " + itemType + spacing +
             "Equipment Type: " + equipmentType + spacing +
             "Rarity: " + itemRarity + spacing +
-            "Icon Name: " + iconName + spacing +
             "Weight: " + weight + spacing +
             "Health: " + health + spacing +
             "Intelect: " + Intelect + spacing +
