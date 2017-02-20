@@ -11,7 +11,7 @@
     SHORT_BOW,
     LONG_BOW,
     CROSSBOW,
-    AMOR,
+    ARMOR,
     AMULET,
     TEST_QEUST_ITEM
 };
