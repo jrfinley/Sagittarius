@@ -10,4 +10,9 @@ public class Warrior : MonoBehaviour
     {
         character = _character;
     }
+
+    void BreakOpenDoor()
+    {
+        //Need to see how doors will work to advance
+    }
 }

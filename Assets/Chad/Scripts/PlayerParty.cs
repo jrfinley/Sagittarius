@@ -13,9 +13,9 @@ public class PlayerParty : MonoBehaviour
     void Start()
     {
         movePosition = transform.position;
-        AddPartyMember(1, "Chad", characterType.Warrior, 5);
-        AddPartyMember(2, "John", characterType.Warrior, 5);
-        AddPartyMember(3, "Jake", characterType.Warrior, 5);
+
+        //AddPartyMember example
+        AddPartyMember(1, "Chad", ECharacterType.WARRIOR, 5);
     }
     void Update()
     {
@@ -44,8 +44,6 @@ public class PlayerParty : MonoBehaviour
         {
             movePosition += new Vector3(15, 0, 0);
         }
-
-        //print(Input.inputString);
     }
 
     public void MovePlayer(Vector3 moveDestination)
@@ -54,7 +52,7 @@ public class PlayerParty : MonoBehaviour
 
         transform.position = movePosition;
     }
-    public void AddPartyMember(int partyPosition, string name, characterType charType, int level)
+    public void AddPartyMember(int partyPosition, string name, ECharacterType charType, int level)
     {
         characters[partyPosition - 1] = new BaseCharacter(name, charType, level);
         print(characters[partyPosition - 1].GetName());

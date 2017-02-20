@@ -10,4 +10,9 @@ public class Rogue : MonoBehaviour
     {
         character = _character;
     }
+
+    void PickLock()
+    {
+        //Need to see how door/loot system works to advance
+    }
 }

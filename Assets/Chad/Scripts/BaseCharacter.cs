@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum characterType { Warrior, Rogue, Mage };
-
 public class BaseCharacter : MonoBehaviour
 {
     //Serialized all stats for easy testing and balancing purposes
@@ -17,13 +15,15 @@ public class BaseCharacter : MonoBehaviour
                 strength,
                 dexterity,
                 intelect,
-                experience;
+                experience,
+                equipmentLoad,
+                maxEquipmentLoad;
 
     [SerializeField]
     private string name;
 
     [SerializeField]
-    private characterType charType;
+    private ECharacterType charType;
 
     /*
     For when we have items ready
@@ -34,7 +34,7 @@ public class BaseCharacter : MonoBehaviour
     public Item amulet;
     */
 
-    public BaseCharacter(string _name, characterType _charType, int _level)
+    public BaseCharacter(string _name, ECharacterType _charType, int _level)
     {
         name = _name;
         charType = _charType;
@@ -43,10 +43,10 @@ public class BaseCharacter : MonoBehaviour
     
     void Start()
     {
-        InitializeCharacter(name, charType, level);
+        InitializeStats();
     }
 
-    void InitializeCharacter(string _name, characterType _charType, int _level)
+    void InitializeCharacter()
     {
         switch ((int)charType)
         {
@@ -65,8 +65,6 @@ public class BaseCharacter : MonoBehaviour
                 classTypeC.GiveCharStats(this);
                 break;
         }
-        
-        InitializeStats();
     }
     void InitializeStats()
     {
@@ -74,6 +72,8 @@ public class BaseCharacter : MonoBehaviour
         maxHealth = 10 * level;
         health = maxHealth;
         experience = level * 100 - 100;
+        maxEquipmentLoad = strength * 10;
+        equipmentLoad = 0;
 
         switch ((int)charType)
         {
@@ -100,7 +100,7 @@ public class BaseCharacter : MonoBehaviour
     /*
     For when we have items ready 
      
-    void EquipItem(Item item)
+    public void EquipItem(Item item)
     {
         switch (item.itemType)
         {
@@ -118,7 +118,7 @@ public class BaseCharacter : MonoBehaviour
         }
     }
     */
-
+    
     //Getters
     public string GetName()
     {
@@ -156,6 +156,10 @@ public class BaseCharacter : MonoBehaviour
     {
         return experience;
     }
+    public int GetEquipmentLoad()
+    {
+        return equipmentLoad;
+    }
 
     //Setters
     public void AlterMaxHealth(int changeAmout)
@@ -191,6 +195,14 @@ public class BaseCharacter : MonoBehaviour
     public void AlterExperience(int changeAmout)
     {
         experience += changeAmout;
+    }
+    public void AlterMaxEquipmentLoad(int changeAmount)
+    {
+        maxEquipmentLoad += changeAmount;
+    }
+    public void AlterEquipmentLoad(int changeAmount)
+    {
+        equipmentLoad += changeAmount;
     }
     public void LevelUp(int _level, int _maxHealth, int _health, int _strength,
                             int _dexterity, int _intelect, int _experience)

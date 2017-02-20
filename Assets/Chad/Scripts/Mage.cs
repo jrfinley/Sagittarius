@@ -10,4 +10,9 @@ public class Mage : MonoBehaviour
     {
         character = _character;
     }
+
+    void RevealRoom()
+    {
+        //Need to see how fog of war system works to advance
+    }
 }
