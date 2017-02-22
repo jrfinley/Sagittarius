@@ -17,6 +17,9 @@ public class Item {
     private float intelect = 0;
     private float dexterity = 0;
     private float equipLoad = 0;
+    private float durability = 0;
+    private float goldValue = 0;
+    private float scrapValue = 0;
 
     private bool statProtection = true;
     #endregion
@@ -139,6 +142,29 @@ public class Item {
                 dexterity = value;
         }
     }
+    public bool StatProtection {
+        get {
+            return statProtection;
+        }
+    }
+    public float GoldValue {
+        get {
+            return goldValue;
+        }
+        set {
+            if(!statProtection)
+                goldValue = value;
+        }
+    }
+    public float ScrapValue {
+        get {
+            return scrapValue;
+        }
+        set {
+            if(!statProtection)
+                scrapValue = value;
+        }
+    }
     public float EquipLoad {
         get {
             return equipLoad;
@@ -148,17 +174,11 @@ public class Item {
                 equipLoad = value;
         }
     }
-    public bool StatProtection {
-        get {
-            return statProtection;
-        }
-    }
-    
     #endregion
 
     #region Constructors
     public Item(int id, string name, string flavorText, string iconName, EItemType itemType, EEquipmentType equipmentType, EItemRarity itemRarity, int itemLevel,  
-            float weight, float health, float strength, float intelect, float dexterity, float equipLoad) {
+            float weight, float health, float strength, float intelect, float dexterity, float equipLoad, float goldValue, float scrapValue) {
         this.id = id;
         this.name = name;
         this.flavorText = flavorText;
@@ -173,6 +193,8 @@ public class Item {
         this.intelect = intelect;
         this.dexterity = dexterity;
         this.equipLoad = equipLoad;
+        this.goldValue = goldValue;
+        this.scrapValue = scrapValue;
         this.statProtection = true;
     }
     public Item(Item item) {
@@ -190,6 +212,8 @@ public class Item {
         this.intelect = item.intelect;
         this.dexterity = item.dexterity;
         this.equipLoad = item.equipLoad;
+        this.goldValue = item.goldValue;
+        this.scrapValue = item.scrapValue;
         this.statProtection = true;
     }
     public Item(bool statProtection) { //used in generating items
@@ -199,20 +223,22 @@ public class Item {
 
     #region Methods
     public void DebugLog() {
-        string spacing = "   ";
+        string spc = "   ";
         Debug.Log(
-            "ID: " + id + spacing +
-            "Name: " + name + spacing +
-            "Flavor Text: " + flavorText + spacing +
-            "Icon Name: " + iconName + spacing +
-            "Item Type: " + itemType + spacing +
-            "Equipment Type: " + equipmentType + spacing +
-            "Rarity: " + itemRarity + spacing +
-            "Weight: " + weight + spacing +
-            "Health: " + health + spacing +
-            "Intelect: " + Intelect + spacing +
-            "Dexterity: " + dexterity + spacing +
-            "Equip Load: " + equipLoad + spacing +
+            "ID: " + id + spc +
+            "Name: " + name + spc +
+            "Flavor Text: " + flavorText + spc + "\n" +
+            "Icon Name: " + iconName + spc +
+            "Item Type: " + itemType + spc +
+            "Equipment Type: " + equipmentType + spc + 
+            "Rarity: " + itemRarity + spc + "\n" +
+            "Weight: " + weight + spc + 
+            "Equip Load: " + equipLoad + spc +
+            "Gold Value: " + goldValue + spc +
+            "Scrap Value: " + scrapValue + spc + "\n" +
+            "Health: " + health + spc +
+            "Intelect: " + Intelect + spc +
+            "Dexterity: " + dexterity + spc +
             "Stat Protection: " + statProtection
             );
     }

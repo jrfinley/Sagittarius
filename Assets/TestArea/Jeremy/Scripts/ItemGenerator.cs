@@ -21,6 +21,7 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         GenereteEquipmentType();
         GenerateItemLevel();
         GenerateItemName();
+        GenerateFlavorText();
         GenerateIcon();
         GenerateWeight();
         GenerateHealth();
@@ -28,6 +29,8 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         GenereateIntelect();
         GenerateDexterity();
         GenerateEquipLoad();
+        GenerateGoldValue();
+        GenerateScrapValue();
         return new Item(item);
     }
     private void GenerateItemID() { //The idea is that we need id to diferentiate items. This will check agaist all current items for id's and assign one that isn't taken
@@ -125,5 +128,11 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
     }
     private void GenerateEquipLoad() {
         item.EquipLoad = 1;
+    }
+    private void GenerateGoldValue() {
+        item.GoldValue = 1;
+    }
+    private void GenerateScrapValue() {
+        item.ScrapValue = 1;
     }
 }
