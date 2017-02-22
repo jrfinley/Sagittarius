@@ -12,7 +12,8 @@ public class CSVReader : MonoBehaviour
 {
     void Start()
     {
-        FileStream fileOut = new FileStream(Application.dataPath + "\\Scripts\\Formulas\\test.xlsx", FileMode.Open);
+        FileStream fileOut = new FileStream(Application.dataPath + @"\Scripts\Formulas\test.xlsx", FileMode.Open);
+
         IWorkbook workbook = WorkbookFactory.Create(fileOut);
 
         //workbook.GetNameAt(0);
@@ -21,9 +22,17 @@ public class CSVReader : MonoBehaviour
         IRow row = testSheet.GetRow(0);
         ICell first = row.GetCell(0);
         ICell second = row.GetCell(1);
+        string eval = first.CellFormula;
+        IFormulaEvaluator formula = new XSSFFormulaEvaluator(workbook);
+        formula.Evaluate(first);
 
-        Debug.Log(first.StringCellValue);
-        Debug.Log(second.StringCellValue);
+        //string[] temp = eval.Split(',');
+        //Debug.Log(temp[1]);
+        Debug.Log("Evaluation String: " + eval);
+        Debug.Log("Formula Answer: " + formula.Evaluate(first).NumberValue);
+
+        //Debug.Log(first.StringCellValue);
+        //Debug.Log(second.StringCellValue);
 
         fileOut.Close();
     }
