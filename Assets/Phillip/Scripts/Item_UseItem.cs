@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType { CONSUMABLE, EQUIPABLE, CASTABLE };
 
 /*
 super basic item class, its set up to allow me to test my 
 inventory system functionality as well as debugging
 while jeremy creates the perma item class
 */
-public class Item_Temp : MonoBehaviour
+public class Item_UseItem : MonoBehaviour
 {
+    public enum ItemType { CONSUMABLE, EQUIPABLE, CASTABLE };
     public ItemType type;
 
     public Sprite spriteNeutral;
@@ -17,6 +17,11 @@ public class Item_Temp : MonoBehaviour
 
     public int maxSize;
 
+
+    void Start()
+    {
+
+    }
     public void UseItem()
     {
         switch (type)
