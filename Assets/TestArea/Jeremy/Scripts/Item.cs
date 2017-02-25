@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Item {
+public class Item : MonoBehaviour
+{
     #region Variables
     private int id = 0;
     private string name = string.Empty;
@@ -22,6 +23,12 @@ public class Item {
     private float scrapValue = 0;
 
     private bool statProtection = true;
+
+    //pg added
+    public Sprite spriteNeutral;
+    public Sprite spriteHighLighted;
+
+    public int maxSize;
     #endregion
 
     #region Properties
@@ -175,7 +182,7 @@ public class Item {
         }
     }
     #endregion
-
+    
     #region Constructors
     public Item(int id, string name, string flavorText, string iconName, EItemType itemType, EEquipmentType equipmentType, EItemRarity itemRarity, int itemLevel,  
             float weight, float health, float strength, float intelect, float dexterity, float equipLoad, float goldValue, float scrapValue) {
@@ -241,6 +248,63 @@ public class Item {
             "Dexterity: " + dexterity + spc +
             "Stat Protection: " + statProtection
             );
+    }
+    #endregion
+
+    //Phil added
+    /*
+    Note for Jeremy: the reason this function isn't currently 
+    working is due to this item class not actually giving items their names yet, so once they 
+    actually have names generated then just change these case strings into 
+    the items names and then give them appropriate functionality i.e. equip/ consume 
+    */
+
+    #region UseItem method
+    public void UseItem()
+    {
+        switch (name)//checks items name
+        {
+            case "HealthPotion":
+                Debug.Log("Health Potion Consumed");
+                Debug.Log(name);
+                break;
+            case "ManaPotion":
+                Debug.Log("Mana Potion Consumed");
+                break;
+            case "Food":
+                Debug.Log("Food Consumed");
+                break;
+            case "Water":
+                Debug.Log("Water Consumed");
+                break;
+            case "shuriken":
+                Debug.Log("shuriken Thrown");
+                break;            
+            case "ThrowingStar":
+                Debug.Log("Throwing Star Used");
+                break;
+            case "Ore":
+                Debug.Log("Ore");
+                break;
+            case "Dagger":
+                Debug.Log("Dagger Equipped");
+                break;
+            case "BroadSword":
+                Debug.Log("BroadSword Equipped");
+                break;
+            case "Spear":
+                Debug.Log("Spear Equipped");
+                break;
+            case "Helm":
+                Debug.Log("Helm Equipped");
+                break;
+            case "ChestArmor":
+                Debug.Log("ChestArmor Equipped");
+                break;
+            case "Amulet":
+                Debug.Log("Amulet Equipped");
+                break;
+        }
     }
     #endregion
 }

@@ -14,7 +14,7 @@ public class AutoAddITems : MonoBehaviour
     {
         if(other.tag == "Item")
         {
-            inventory.AddItem(other.GetComponent<Item_Temp>());
+            inventory.AddItem(other.GetComponent<Item>());
         }
     }
 }

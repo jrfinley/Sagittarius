@@ -34,15 +34,11 @@ public class Inventory : MonoBehaviour
         set { emptySlots = value; }
     }
 
+    public Text itemInfo;
 
     void Start()
     {
         CreateLayout();
-    }
-
-    void Update()
-    {
-
     }
 
     //draws out the length and width of inventory through number of slots formulated, including the padding between each slot for visual reasons
@@ -90,7 +86,7 @@ public class Inventory : MonoBehaviour
     /* this function exists to add the object picked up into the appropriate 
     inventory slot placement.
     */
-    public bool AddItem(Item_Temp item)
+    public bool AddItem(Item item)
     {
         if(item.maxSize == 1)
         {
@@ -105,7 +101,7 @@ public class Inventory : MonoBehaviour
 
                 if (!temp.IsEmpty)
                 {
-                    if(temp.CurrentItem.type == item.type && temp.IsAvaliable)
+                    if(temp.CurrentItem.name == item.name && temp.IsAvaliable)//changed type to id here
                     {
                         temp.AddItem(item);
                         return true;
@@ -122,7 +118,7 @@ public class Inventory : MonoBehaviour
 
     /* this function allows item placement into empty slots
     */
-    private bool PlaceEmpty(Item_Temp item)
+    private bool PlaceEmpty(Item item)
     {
         if(emptySlots > 0)
         {
@@ -158,9 +154,9 @@ public class Inventory : MonoBehaviour
         {
             to = clicked.GetComponent<Slot>();
         }
-        if(to != null && from != null)
+        if (to != null && from != null)
         {
-            Stack<Item_Temp> tempTo = new Stack<Item_Temp>(to.Items);
+            Stack<Item> tempTo = new Stack<Item>(to.Items);
             to.AddItems(from.Items);
 
             if(tempTo.Count == 0)
