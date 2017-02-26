@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-
+    #region propeties 
     private RectTransform inventoryRect;
 
     private float inventoryWidth;
@@ -33,13 +33,52 @@ public class Inventory : MonoBehaviour
         get { return emptySlots; }
         set { emptySlots = value; }
     }
+    #endregion
 
-    public Text itemInfo;
+    public GameObject toolTipObj;
+    private static GameObject toolTip;
+
+
+    public Text sizeTextObject;
+    private static Text sizeText;
+    public Text visualTextObject;
+    private static Text visualText;
+
+
 
     void Start()
     {
+        toolTip = toolTipObj;
+        sizeText = sizeTextObject;
+        visualText = visualTextObject;
+
         CreateLayout();
     }
+
+    public void ShowToolTip(GameObject slot)
+    {
+        Slot tmpSlot = slot.GetComponent<Slot>();
+
+        if (!tmpSlot.IsEmpty)
+        {
+            visualText.text = tmpSlot.CurrentItem.GetToolTip();
+            sizeText.text = visualText.text;
+
+            toolTip.SetActive(true);
+
+
+            float xPos = slot.transform.position.x + slotPaddingWidth;
+            float yPos = slot.transform.position.y - slot.GetComponent<RectTransform>().sizeDelta.y - 3;
+
+            toolTip.transform.position = new Vector2(xPos, yPos);
+        }
+
+    }
+    public void HideToolTip()
+    {
+        toolTip.SetActive(false);
+    }
+
 
     //draws out the length and width of inventory through number of slots formulated, including the padding between each slot for visual reasons
     private void CreateLayout()
@@ -77,6 +116,8 @@ public class Inventory : MonoBehaviour
 
                 slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotSize);
                 slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize);
+
+                newSlot.transform.SetParent(this.transform);
 
                 allSlots.Add(newSlot);
             }

@@ -29,6 +29,8 @@ public class Item : MonoBehaviour
     public Sprite spriteHighLighted;
 
     public int maxSize;
+
+    public string nameTester;
     #endregion
 
     #region Properties
@@ -260,6 +262,7 @@ public class Item : MonoBehaviour
     */
 
     #region UseItem method
+        //function that will either consume or equip items, will need connection to player for health and mana recovery, and the equipment menu for item equipping
     public void UseItem()
     {
         switch (name)//checks items name
@@ -305,6 +308,69 @@ public class Item : MonoBehaviour
                 Debug.Log("Amulet Equipped");
                 break;
         }
+    }
+
+    //creates the text for the tooltip that allows player to see item name, quality, stats, etc
+    public string GetToolTip()
+    {
+        string stats = string.Empty;
+        string color = string.Empty;
+        string newLine = string.Empty;
+
+        if (flavorText != string.Empty)
+        {
+            newLine = "\n";
+        }
+        switch (itemRarity)
+        {
+            case EItemRarity.COMMON:
+                color = "white";
+                break;
+            case EItemRarity.RARE:
+                color = "navy";
+                break;
+            case EItemRarity.EPIC:
+                color = "magenta";
+                break;
+            case EItemRarity.LEGENDARY:
+                color = "orange";
+                break;
+        }
+        if (health > 0)
+        {
+            stats += "\n+" + health.ToString() + " Health";
+        }
+        if (strength > 0)
+        {
+            stats += "\n+" + strength.ToString() + " Strength";
+        }
+        if (intelect > 0)
+        {
+            stats += "\n+" + intelect.ToString() + " Intellect";
+        }
+        if (dexterity > 0)
+        {
+            stats += "\n+" + dexterity.ToString() + " Dexterity";
+        }
+        if (weight > 0)
+        {
+            stats += "\n+" + weight.ToString() + " Weight";
+        }
+        if (durability > 0)
+        {
+            stats += "\n+" + durability.ToString() + " Durability";
+        }
+        if (goldValue > 0)
+        {
+            stats += "\n+" + goldValue.ToString() + " GoldValue";
+        }
+        if (scrapValue > 0)
+        {
+            stats += "\n+" + scrapValue.ToString() + " ScrapValue";
+        }
+
+        //returns the formateed string
+        return string.Format("<color=" + color + "><size=24>{0}</size></color><size=20><i><color=lime>" + newLine + "{1}</color></i>{2}</size>", nameTester, flavorText, stats);
     }
     #endregion
 }
