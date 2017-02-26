@@ -37,7 +37,8 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         do {
             item.ID = Random.Range(1, int.MaxValue);
         }
-        while(ItemDatabase.Instance.ContainsID(item.ID));
+        while(ItemIDDatabase.Instance.ContainsID(item.ID)); //Genereate an ID while it is a duplicate
+        ItemIDDatabase.Instance.AddID(item.ID);
     }
     private void GenerateItemRarity() {
         item.ItemRarity = (EItemRarity)Random.Range(0, 4);
