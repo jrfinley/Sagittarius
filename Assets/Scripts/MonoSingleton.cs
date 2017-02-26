@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MonoSingleton<T> : MonoBehaviour where T : Component {
-    //Taken from a group project. Put in project by Michael Harp, probably written by him too.
+    //Written by Chris (the other Chris)
     //MonoSingletons are kinda generic both the idea and excecution, not sure if credit is necessary
     private static T instance = null;
     private static bool isExiting = false;

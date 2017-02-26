@@ -34,47 +34,16 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         return new Item(item);
     }
     private void GenerateItemID() { //The idea is that we need id to diferentiate items. This will check agaist all current items for id's and assign one that isn't taken
-        item.ID = Random.Range(1, int.MaxValue);
+        do {
+            item.ID = Random.Range(1, int.MaxValue);
+        }
+        while(ItemDatabase.Instance.ContainsID(item.ID));
     }
     private void GenerateItemRarity() {
         item.ItemRarity = (EItemRarity)Random.Range(0, 4);
-        /*switch (Random.Range(0, 4)) {
-            case 0:
-                itemRarity = EItemRarity.COMMON;
-                break;
-            case 1:
-                itemRarity = EItemRarity.RARE;
-                break;
-            case 2:
-                itemRarity = EItemRarity.EPIC;
-                break;
-            case 3:
-                itemRarity = EItemRarity.LEGENDARY;
-                break;
-            default:
-                Debug.LogError("Invalid case. Defaulting itemType to AMULET.");
-                break;
-        }*/
     }
     private void GenerateItemType() {
         item.ItemType = (EItemType)Random.Range(0, 4);
-        /*switch (Random.Range(0, 4)) {
-            case 0:
-                itemType = EItemType.AMULET;
-                break;
-            case 1:
-                itemType = EItemType.ARMOR;
-                break;
-            case 2:
-                itemType = EItemType.CONSUMABLE;
-                break;
-            case 3:
-                itemType = EItemType.WEAPON;
-                break;
-            default:
-                Debug.LogError("Invalid case. Defaulting itemType to AMULET.");
-                break;
-        }*/
     }
     private void GenereteEquipmentType() {
         switch(item.ItemType) {
