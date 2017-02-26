@@ -8,6 +8,7 @@ public class TestItem : MonoBehaviour {
 
 	void Start () {
         item = ItemGenerator.Instance.GenerateItem();
+        ItemDatabase.Instance.AddItem(item);
         item.DebugLog();
         image = GetComponent<Image>();
         if (image != null)
