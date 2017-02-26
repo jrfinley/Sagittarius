@@ -14,7 +14,8 @@ public class NameGenerator {
         { EEquipmentType.ARMING_SWORD, "Arming Sword" },
         { EEquipmentType.LONG_SWORD, "Long Sword" },
         { EEquipmentType.GREAT_SWORD, "Great Sword" },
-        { EEquipmentType.RAPIER, "Short Bow" },
+        { EEquipmentType.RAPIER, "Rapier" },
+        { EEquipmentType.SHORT_BOW, "Short Bow" },
         { EEquipmentType.LONG_BOW, "Long Bow" },
         { EEquipmentType.CROSSBOW, "Crossbow" },
 
