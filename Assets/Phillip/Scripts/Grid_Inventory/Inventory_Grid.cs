@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 
-public class Inventory : MonoBehaviour
+public class Inventory_Grid : MonoBehaviour
 {
     #region propeties 
     private RectTransform inventoryRect;
@@ -22,8 +22,8 @@ public class Inventory : MonoBehaviour
 
     public GameObject slotPref;
 
-    private Slot from;
-    private Slot to;
+    private Slot_Grid from;
+    private Slot_Grid to;
 
     private List<GameObject> allSlots;
 
@@ -57,7 +57,7 @@ public class Inventory : MonoBehaviour
 
     public void ShowToolTip(GameObject slot)
     {
-        Slot tmpSlot = slot.GetComponent<Slot>();
+        Slot_Grid tmpSlot = slot.GetComponent<Slot_Grid>();
 
         if (!tmpSlot.IsEmpty)
         {
@@ -138,7 +138,7 @@ public class Inventory : MonoBehaviour
         {
             foreach (GameObject slot in allSlots)
             {
-                Slot temp = slot.GetComponent<Slot>();
+                Slot_Grid temp = slot.GetComponent<Slot_Grid>();
 
                 if (!temp.IsEmpty)
                 {
@@ -165,7 +165,7 @@ public class Inventory : MonoBehaviour
         {
             foreach (GameObject slot in allSlots)
             {
-                Slot temp = slot.GetComponent<Slot>();
+                Slot_Grid temp = slot.GetComponent<Slot_Grid>();
 
                 if (temp.IsEmpty)
                 {
@@ -185,15 +185,15 @@ public class Inventory : MonoBehaviour
     {
         if(from == null)
         {
-            if (!clicked.GetComponent<Slot>().IsEmpty)
+            if (!clicked.GetComponent<Slot_Grid>().IsEmpty)
             {
-                from = clicked.GetComponent<Slot>();
+                from = clicked.GetComponent<Slot_Grid>();
                 from.GetComponent<Image>().color = Color.gray;
             }
         }
         else if(to == null)
         {
-            to = clicked.GetComponent<Slot>();
+            to = clicked.GetComponent<Slot_Grid>();
         }
         if (to != null && from != null)
         {

@@ -10,7 +10,7 @@ as well as this holds the UseItem function which is what is being called from
 the child object UseItem on the SlotItem Prefab, its utilizing unitys built in ontouch/ onclick 
 functionality to create simple effective on touch use of items
 */
-public class Slot : MonoBehaviour
+public class Slot_Grid : MonoBehaviour
 {
     private Stack<Item> items;//handles all items a stack contains * .push = add to stack, .pop = remove top item from stack
 
@@ -86,7 +86,7 @@ public class Slot : MonoBehaviour
             if(IsEmpty)
             {
                 ChangeSprite(slotEmpty, slotHighLight);
-                Inventory.EmptySlots++;
+                Inventory_Grid.EmptySlots++;
             }
         }
     }
