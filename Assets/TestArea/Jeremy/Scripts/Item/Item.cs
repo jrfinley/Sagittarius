@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Item : MonoBehaviour {
+public class Item {
     #region Variables
     private int id = 0;
     private string name = string.Empty;
@@ -14,14 +14,6 @@ public class Item : MonoBehaviour {
     private ItemStats itemStats;
 
     private bool statProtection = true;
-
-    //pg added
-    public Sprite spriteNeutral;
-    public Sprite spriteHighLighted;
-
-    public int maxSize;
-
-    public string nameTester;
     #endregion
 
     #region Properties
@@ -169,127 +161,6 @@ public class Item : MonoBehaviour {
             "Dexterity: " + itemStats.Dexterity + spc +
             "Stat Protection: " + statProtection
             );
-    }
-    #endregion
-
-    //Phil added
-    /*
-    Note for Jeremy: the reason this function isn't currently 
-    working is due to this item class not actually giving items their names yet, so once they 
-    actually have names generated then just change these case strings into 
-    the items names and then give them appropriate functionality i.e. equip/ consume 
-    */
-
-    #region UseItem method
-        //function that will either consume or equip items, will need connection to player for health and mana recovery, and the equipment menu for item equipping
-    public void UseItem()
-    {
-        switch (name)//checks items name
-        {
-            case "HealthPotion":
-                Debug.Log("Health Potion Consumed");
-                Debug.Log(name);
-                break;
-            case "ManaPotion":
-                Debug.Log("Mana Potion Consumed");
-                break;
-            case "Food":
-                Debug.Log("Food Consumed");
-                break;
-            case "Water":
-                Debug.Log("Water Consumed");
-                break;
-            case "shuriken":
-                Debug.Log("shuriken Thrown");
-                break;            
-            case "ThrowingStar":
-                Debug.Log("Throwing Star Used");
-                break;
-            case "Ore":
-                Debug.Log("Ore");
-                break;
-            case "Dagger":
-                Debug.Log("Dagger Equipped");
-                break;
-            case "BroadSword":
-                Debug.Log("BroadSword Equipped");
-                break;
-            case "Spear":
-                Debug.Log("Spear Equipped");
-                break;
-            case "Helm":
-                Debug.Log("Helm Equipped");
-                break;
-            case "ChestArmor":
-                Debug.Log("ChestArmor Equipped");
-                break;
-            case "Amulet":
-                Debug.Log("Amulet Equipped");
-                break;
-        }
-    }
-
-    //creates the text for the tooltip that allows player to see item name, quality, stats, etc
-    public string GetToolTip()
-    {
-        string stats = string.Empty;
-        string color = string.Empty;
-        string newLine = string.Empty;
-
-        if (flavorText != string.Empty)
-        {
-            newLine = "\n";
-        }
-        switch (itemRarity)
-        {
-            case EItemRarity.COMMON:
-                color = "white";
-                break;
-            case EItemRarity.RARE:
-                color = "navy";
-                break;
-            case EItemRarity.EPIC:
-                color = "magenta";
-                break;
-            case EItemRarity.LEGENDARY:
-                color = "orange";
-                break;
-        }
-        if (itemStats.Health > 0)
-        {
-            stats += "\n+" + ItemStats.Health.ToString() + " Health";
-        }
-        if (ItemStats.Strength > 0)
-        {
-            stats += "\n+" + ItemStats.Strength.ToString() + " Strength";
-        }
-        if (ItemStats.Intelect > 0)
-        {
-            stats += "\n+" + ItemStats.Intelect.ToString() + " Intellect";
-        }
-        if (ItemStats.Dexterity > 0)
-        {
-            stats += "\n+" + ItemStats.Dexterity.ToString() + " Dexterity";
-        }
-        if (ItemStats.Weight > 0)
-        {
-            stats += "\n+" + ItemStats.Weight.ToString() + " Weight";
-        }
-        if (ItemStats.Durability > 0)
-        {
-            stats += "\n+" + ItemStats.Durability.ToString() + " Durability";
-        }
-        if (ItemStats.GoldValue > 0)
-        {
-            stats += "\n+" + ItemStats.GoldValue.ToString() + " GoldValue";
-        }
-        if (ItemStats.ScrapValue > 0)
-        {
-            stats += "\n+" + ItemStats.ScrapValue.ToString() + " ScrapValue";
-        }
-
-        //returns the formateed string
-        return string.Format("<color=" + color + "><size=24>{0}</size></color><size=20><i><color=lime>" + newLine + "{1}</color></i>{2}</size>", nameTester, flavorText, stats);
     }
     #endregion
 }
