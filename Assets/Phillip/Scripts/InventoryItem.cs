@@ -18,5 +18,20 @@ public class InventoryItem : MonoBehaviour
 
     public int id;
 
+    private Item item;
 
+    void Start()
+    {
+        item = ItemGenerator.Instance.GenerateItem();
+
+        displayName = item.Name;
+        desc = item.FlavorText;
+        strength = (int)item.ItemStats.Strength;
+        intellect = (int)item.ItemStats.Intelect;
+        dexterity = (int)item.ItemStats.Dexterity;
+        gold = (int)item.ItemStats.GoldValue;
+        scrap = (int)item.ItemStats.ScrapValue;
+
+        id = item.ID;
+    }
 }
