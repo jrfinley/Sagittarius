@@ -12,15 +12,14 @@ public class GoldData : MonoBehaviour
 
     private int saveGold;
 
-    private long maxGold = 10000000;
+    private long maxGold = 100000;
+
+    private bool savingCurrentGold = false;
 
     private int cost;
 
     [SerializeField]
-    private Text costText;
-
-    [SerializeField]
-    private Text goldText;
+    public Text goldText;
 
     public int Currency
     {
@@ -43,6 +42,11 @@ public class GoldData : MonoBehaviour
         {
             return cost;
         }
+
+        set
+        {
+            cost = value;
+        }
     }
 
     public GameObject purchaseObject
@@ -55,11 +59,13 @@ public class GoldData : MonoBehaviour
 
     void Start()
     {
+        cost = 1000;
+
         currentGold = 0;
 
         gold = g;
 
-        costText.text = cost + "$"; 
+        goldText.text = g + "$"; 
     }
 
     public void Purchase(GameObject obj)
@@ -67,16 +73,38 @@ public class GoldData : MonoBehaviour
         if(gold >= 0 && gold >= cost)
         {
             gold -= cost;
+
+            currentGold /= cost;
         }
     }
 
     public IEnumerator SaveGold() 
     {
-        while(true)
+        while (true)
         {
-            yield return new WaitForSeconds(saveGold);
+            yield return new WaitForSeconds(0.1f);
 
-            // save the gold somewhere.
+            saveGold.ToString();
+
+            currentGold = g;
+
+            if (savingCurrentGold)
+            {
+                g = currentGold;
+            }
+
+            yield return currentGold;
+
+            break;
+        }
+
+       if(currentGold >= maxGold)
+        {
+            g += currentGold / Currency;
+        }
+       else
+        {
+            yield return maxGold;
         }
     }
 
@@ -107,6 +135,8 @@ public class GoldData : MonoBehaviour
         {
             currentGold -= amount;
 
+            amount /= gold;
+
             // remove amount of gold from currentGold
 
             Debug.Log("You have now removed this amount of gold from your Inventory");
@@ -119,7 +149,9 @@ public class GoldData : MonoBehaviour
 
         g = myGold *= currentGold / 100;
 
-        myGold = gold - currentGold; 
+        myGold = gold - currentGold;
+
+        maxGold += myGold;
     }
 
     public static bool Quitting = false;

@@ -6,7 +6,7 @@ public class ScrapData : MonoBehaviour
     [SerializeField]
     private GoldData goldData;
 
-    private int duplicate;
+    private int duplicate = 2;
 
     private bool canScrap = false;
 
@@ -29,21 +29,14 @@ public class ScrapData : MonoBehaviour
         }
     }
 
-    public void AddToScrap(int duplicate)
+    public void AddToScrap(int d)
     {
-        if (duplicate >= goldData.Currency)
-        {
-            duplicate.CompareTo(2);
-
-            goldData.SumGold(myGold);
-
-            myGold -= goldAmount;
-        }
+        
     }
 
     public void DestroyIfScrapped(GameObject toDestroy)
     {
-        if(toDestroy != null && canScrap)
+        if(toDestroy != null && canScrap == false)
         {
             canScrap = true;
 
@@ -55,6 +48,4 @@ public class ScrapData : MonoBehaviour
             scrapping += goldData.Currency;
         }
     }
-
-
 }

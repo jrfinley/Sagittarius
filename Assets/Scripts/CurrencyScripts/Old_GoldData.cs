@@ -16,10 +16,12 @@ public class Old_GoldData : MonoBehaviour
 
     public int maxItemScrap = 100000;
 
-    private int currentItemScrap = 0;
+   // private int currentItemScrap;
 
     void Start()
     {
+       // currentItemScrap = 0;
+
         goldText = GetComponent<Text>();
     }
 
