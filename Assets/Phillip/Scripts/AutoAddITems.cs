@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 /*
 This classes sole purpose is entirely for just dragging the
@@ -8,13 +10,16 @@ super basic
 */
 public class AutoAddITems : MonoBehaviour
 {
-    public Inventory inventory;
+    public List<InventoryItem> items = new List<InventoryItem>();
 
-	void OnTriggerEnter(Collider other)
+    public InventoryDisplay inventory;
+
+    void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Item")
+        if (other.tag == "Player")
         {
-            inventory.AddItem(other.GetComponent<Item_Temp>());
+            inventory.Prime(items);
+            Destroy(this.gameObject);
         }
     }
 }
