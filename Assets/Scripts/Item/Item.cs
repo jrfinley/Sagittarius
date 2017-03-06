@@ -131,6 +131,18 @@ public class Item {
         this.itemStats = new ItemStats(item.ItemStats);
         this.statProtection = true;
     }
+    public Item(Item item, bool statProtection) {
+        this.id = item.id;
+        this.name = item.name;
+        this.flavorText = item.flavorText;
+        this.iconName = item.iconName;
+        this.itemType = item.itemType;
+        this.equipmentType = item.equipmentType;
+        this.itemRarity = item.itemRarity;
+        this.itemLevel = item.itemLevel;
+        this.itemStats = new ItemStats(item.ItemStats);
+        this.statProtection = statProtection;
+    }
     public Item(bool statProtection) { //used in generating items
         this.statProtection = statProtection;
         itemStats = new ItemStats();

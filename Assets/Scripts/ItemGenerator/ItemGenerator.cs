@@ -22,6 +22,17 @@ public class ItemGenerator : MonoSingleton<ItemGenerator> {
         GenerateItemStats();
         return new Item(item);
     }
+    public Item ReforgeItem(Item itemToReforge) {
+        item = new Item(itemToReforge, false);
+        GenerateItemID();
+        item.ItemRarity = (EItemRarity)(Mathf.Min((int)item.ItemRarity + 1, 3));
+        GenerateItemName();
+        GenerateFlavorText();
+        GenerateIcon();
+        GenerateItemStats();
+        return new Item(item);
+    }
+
     private void GenerateItemID() { //The idea is that we need id to diferentiate items. This will check agaist all current items for id's and assign one that isn't taken
         do {
             item.ID = Random.Range(1, int.MaxValue);
