@@ -4,3 +4,4 @@
     ROGUE,
     MAGE
 }
+
