@@ -14,8 +14,6 @@ public class GoldData : MonoBehaviour
 
     private long maxGold = 100000;
 
-    private bool savingCurrentGold = false;
-
     private int cost;
 
     [SerializeField]
@@ -78,86 +76,87 @@ public class GoldData : MonoBehaviour
         }
     }
 
-    public IEnumerator SaveGold() 
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.1f);
-
-            saveGold.ToString();
-
-            currentGold = g;
-
-            if (savingCurrentGold)
-            {
-                g = currentGold;
-            }
-
-            yield return currentGold;
-
-            break;
-        }
-
-       if(currentGold >= maxGold)
-        {
-            g += currentGold / Currency;
-        }
-       else
-        {
-            yield return maxGold;
-        }
-    }
-
     public void GetGold(int goldAmount)
     {
-        if (currentGold < goldAmount)
+        for(int a = 0; a <= goldAmount; a++)
         {
-            currentGold = goldAmount / 100;
-
-            Debug.Log("You now have this much gold");
+            if (currentGold < goldAmount)
+            {
+                currentGold = goldAmount / 100;
+            }
+            else
+            {
+                Debug.Log("You now have this much gold currently in game");
+            }
         }
+
+        return;
     }
 
     public void AddGold(int amountToAdd)
     {
-        amountToAdd = 100;
+        for(int aA = 0; aA >= amountToAdd; aA++)
+        {
+            amountToAdd = 100;
 
-        currentGold += amountToAdd;
+            if(amountToAdd <= 0)
+            {
+                return;
+            }
+            else
+            {
+                currentGold += amountToAdd;
 
-        Debug.Log("You now have added this much gold to your Inventory");
+                Debug.Log("You now have added this much gold to your Inventory");
+            }
+        }
+
+        return;
     }
 
     public void RemoveGold(int amount)
     {
-        amount = 100;
-
-        if (currentGold - amount >= 0)
+        for(int rG = 0; rG <= amount; rG--)
         {
-            currentGold -= amount;
+            amount = 100;
 
-            amount /= gold;
+            if (currentGold - amount >= 0)
+            {
+                currentGold -= amount;
+            }
+            else
+            {
+                amount -= gold;
 
-            // remove amount of gold from currentGold
-
-            Debug.Log("You have now removed this amount of gold from your Inventory");
+                Debug.Log("You have now removed this amount of gold from your Inventory");
+            }
         }
+
+        return;
     }
 
     public void SumGold(int myGold)
     {
-        myGold = 10000;
+        for(int mG = 0; mG >= myGold; mG++)
+        {
+            myGold = 10000;
 
-        g = myGold *= currentGold / 100;
+            if(myGold <= currentGold)
+            {
+                return;
+            }
+            else
+            {
+                g = myGold *= currentGold / 100;
 
-        myGold = gold - currentGold;
+                myGold = gold - currentGold;
 
-        maxGold += myGold;
-    }
+                maxGold = this.Currency;
 
-    public static bool Quitting = false;
+                Debug.Log("You now have are carrying this much and maximum amount to carry");
+            }
+        }
 
-    void OnDestroy()
-    {
-        Quitting = true;
+        return;
     }
 }
