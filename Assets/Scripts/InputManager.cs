@@ -5,7 +5,11 @@ using System.Collections;
 
 public class InputManager : MonoBehaviour
 {
-	void Update ()
+    void Start()
+    {
+        playerParty = FindObjectOfType<PlayerParty>();
+    }
+    void Update ()
     {
         GetKeyboardInput(); //Comment this function out to disable PC inputs.
         GetSwipeInput();
@@ -16,6 +20,8 @@ public class InputManager : MonoBehaviour
     bool gestureDetected = false;
     float minGestureDistance = 50f;
     float maxGestureTime = 0.5f;
+    PlayerParty playerParty;
+
     void GetSwipeInput() //Returns swipe directions from one finger. Based on: http://pfonseca.com/swipe-detection-on-unity/
     {
         if(Input.touchCount > 0)
@@ -79,21 +85,37 @@ public class InputManager : MonoBehaviour
     void InputUp()
     {
         Debug.Log("INPUT UP");
+        if (playerParty != null)
+        {
+            playerParty.SetMoveDirection(new Vector3(0, 0, 1));
+        }
     }
 
     void InputDown()
     {
         Debug.Log("INPUT DOWN");
+        if (playerParty != null)
+        {
+            playerParty.SetMoveDirection(new Vector3(0, 0, -1));
+        }
     }
 
     void InputLeft()
     {
         Debug.Log("INPUT LEFT");
+        if (playerParty != null)
+        {
+            playerParty.SetMoveDirection(new Vector3(-1, 0, 0));
+        }
     }
 
     void InputRight()
     {
         Debug.Log("INPUT RIGHT");
+        if (playerParty != null)
+        {
+            playerParty.SetMoveDirection(new Vector3(1, 0, 0));
+        }
     }
 
 }

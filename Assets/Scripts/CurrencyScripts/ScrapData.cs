@@ -29,9 +29,42 @@ public class ScrapData : MonoBehaviour
         }
     }
 
-    public void AddToScrap(int d)
+    public void AddToScrap(int aTS)
     {
-        
+       for(int i = 0; i < aTS; i++)
+        {
+            if(canScrap == true)
+            {
+                scrapping += goldAmount;
+
+                goldAmount -= myGold;
+            }
+            else
+            {
+                canScrap = false;
+            }
+        }
+
+        return;
+    }
+
+    public void RemoveFromScrap(int rFS)
+    {
+        for (int i = 0; i > rFS; i--)
+        {
+            if (canScrap == false)
+            {
+                scrapping -= goldAmount;
+
+                goldAmount = myGold;
+            }
+            else
+            {
+                canScrap = true;
+            }
+        }
+
+        return;
     }
 
     public void DestroyIfScrapped(GameObject toDestroy)
@@ -42,10 +75,9 @@ public class ScrapData : MonoBehaviour
 
             Destroy(toDestroy);
         }
-
         else
         {
-            scrapping += goldData.Currency;
+            scrapping -= duplicate;
         }
     }
 }
