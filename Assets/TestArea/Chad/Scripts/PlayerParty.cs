@@ -82,7 +82,10 @@ public class PlayerParty : MonoBehaviour
 
     IEnumerator MovePlayer(Vector3 moveDestination)
     {
-        while (transform.position != movePosition)
+		float loopCutoff = 0;
+		Vector3 oldPosition = transform.position;
+		
+        while (transform.position != movePosition && loopCutoff < 5)
         {
             Vector3 moveDir = (movePosition - transform.position);
 
@@ -95,8 +98,15 @@ public class PlayerParty : MonoBehaviour
             {
                 transform.position = movePosition;
             }
-
+			
+			i += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+		
+		if (loopCutoff >= 5)
+		{
+			transform.position = oldPosition;
+			print("Reached loop cut off time");
+		}
     }
 }
