@@ -13,8 +13,11 @@ public class PlayerParty : MonoBehaviour
 
     public BaseCharacter[] characters;
 
+    public Rigidbody rb;
+
     void Start()
     {
+		rb = GetComponent<Rigidbody> ();
         movePosition = transform.position;
 
         //AddPartyMember example
