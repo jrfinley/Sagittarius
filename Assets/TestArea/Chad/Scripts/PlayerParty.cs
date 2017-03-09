@@ -17,21 +17,21 @@ public class PlayerParty : MonoBehaviour
 
     void Start()
     {
-		rb = GetComponent<Rigidbody> ();
+		rb = GetComponent<Rigidbody>();
         movePosition = transform.position;
 
         //AddPartyMember example
         AddPartyMember(1, "Chad", ECharacterType.ROGUE, 5);
         AddPartyMember(2, "John", ECharacterType.WARRIOR, 7);
-    }
-    void FixedUpdate()
-    {
-        MovePlayer(movePosition);
+        //AddPartyMember example
     }
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
-        //Add something to check for open square here and if there is one, set moveDirection to zero
+        if (transform.position != movePosition)
+            return;
+
+        Vector3 oldPosition = transform.position;
 
         if (moveDirection.z > 0)
         {
@@ -49,12 +49,16 @@ public class PlayerParty : MonoBehaviour
         {
             movePosition.x -= 15;
         }
-    }
-    public void MovePlayer(Vector3 moveDestination)
-    {
-        Vector3 movePosition = Vector3.Lerp(transform.position, moveDestination, moveSpeed);
 
-        transform.position = movePosition;
+        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 0.1f);
+
+        if (moveSquares.Length == 0)
+        {
+            movePosition = oldPosition;
+            return;
+        }
+
+        StartCoroutine(MovePlayer(moveDirection));
     }
     public void AddPartyMember(int partyPosition, string name, ECharacterType charType, int level)
     {
@@ -74,5 +78,25 @@ public class PlayerParty : MonoBehaviour
     {
         maxEquipmentLoad -= characters[partyPosition - 1].GetEquipmentCapacity();
         characters[partyPosition - 1] = null;
+    }
+
+    IEnumerator MovePlayer(Vector3 moveDestination)
+    {
+        while (transform.position != movePosition)
+        {
+            Vector3 moveDir = (movePosition - transform.position);
+
+            if (moveDir.magnitude > 0.2f)
+            {
+                moveDir = moveDir.normalized * moveSpeed * Time.fixedDeltaTime;
+                rb.MovePosition(rb.position + moveDir);
+            }
+            else
+            {
+                transform.position = movePosition;
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
     }
 }
