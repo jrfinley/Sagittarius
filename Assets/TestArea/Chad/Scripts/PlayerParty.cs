@@ -99,14 +99,14 @@ public class PlayerParty : MonoBehaviour
                 transform.position = movePosition;
             }
 			
-			i += Time.fixedDeltaTime;
+			loopCutoff += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
 		
 		if (loopCutoff >= 5)
 		{
 			transform.position = oldPosition;
-			print("Reached loop cut off time");
+			Debug.LogError("Move player while loop reached cut off time");
 		}
     }
 }
