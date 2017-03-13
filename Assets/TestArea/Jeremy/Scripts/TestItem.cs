@@ -8,7 +8,7 @@ public class TestItem : MonoBehaviour {
     private Image image;
 
     void Start() {
-        item = ItemGenerator.Instance.GenerateItem();
+        item = ItemGenerator.GenerateItem();
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)
@@ -22,7 +22,7 @@ public class TestItem : MonoBehaviour {
 
     private void GenerateNewItem() {
         item.RemoveFromIDDatabase();
-        item = ItemGenerator.Instance.GenerateItem();
+        item = ItemGenerator.GenerateItem();
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)

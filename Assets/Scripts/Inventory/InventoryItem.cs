@@ -22,7 +22,7 @@ public class InventoryItem : MonoBehaviour
 
     void Start()
     {
-        item = ItemGenerator.Instance.GenerateItem();
+        item = ItemGenerator.GenerateItem();
 
         displayName = item.Name;
         desc = item.FlavorText;
