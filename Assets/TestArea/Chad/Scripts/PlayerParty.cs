@@ -8,6 +8,8 @@ public class PlayerParty : MonoBehaviour
                equipmentLoad;
 
     public float moveSpeed;
+    public float moveXAmount;
+    public float moveZAmount;
 
     public Vector3 movePosition;
 
@@ -35,19 +37,19 @@ public class PlayerParty : MonoBehaviour
 
         if (moveDirection.z > 0)
         {
-            movePosition.z += 15;
+            movePosition.z += moveZAmount;
         }
         else if (moveDirection.z < 0)
         {
-            movePosition.z -= 15;
+            movePosition.z -= moveZAmount;
         }
         else if (moveDirection.x > 0)
         {
-            movePosition.x += 15;
+            movePosition.x += moveXAmount;
         }
         else if (moveDirection.x < 0)
         {
-            movePosition.x -= 15;
+            movePosition.x -= moveXAmount;
         }
 
         Collider[] moveSquares = Physics.OverlapSphere(movePosition, 0.1f);
