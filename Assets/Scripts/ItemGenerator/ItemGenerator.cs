@@ -22,6 +22,18 @@ public static class ItemGenerator {
         GenerateItemStats();
         return new Item(item);
     }
+    private static Item GenerateItemDrop(int monsterLevel, int dungeonLevel) {
+        GenerateItemID();
+        GenerateItemRarity();
+        GenerateItemType();
+        GenereteEquipmentType();
+        GenerateItemLevel(monsterLevel, dungeonLevel);
+        GenerateItemName();
+        GenerateFlavorText();
+        GenerateIcon();
+        GenerateItemStats();
+        return new Item(item);
+    }
     public static Item ReforgeItem(Item itemToReforge) {
         item = new Item(itemToReforge, false);
         GenerateItemID();
@@ -63,6 +75,9 @@ public static class ItemGenerator {
     private static void GenerateItemLevel() {
         item.ItemLevel = Random.Range((int)1, 100);
     }
+    private static void GenerateItemLevel(int monsterLevel, int dungeonLevel) {
+        item.ItemLevel = Random.Range((int)dungeonLevel * 5, monsterLevel + dungeonLevel * 5);
+    }
     private static void GenerateItemName() {
         item.Name = nameGenerator.GenerateName(item.EquipmentType, item.ItemRarity);
     }
@@ -72,7 +87,6 @@ public static class ItemGenerator {
     private static void GenerateIcon() {
         item.IconName = "Default_Icon";
     }
-    //Following are all set to 1, for testing purposes
     private static void GenerateItemStats() {
         item.ItemStats = new ItemStats(itemStatsGenerator.GenerateItemStats(item.EquipmentType, item.ItemRarity, item.ItemLevel)); //new to avoid refrence
     }
