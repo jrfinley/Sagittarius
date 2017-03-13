@@ -10,11 +10,14 @@ public class UIManager : MonoBehaviour
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
     public RectTransform MasterMenuBacking;
+    public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
     CanvasScaler canvasScaler;
     void Start()
     {
         canvasScaler = GetComponent<CanvasScaler>();
+        MasterMenuBacking.gameObject.SetActive(true);
+        dialogueBox.gameObject.SetActive(true);
         //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
@@ -26,22 +29,34 @@ public class UIManager : MonoBehaviour
     {
         isMenuOpen = !isMenuOpen;
         //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, BottomMarker.rect.position.y);
-        if (isMenuOpen)
+        if (!isMenuOpen)
         {
-            //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, 0);
-            MasterMenuBacking.transform.localScale = Vector3.one;
-            menuToggleButtons[0].SetActive(false);
-            menuToggleButtons[1].SetActive(true);
-            Canvas.ForceUpdateCanvases();
+            CloseMenu();
         }
         else
         {
-            //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
-            MasterMenuBacking.transform.localScale = Vector3.zero;
-            menuToggleButtons[0].SetActive(true);
-            menuToggleButtons[1].SetActive(false);
-            Canvas.ForceUpdateCanvases();
+            OpenMenu();
         }
+    }
+
+    public void OpenMenu()
+    {
+        isMenuOpen = true;
+        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, 0);
+        MasterMenuBacking.transform.localScale = Vector3.one;
+        menuToggleButtons[0].SetActive(false);
+        menuToggleButtons[1].SetActive(true);
+        Canvas.ForceUpdateCanvases();
+    }
+
+    public void CloseMenu()
+    {
+        isMenuOpen = false;
+        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
+        MasterMenuBacking.transform.localScale = Vector3.zero;
+        menuToggleButtons[0].SetActive(true);
+        menuToggleButtons[1].SetActive(false);
+        Canvas.ForceUpdateCanvases();
     }
 
     public void DisplayStatsPanel()
@@ -66,6 +81,14 @@ public class UIManager : MonoBehaviour
     {
         HideAllContentPanels();
         contentPanels[3].SetActive(true);
+    }
+
+    public void DisplayCombatPanel() //Eventually pass in an array of enemy-classes and display their stats dynamically.
+    {
+        CreateNewDialogueBox("You are under attack!");
+        combatPanel.gameObject.SetActive(true);
+        CloseMenu();
+        //combatPanel.CreateCombatPanel();
     }
 
     public void TestButton1() //Found on the Misc tab for now. Just for testing.
