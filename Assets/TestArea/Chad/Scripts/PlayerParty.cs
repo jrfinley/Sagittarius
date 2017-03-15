@@ -8,50 +8,59 @@ public class PlayerParty : MonoBehaviour
                equipmentLoad;
 
     public float moveSpeed;
+    public float moveXAmount;
+    public float moveZAmount;
 
     public Vector3 movePosition;
 
     public BaseCharacter[] characters;
 
+    public Rigidbody rb;
+
     void Start()
     {
+		rb = GetComponent<Rigidbody>();
         movePosition = transform.position;
 
         //AddPartyMember example
         AddPartyMember(1, "Chad", ECharacterType.ROGUE, 5);
         AddPartyMember(2, "John", ECharacterType.WARRIOR, 7);
-    }
-    void FixedUpdate()
-    {
-        MovePlayer(movePosition);
+        //AddPartyMember example
     }
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
-        //Add something to check for open square here and if there is one, set moveDirection to zero
+        if (transform.position != movePosition)
+            return;
+
+        Vector3 oldPosition = transform.position;
 
         if (moveDirection.z > 0)
         {
-            movePosition.z += 15;
+            movePosition.z += moveZAmount;
         }
         else if (moveDirection.z < 0)
         {
-            movePosition.z -= 15;
+            movePosition.z -= moveZAmount;
         }
         else if (moveDirection.x > 0)
         {
-            movePosition.x += 15;
+            movePosition.x += moveXAmount;
         }
         else if (moveDirection.x < 0)
         {
-            movePosition.x -= 15;
+            movePosition.x -= moveXAmount;
         }
-    }
-    public void MovePlayer(Vector3 moveDestination)
-    {
-        Vector3 movePosition = Vector3.Lerp(transform.position, moveDestination, moveSpeed);
 
-        transform.position = movePosition;
+        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
+        Debug.Log(moveSquares.Length);
+        if (moveSquares.Length == 0)
+        {
+            movePosition = oldPosition;
+            return;
+        }
+
+        StartCoroutine(MovePlayer(moveDirection));
     }
     public void AddPartyMember(int partyPosition, string name, ECharacterType charType, int level)
     {
@@ -71,5 +80,35 @@ public class PlayerParty : MonoBehaviour
     {
         maxEquipmentLoad -= characters[partyPosition - 1].GetEquipmentCapacity();
         characters[partyPosition - 1] = null;
+    }
+
+    IEnumerator MovePlayer(Vector3 moveDestination)
+    {
+		float loopCutoff = 0;
+		Vector3 oldPosition = transform.position;
+		
+        while (transform.position != movePosition && loopCutoff < 5)
+        {
+            Vector3 moveDir = (movePosition - transform.position);
+
+            if (moveDir.magnitude > 0.2f)
+            {
+                moveDir = moveDir.normalized * moveSpeed * Time.fixedDeltaTime;
+                rb.MovePosition(rb.position + moveDir);
+            }
+            else
+            {
+                transform.position = movePosition;
+            }
+			
+			loopCutoff += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+		
+		if (loopCutoff >= 5)
+		{
+			transform.position = oldPosition;
+			Debug.LogError("Move player while loop reached cut off time");
+		}
     }
 }
