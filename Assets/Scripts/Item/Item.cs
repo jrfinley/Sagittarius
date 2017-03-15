@@ -9,6 +9,10 @@ public class Item {
     private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
     private EItemType itemType = EItemType.AMULET;
     private EEquipmentType equipmentType = EEquipmentType.AMULET;
+    private EItemEquipSlot equipSlot = EItemEquipSlot.NONE;
+    private EItemWeightClass weightClass = EItemWeightClass.NONE;
+    private EWeaponDamageType damageType = EWeaponDamageType.NONE;
+    private EWeaponRange weaponRange = EWeaponRange.NONE;
     private EItemRarity itemRarity = EItemRarity.COMMON;
     private int itemLevel = 0;
     private ItemStats itemStats;
