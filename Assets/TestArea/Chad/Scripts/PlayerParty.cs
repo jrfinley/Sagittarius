@@ -52,8 +52,8 @@ public class PlayerParty : MonoBehaviour
             movePosition.x -= moveXAmount;
         }
 
-        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 0.1f);
-
+        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
+        Debug.Log(moveSquares.Length);
         if (moveSquares.Length == 0)
         {
             movePosition = oldPosition;
