@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CurrencyData : MonoBehaviour
+public class CurrencyData_1 : MonoBehaviour
 {
     private int amount;
 
