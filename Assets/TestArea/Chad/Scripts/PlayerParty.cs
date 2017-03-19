@@ -17,6 +17,9 @@ public class PlayerParty : MonoBehaviour
 
     public Rigidbody rb;
 
+    [SerializeField]
+    private Sprite icon;
+
     void Start()
     {
 		rb = GetComponent<Rigidbody>();
@@ -110,5 +113,17 @@ public class PlayerParty : MonoBehaviour
 			transform.position = oldPosition;
 			Debug.LogError("Move player while loop reached cut off time");
 		}
+    }
+
+    //Getters
+    public Sprite GetIcon()
+    {
+        return icon;
+    }
+
+    //Setters
+    public void SetIcon(Sprite newIcon)
+    {
+        icon = newIcon;
     }
 }

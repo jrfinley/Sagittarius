@@ -15,6 +15,9 @@ public class BaseMonster : MonoBehaviour
                 attack,
                 defense;
 
+    [SerializeField]
+    private Sprite icon;
+
     void Start()
     {
         InitializeMonster();
@@ -75,6 +78,10 @@ public class BaseMonster : MonoBehaviour
     {
         return defense;
     }
+    public Sprite GetIcon()
+    {
+        return icon;
+    }
 
     //Setters
     public void SetLevel(int newLevel)
@@ -96,5 +103,9 @@ public class BaseMonster : MonoBehaviour
     public void SetDefense(int changeAmount)
     {
         defense += changeAmount;
+    }
+    public void SetIcon(Sprite newIcon)
+    {
+        icon = newIcon;
     }
 }
