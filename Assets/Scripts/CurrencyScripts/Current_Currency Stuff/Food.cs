@@ -27,34 +27,4 @@ public class Food : BaseCurrency
             food -= foodAmount;
         }
     }
-
-    new void Update()
-    {
-        base.Update();
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Add(foodAmount);
-
-            foodAmount += totalCurrency;
-
-            Debug.Log(gameObject.name + "Add" + foodAmount);
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Remove(foodAmount);
-
-            foodAmount -= totalCurrency;
-
-            Debug.Log(gameObject.name + "Remove" + foodAmount);
-        }
-        else
-        {
-            if (foodAmount < totalCurrency)
-            {
-                Debug.Log(gameObject.name.ToString() + "Cannot remove any currency yet");
-            }
-        }
-    }
 }

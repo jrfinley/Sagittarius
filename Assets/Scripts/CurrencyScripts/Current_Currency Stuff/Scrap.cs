@@ -27,34 +27,4 @@ public class Scrap : BaseCurrency
             scrap -= scrapAmount;
         }
     }
-
-    new void Update()
-    {
-        base.Update();
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Add(scrapAmount);
-
-            scrapAmount += totalCurrency;
-
-            Debug.Log(gameObject.name + "Add" + scrapAmount);
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Remove(scrapAmount);
-
-            scrapAmount -= totalCurrency;
-
-            Debug.Log(gameObject.name + "Remove" + scrapAmount);
-        }
-        else
-        {
-            if (scrapAmount < totalCurrency)
-            {
-                Debug.Log(gameObject.name.ToString() + "Cannot remove any currency yet");
-            }
-        }
-    }
 }

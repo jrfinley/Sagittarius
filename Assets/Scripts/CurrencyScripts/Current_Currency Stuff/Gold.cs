@@ -1,30 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Gold : BaseCurrency
 {
-    protected int goldAmount;
+    protected int goldAmount = 0;
+
+    public Text goldText;
 
     void Start()
     {
-        goldAmount = 100;
+        goldText = GetComponent<Text>();
 
-        goldAmount += currencyAmount;
+        goldAmount = 0;
+
+        goldAmount = currencyAmount;
     }
 
     protected void AddGold(int gold)
     {
+        gold = 10;
+
         if(gold < currencyAmount)
         {
-            gold += goldAmount;
+            gold += currencyAmount;
+
+            goldText.text = gold.ToString(); 
         }
     }
 
     protected void RemoveGold(int gold)
     {
+        gold = 10;
+
         if(gold > currencyAmount)
         {
             gold -= goldAmount;
+
+            goldText.text = currencyAmount.ToString();
+        }
+    }
+
+    public void GetGold()
+    {
+        if(goldAmount <= 1)
+        {
+            goldAmount += currencyAmount;
+
+            goldText.text = "Gold:" + totalCurrency.ToString();
+        }
+        else if (goldAmount >= 100)
+        {
+            goldAmount += currencyAmount;
+
+            currencyAmount += totalCurrency;
+
+            goldText.text =  totalCurrency.ToString();
         }
     }
 
@@ -32,9 +63,11 @@ public class Gold : BaseCurrency
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.G))
         {
             Add(goldAmount);
+
+            GetGold();
 
             goldAmount += totalCurrency;
 

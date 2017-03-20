@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class BaseCurrency : MonoBehaviour
 {
     protected int currencyAmount = 100;
 
     protected int totalCurrency = 100000;
+
+    protected float refundAmount;
 
     protected void Update()
     {
@@ -17,6 +20,8 @@ public class BaseCurrency : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
             Debug.Log("Removed this currency"  + ":" + currencyAmount);
+
+            refundAmount -= currencyAmount;
         }
     }
 
