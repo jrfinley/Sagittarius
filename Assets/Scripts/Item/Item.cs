@@ -178,5 +178,9 @@ public class Item {
             "Stat Protection: " + statProtection
             );
     }
+    public Sprite GetSprite()
+    {
+        return Resources.Load<Sprite>(iconName);
+    }
     #endregion
 }
