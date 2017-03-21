@@ -12,7 +12,7 @@ public class TestItem : MonoBehaviour {
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)
-            image.sprite = Resources.Load<Sprite>("ItemIcons/" + item.IconName);
+            image.sprite = item.GetSprite();
     }
 
 	void Update() {
@@ -26,7 +26,7 @@ public class TestItem : MonoBehaviour {
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)
-            image.sprite = Resources.Load<Sprite>("ItemIcons/" + item.IconName);
+            image.sprite = item.GetSprite();
     }
 	
 }

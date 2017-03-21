@@ -8,6 +8,7 @@ public static class ItemGenerator {
     private static FlavorTextGenerator flavorGenerator = new FlavorTextGenerator();
     private static EquipmentTypeGenerator equipmentGenerator = new EquipmentTypeGenerator();
     private static ItemStatsGenerator itemStatsGenerator = new ItemStatsGenerator();
+    private static IconGenerator iconGenerator = new IconGenerator();
     #endregion
     
     public static Item GenerateItem() {
@@ -85,7 +86,7 @@ public static class ItemGenerator {
         item.FlavorText = flavorGenerator.GenerateFlavor(item.EquipmentType);
     }
     private static void GenerateIcon() {
-        item.IconName = "Default_Icon";
+        item.IconName = iconGenerator.GenerateIcon(item.EquipmentType);
     }
     private static void GenerateItemStats() {
         item.ItemStats = new ItemStats(itemStatsGenerator.GenerateItemStats(item.EquipmentType, item.ItemRarity, item.ItemLevel)); //new to avoid refrence
