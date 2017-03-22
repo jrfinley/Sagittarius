@@ -27,7 +27,6 @@ public class PlayerParty : MonoBehaviour
     {
 		rb = GetComponent<Rigidbody>();
         movePosition = transform.position;
-        partyTransform = transform.position;
 
         //AddPartyMember example
         AddPartyMember(1, "Chad", ECharacterType.ROGUE, 5);
