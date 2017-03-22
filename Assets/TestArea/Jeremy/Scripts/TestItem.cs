@@ -8,11 +8,11 @@ public class TestItem : MonoBehaviour {
     private Image image;
 
     void Start() {
-        item = ItemGenerator.Instance.GenerateItem();
+        item = ItemGenerator.GenerateItem();
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)
-            image.sprite = Resources.Load<Sprite>("ItemIcons/" + item.IconName);
+            image.sprite = item.GetSprite();
     }
 
 	void Update() {
@@ -22,11 +22,11 @@ public class TestItem : MonoBehaviour {
 
     private void GenerateNewItem() {
         item.RemoveFromIDDatabase();
-        item = ItemGenerator.Instance.GenerateItem();
+        item = ItemGenerator.GenerateItem();
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)
-            image.sprite = Resources.Load<Sprite>("ItemIcons/" + item.IconName);
+            image.sprite = item.GetSprite();
     }
 	
 }

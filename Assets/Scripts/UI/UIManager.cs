@@ -2,6 +2,7 @@
 //Manages core in-game UI functions. Due to Unity 5.3.1, a couple hacky-workarounds may need to be implemented. 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class UIManager : MonoBehaviour
@@ -9,6 +10,8 @@ public class UIManager : MonoBehaviour
     bool isMenuOpen = false;
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
+    public Image[] heroIcons;
+    int selectedHero = 0;
     public RectTransform MasterMenuBacking;
     public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
@@ -22,6 +25,7 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
+        SelectHero(selectedHero);
         Canvas.ForceUpdateCanvases();
     }
 
@@ -57,6 +61,21 @@ public class UIManager : MonoBehaviour
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
         Canvas.ForceUpdateCanvases();
+    }
+
+    public void SelectHero(int hero)
+    {
+        if(hero == selectedHero)
+        {
+            Toggle t = heroIcons[hero].GetComponent<Toggle>();
+            heroIcons[hero].GetComponent<Image>().color = t.colors.pressedColor;
+            return;
+        }
+        Toggle toggle = heroIcons[selectedHero].GetComponent<Toggle>();
+        heroIcons[selectedHero].GetComponent<Image>().color = new Color32(255, 255, 255, 100);
+        selectedHero = hero;
+        toggle = heroIcons[selectedHero].GetComponent<Toggle>();
+        heroIcons[hero].GetComponent<Image>().color = toggle.colors.pressedColor;
     }
 
     public void DisplayStatsPanel()
@@ -101,10 +120,15 @@ public class UIManager : MonoBehaviour
         return dialogueBox.ShowDialogueBox(dialogue);
     }
 
+
+
     void HideAllContentPanels()
     {
         foreach (GameObject p in contentPanels)
             p.SetActive(false);
     }
-	
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 }

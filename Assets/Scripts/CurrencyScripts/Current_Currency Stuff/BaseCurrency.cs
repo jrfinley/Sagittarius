@@ -3,21 +3,13 @@ using System.Collections;
 
 public class BaseCurrency : MonoBehaviour
 {
-    protected int currencyAmount = 100;
+    protected int currencyAmount;
 
-    protected int totalCurrency = 100000;
+    protected int totalMaxCurrency = 100000;
 
-    protected void Update()
+    protected void BeginningCurrency()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Debug.Log("Added this currency" + ":" + currencyAmount);
-        }
-
-        if(Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            Debug.Log("Removed this currency"  + ":" + currencyAmount);
-        }
+        currencyAmount = 0;
     }
 
     protected void Add(int addCurrency)
@@ -29,11 +21,11 @@ public class BaseCurrency : MonoBehaviour
     {
         if(currencyAmount - removeCurrency < 0)
         {
-            Debug.Log("Not enough currency to discard or no currency availible");
+            currencyAmount = 0;
         }
         else
         {
-            removeCurrency -= totalCurrency;
+            currencyAmount -= removeCurrency;
         }
     }
 }
