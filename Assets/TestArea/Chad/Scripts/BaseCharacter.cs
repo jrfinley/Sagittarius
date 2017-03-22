@@ -91,7 +91,69 @@ public class BaseCharacter : MonoBehaviour
         }
         equipmentCapacity = strength * 2;
     }
-        
+
+    public void addStatusEffect(string statusEffectName)
+    {
+
+    }
+    public void EquipItem(Item item)
+    {
+        switch (item.ItemType)
+        {
+            case EItemType.ARMOR:
+                armor = item;
+                break;
+
+            case EItemType.WEAPON:
+                //Some how distinguish between left and right hand here.
+                armor = item;
+                break;
+
+            case EItemType.AMULET:
+                amulet = item;
+                break;
+        }
+
+        maxHealth += (int)item.ItemStats.Health;
+        health += (int)item.ItemStats.Health;
+        strength += (int)item.ItemStats.Strength;
+        dexterity += (int)item.ItemStats.Dexterity;
+        intelect += (int)item.ItemStats.Intelect;
+    }
+    public void RemoveItem(int itemPosition)
+    {
+        Item item;
+
+        switch (itemPosition)
+        {
+            case 1:
+                item = armor;
+                armor = null;
+                break;
+
+            case 2:
+                item = leftHand;
+                leftHand = null;
+                break;
+
+            case 3:
+                item = rightHand;
+                rightHand = null;
+                break;
+
+            default:
+                item = amulet;
+                amulet = null;
+                break;
+        }
+
+        maxHealth -= (int)item.ItemStats.Health;
+        health -= (int)item.ItemStats.Health;
+        strength -= (int)item.ItemStats.Strength;
+        dexterity -= (int)item.ItemStats.Dexterity;
+        intelect -= (int)item.ItemStats.Intelect;
+    }
+
     //Getters
     public string GetName()
     {
@@ -208,62 +270,5 @@ public class BaseCharacter : MonoBehaviour
     public void SetIcon(Sprite newIcon)
     {
         icon = newIcon;
-    }
-    public void EquipItem(Item item)
-    {
-        switch (item.ItemType)
-        {
-            case EItemType.ARMOR:
-                armor = item;
-                break;
-
-            case EItemType.WEAPON:
-                //Some how distinguish between left and right hand here.
-                armor = item;
-                break;
-
-            case EItemType.AMULET:
-                amulet = item;
-                break;
-        }
-
-        maxHealth += (int)item.ItemStats.Health;
-        health += (int)item.ItemStats.Health;
-        strength += (int)item.ItemStats.Strength;
-        dexterity += (int)item.ItemStats.Dexterity;
-        intelect += (int)item.ItemStats.Intelect;
-    }
-    public void RemoveItem(int itemPosition)
-    {
-        Item item;
-
-        switch (itemPosition)
-        {
-            case 1:
-                item = armor;
-                armor = null;
-                break;
-
-            case 2:
-                item = leftHand;
-                leftHand = null;
-                break;
-
-            case 3:
-                item = rightHand;
-                rightHand = null;
-                break;
-
-            default:
-                item = amulet;
-                amulet = null;
-                break;
-        }
-
-        maxHealth -= (int)item.ItemStats.Health;
-        health -= (int)item.ItemStats.Health;
-        strength -= (int)item.ItemStats.Strength;
-        dexterity -= (int)item.ItemStats.Dexterity;
-        intelect -= (int)item.ItemStats.Intelect;
     }
 }
