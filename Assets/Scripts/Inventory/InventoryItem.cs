@@ -20,6 +20,11 @@ public class InventoryItem : MonoBehaviour
 
     private Item item;
 
+    public Item GetItem
+    {
+        get { return item; }
+    }
+
     void Start()
     {
         item = ItemGenerator.GenerateItem();

@@ -17,7 +17,6 @@ public class InventoryItemDisplay : MonoBehaviour
     public Text gold;
     public Text scrap;
 
-
     void Start()
     {
         if (item != null) Prime(item);

@@ -8,10 +8,13 @@ public class Inventory : MonoBehaviour
 
     public InventoryDisplay inventory;
 
-    
     void Start()
     {
         inventory.Prime(items);
     }
 
+    public void UpdateInventory(List<InventoryItem> items)
+    {
+        inventory.Prime(items);
+    }
 }
