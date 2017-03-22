@@ -31,6 +31,9 @@ public class BaseCharacter : MonoBehaviour
     public Item leftHand;
     public Item rightHand;
     public Item amulet;
+
+    public List<string> statusEffectNames = new List<string>();
+    public List<MonoBehaviour> statusEffects = new List<MonoBehaviour>();
     
     void SetCharacterType()
     {
@@ -92,10 +95,6 @@ public class BaseCharacter : MonoBehaviour
         equipmentCapacity = strength * 2;
     }
 
-    public void addStatusEffect(string statusEffectName)
-    {
-
-    }
     public void EquipItem(Item item)
     {
         switch (item.ItemType)
@@ -152,6 +151,10 @@ public class BaseCharacter : MonoBehaviour
         strength -= (int)item.ItemStats.Strength;
         dexterity -= (int)item.ItemStats.Dexterity;
         intelect -= (int)item.ItemStats.Intelect;
+    }
+    public void AddStatusEffect(MonoBehaviour statusEffect)
+    {
+        statusEffects.Add(statusEffect);
     }
 
     //Getters

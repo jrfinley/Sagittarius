@@ -17,6 +17,9 @@ public class PlayerParty : MonoBehaviour
 
     public Rigidbody rb;
 
+    //For Phil
+    public Vector3 partyPosition;
+
     [SerializeField]
     private Sprite icon;
 
@@ -24,6 +27,7 @@ public class PlayerParty : MonoBehaviour
     {
 		rb = GetComponent<Rigidbody>();
         movePosition = transform.position;
+        partyTransform = transform.position;
 
         //AddPartyMember example
         AddPartyMember(1, "Chad", ECharacterType.ROGUE, 5);
@@ -83,6 +87,12 @@ public class PlayerParty : MonoBehaviour
     {
         maxEquipmentLoad -= characters[partyPosition - 1].GetEquipmentCapacity();
         characters[partyPosition - 1] = null;
+    }
+    public void addStatusEffect(MonoBehaviour statusEffect, int partySlot)
+    {
+        partySlot -= 1;
+
+        characters[partySlot].AddStatusEffect(statusEffect);
     }
 
     IEnumerator MovePlayer(Vector3 moveDestination)
