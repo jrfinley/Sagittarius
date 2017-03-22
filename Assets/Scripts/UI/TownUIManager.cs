@@ -7,7 +7,7 @@ using System.Collections;
 
 public class TownUIManager : MonoBehaviour
 {
-    public GameObject[] panels; //0 - Main Menu, 1 - Forge
+    public GameObject[] panels; //0 - Main Menu, 1 - Forge, 2 - Character Training
 
     public void LoadScene(string sceneName)
     {
@@ -33,5 +33,12 @@ public class TownUIManager : MonoBehaviour
         CloseAllPanels();
         panels[1].SetActive(true);
     }
+
+    public void ShowTrainingPanel()
+    {
+        CloseAllPanels();
+        panels[2].SetActive(true);
+    }
+
 
 }
