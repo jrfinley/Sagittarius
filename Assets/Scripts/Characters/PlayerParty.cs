@@ -118,14 +118,12 @@ public class PlayerParty : MonoBehaviour
         for (int i = 0; i < characters.Length; i++)
         {
             if (characters[i] != null)
-            {
                 characters[i].AddStatusEffect(statusEffect);
-
-            }
         } 
     }
     public void AddStatusEffect<T>(T statusEffect, int partySlot)where T : BaseStatusEffect
     {
+        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
         partySlot -= 1;
 
         characters[partySlot].AddStatusEffect(statusEffect);
@@ -152,6 +150,14 @@ public class PlayerParty : MonoBehaviour
 			
 			loopCutoff += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
+        }
+
+        for (int i = 0; i < maxPartySize; i++)
+        {
+            if (characters[i] == null)
+                continue;
+
+            characters[i].OnMove();
         }
 		
 		if (loopCutoff >= 5)

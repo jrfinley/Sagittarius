@@ -5,6 +5,9 @@ using UnityEngine;
 public class BaseCharacter : MonoBehaviour
 {
     //Serialized almost all stats for easy testing and balancing purposes
+    public delegate void BasicFunction();
+    public event BasicFunction OnPartyMove;
+    public event BasicFunction OnBattleStart;
 
     private bool dead;
 
@@ -33,7 +36,7 @@ public class BaseCharacter : MonoBehaviour
     public Item amulet;
 
     public List<string> statusEffectNames = new List<string>();
-    public List<MonoBehaviour> statusEffects = new List<MonoBehaviour>();
+    public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
     
     void SetStats()
     {
@@ -141,6 +144,25 @@ public class BaseCharacter : MonoBehaviour
         statusEffectNames.Add(statusEffect.name);
         statusEffects.Add(statusEffect);
         statusEffect.InitializeStatusEffect(this);
+    }
+    public void RemoveStatusEffect(EBuffType buffType)
+    {
+        for (int i = 0; i < statusEffects.Count; i++)
+        {
+            if (statusEffects[i].buffType == buffType)
+            {
+                statusEffects[i].RemoveStatusEffect();
+                break;
+            }
+        }
+    }
+    public void OnMove()
+    {
+        OnPartyMove();
+    }
+    public void OnBattle()
+    {
+        OnBattleStart();
     }
 
     //Properties
