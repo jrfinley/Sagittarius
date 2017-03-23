@@ -12,22 +12,30 @@ public class BaseStatusEffect : MonoBehaviour
                strengthChange,
                dexterityChange,
                intelectChange,
-               experienceChange;
+               experienceMultiplier;
+
+    public string statusName;
 
     public BaseCharacter baseCharacter;
 
-    private void Start()
+    public void InitializeStatusEffect(BaseCharacter _baseCharacter)
     {
-        if (expirationType == EBuffExpiration.TIME_BASED)
-        {
+        baseCharacter = _baseCharacter;
 
-        }
+        if (expirationType == EBuffExpiration.TIME_BASED)
+            StartCoroutine(Expire());
+    }
+    public void RemoveStatusEffect()
+    {
+        baseCharacter.statusEffects.Remove(this);
+        baseCharacter.statusEffectNames.Remove(statusName);
+        Destroy(this);
     }
 
     IEnumerator Expire()
     {
         yield return new WaitForSeconds(expirationTime);
 
-
+        RemoveStatusEffect();
     }
 }

@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerParty : MonoBehaviour
 {
     public int maxEquipmentLoad,
-               equipmentLoad;
+               equipmentLoad,
+               maxPartySize;
 
     public float moveSpeed;
     public float moveXAmount;
@@ -17,21 +18,13 @@ public class PlayerParty : MonoBehaviour
 
     public Rigidbody rb;
 
-    //For Phil
-    public Vector3 partyPosition;
-
     [SerializeField]
     private Sprite icon;
 
     void Start()
     {
-		rb = GetComponent<Rigidbody>();
-        movePosition = transform.position;
-
-        //AddPartyMember example
-        AddPartyMember(1, "Chad", ECharacterType.ROGUE, 5);
-        AddPartyMember(2, "John", ECharacterType.WARRIOR, 7);
-        //AddPartyMember example
+        rb = GetComponent<Rigidbody>();
+        characters = new BaseCharacter[maxPartySize];
     }
 
     public void SetMoveDirection(Vector3 moveDirection)
@@ -68,26 +61,70 @@ public class PlayerParty : MonoBehaviour
 
         StartCoroutine(MovePlayer(moveDirection));
     }
-    public void AddPartyMember(int partyPosition, string name, ECharacterType charType, int level)
+    public void AddPartyMember(int partyPosition, string name, ECharacterType characterType, int level)
     {
-        if (characters[partyPosition - 1] != null)
+        partyPosition = Mathf.Clamp(partyPosition, 1, maxPartySize);
+        partyPosition -= 1;
+
+        switch (characterType)
         {
-            RemovePartyMember(partyPosition);
+            case ECharacterType.MAGE:
+                Mage newMage = gameObject.AddComponent<Mage>();
+                newMage.InitializeCharacter(name, level);
+
+                if (characters[partyPosition] != null)
+                    RemovePartyMember(partyPosition + 1);
+
+                characters[partyPosition] = (newMage);
+                break;
+
+            case ECharacterType.ROGUE:
+                Rogue newRogue = gameObject.AddComponent<Rogue>();
+                newRogue.InitializeCharacter(name, level);
+
+                if (characters[partyPosition] != null)
+                    RemovePartyMember(partyPosition + 1);
+
+                characters[partyPosition] = (newRogue);
+                break;
+
+            case ECharacterType.WARRIOR:
+                Warrior newWarrior = gameObject.AddComponent<Warrior>();
+                newWarrior.InitializeCharacter(name, level);
+
+                if (characters[partyPosition] != null)
+                    RemovePartyMember(partyPosition + 1);
+
+                characters[partyPosition] = (newWarrior);
+                break;
         }
 
-        characters[partyPosition - 1] = gameObject.AddComponent<BaseCharacter>();
-        characters[partyPosition - 1].InitializeCharacter(name, charType, level);
-
-        maxEquipmentLoad += characters[partyPosition - 1].GetEquipmentCapacity();
-
-        print("Added " + characters[partyPosition - 1].GetName() + " to the party");
+        maxEquipmentLoad += characters[partyPosition].EquipmentCapacity;
     }
     public void RemovePartyMember(int partyPosition)
     {
-        maxEquipmentLoad -= characters[partyPosition - 1].GetEquipmentCapacity();
-        characters[partyPosition - 1] = null;
+        partyPosition = Mathf.Clamp(partyPosition, 1, maxPartySize);
+        partyPosition -= 1;
+
+        if (characters[partyPosition] == null)
+            return;
+
+        maxEquipmentLoad -= characters[partyPosition].EquipmentCapacity;
+        Destroy(characters[partyPosition]);
+        characters[partyPosition] = null;
     }
-    public void addStatusEffect(MonoBehaviour statusEffect, int partySlot)
+    public void AddStatusEffect<T>(T statusEffect)where T : BaseStatusEffect
+    {
+        for (int i = 0; i < characters.Length; i++)
+        {
+            if (characters[i] != null)
+            {
+                characters[i].AddStatusEffect(statusEffect);
+
+            }
+        } 
+    }
+    public void AddStatusEffect<T>(T statusEffect, int partySlot)where T : BaseStatusEffect
     {
         partySlot -= 1;
 
@@ -124,15 +161,10 @@ public class PlayerParty : MonoBehaviour
 		}
     }
 
-    //Getters
-    public Sprite GetIcon()
+    //Properties
+    public Sprite Icon
     {
-        return icon;
-    }
-
-    //Setters
-    public void SetIcon(Sprite newIcon)
-    {
-        icon = newIcon;
+        get { return icon; }
+        set { icon = value; }
     }
 }

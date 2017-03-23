@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rogue : MonoBehaviour
+public class Rogue : BaseCharacter
 {
+    private void Start()
+    {
+        Dexterity = (int)(Dexterity * 1.2f);
+    }
+
     void PickLock(int dexterity)
     {
         //Need to see how door/loot system works to advance

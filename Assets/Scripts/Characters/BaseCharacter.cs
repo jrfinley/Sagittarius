@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class BaseCharacter : MonoBehaviour
 {
-    //Serialized all stats for easy testing and balancing purposes
+    //Serialized almost all stats for easy testing and balancing purposes
 
     private bool dead;
+
+    [SerializeField]
+    private string characterName;
 
     [SerializeField]
     private int level,
@@ -17,12 +20,9 @@ public class BaseCharacter : MonoBehaviour
                 intelect,
                 experience,
                 equipmentCapacity;
-
-    [SerializeField]
-    private string name;
     
     [SerializeField]
-    private ECharacterType charType;
+    private ECharacterType characterType;
 
     [SerializeField]
     private Sprite icon;
@@ -35,89 +35,73 @@ public class BaseCharacter : MonoBehaviour
     public List<string> statusEffectNames = new List<string>();
     public List<MonoBehaviour> statusEffects = new List<MonoBehaviour>();
     
-    void SetCharacterType()
-    {
-        switch ((int)charType)
-        {
-            case 0:
-                Warrior classTypeA = GetComponent<Warrior>();
-                if (classTypeA == null)
-                {
-                    classTypeA = gameObject.AddComponent<Warrior>();
-                }
-                break;
-
-            case 1:
-
-                Rogue classTypeB = GetComponent<Rogue>();
-                if (classTypeB == null)
-                {
-                    classTypeB = gameObject.AddComponent<Rogue>();
-                }
-                break;
-
-            case 2:
-                Mage classTypeC = GetComponent<Mage>();
-                if (classTypeC == null)
-                {
-                    classTypeC = gameObject.AddComponent<Mage>();
-                }
-                break;
-        }
-    }
     void SetStats()
     {
         dead = false;
         maxHealth = 10 * level;
         health = maxHealth;
+        strength = 10 * level;
+        dexterity = 10 * level;
+        intelect = 10 * level;
         experience = level * 100 - 100;
-
-        switch ((int)charType)
-        {
-            case 0:
-                strength = 12 * level;
-                dexterity = 10 * level;
-                intelect = 10 * level;
-                break;
-
-            case 1:
-                strength = 10 * level;
-                dexterity = 12 * level;
-                intelect = 10 * level;
-                break;
-
-            case 2:
-                strength = 10 * level;
-                dexterity = 10 * level;
-                intelect = 12 * level;
-                break;
-        }
         equipmentCapacity = strength * 2;
     }
 
-    public void EquipItem(Item item)
+    public void InitializeCharacter(string _name, int _level)
     {
-        switch (item.ItemType)
+        Name = _name;
+        Level = _level;
+    }
+    public void EquipItem(Item item, int itemSlot)
+    {
+        switch (itemSlot)
         {
-            case EItemType.ARMOR:
+            case 1:
+                if (item.ItemType == EItemType.ARMOR)
+                    break;
+
+                if (armor != null)
+                    RemoveItem(1);
+
                 armor = item;
                 break;
 
-            case EItemType.WEAPON:
-                //Some how distinguish between left and right hand here.
-                armor = item;
+            case 2:
+                if (item.ItemType != EItemType.WEAPON)
+                    break;
+
+                if (leftHand != null)
+                    RemoveItem(2);
+
+                leftHand = item;
                 break;
 
-            case EItemType.AMULET:
+            case 3:
+                if (item.ItemType != EItemType.WEAPON)
+                    break;
+
+                if (rightHand != null)
+                    RemoveItem(3);
+
+                rightHand = item;
+                break;
+
+            default:
+                if (item.ItemType != EItemType.AMULET)
+                    break;
+
+                if (amulet != null)
+                    RemoveItem(4);
+
                 amulet = item;
                 break;
         }
 
-        maxHealth += (int)item.ItemStats.Health;
-        health += (int)item.ItemStats.Health;
-        strength += (int)item.ItemStats.Strength;
-        dexterity += (int)item.ItemStats.Dexterity;
-        intelect += (int)item.ItemStats.Intelect;
+        MaxHealth += (int)item.ItemStats.Health;
+        Health += (int)item.ItemStats.Health;
+        Strength += (int)item.ItemStats.Strength;
+        Dexterity += (int)item.ItemStats.Dexterity;
+        Intelect += (int)item.ItemStats.Intelect;
     }
     public void RemoveItem(int itemPosition)
     {
@@ -146,132 +130,86 @@ public class BaseCharacter : MonoBehaviour
                 break;
         }
 
-        maxHealth -= (int)item.ItemStats.Health;
-        health -= (int)item.ItemStats.Health;
-        strength -= (int)item.ItemStats.Strength;
-        dexterity -= (int)item.ItemStats.Dexterity;
-        intelect -= (int)item.ItemStats.Intelect;
+        MaxHealth -= (int)item.ItemStats.Health;
+        Health -= (int)item.ItemStats.Health;
+        Strength -= (int)item.ItemStats.Strength;
+        Dexterity -= (int)item.ItemStats.Dexterity;
+        Intelect -= (int)item.ItemStats.Intelect;
     }
-    public void AddStatusEffect(MonoBehaviour statusEffect)
+    public void AddStatusEffect<T>(T statusEffect) where T: BaseStatusEffect
     {
+        statusEffectNames.Add(statusEffect.name);
         statusEffects.Add(statusEffect);
+        statusEffect.InitializeStatusEffect(this);
     }
 
-    //Getters
-    public string GetName()
+    //Properties
+    public int Level
     {
-        return name;
-    }
-    public bool GetDeathStatus()
-    {
-        return dead;
-    }
-    public int GetLevel()
-    {
-        return level;
-    }
-    public int GetMaxHealth()
-    {
-        return maxHealth;
-    }
-    public int GetHealth()
-    {
-        return health;
-    }
-    public int GetStrength()
-    {
-        return strength;
-    }
-    public int GetDexterity()
-    {
-        return dexterity;
-    }
-    public int GetIntelect()
-    {
-        return intelect;
-    }
-    public int GetExperience()
-    {
-        return experience;
-    }
-    public int GetEquipmentCapacity()
-    {
-        return equipmentCapacity;
-    }
-    public ECharacterType GetCharType()
-    {
-        return charType;
-    }
-    public Sprite GetIcon()
-    {
-        return icon;
-    }
-
-    //Setters
-    public void AlterMaxHealth(int changeAmout)
-    {
-        maxHealth += changeAmout;
-    }
-    public void AlterHealth(int changeAmout)
-    {
-        health += changeAmout;
-
-        if (health > 0)
+        get { return level; }
+        set
         {
-            dead = false;
-        }
-        else
-        {
-            health = 0;
-            dead = true;
+            level = value;
+            SetStats();
         }
     }
-    public void AlterStrength(int changeAmout)
+    public int MaxHealth
     {
-        strength += changeAmout;
+        get { return maxHealth; }
+        set { maxHealth = value; }
     }
-    public void AlterDexterity(int changeAmout)
+    public int Health
     {
-        dexterity += changeAmout;
-    }
-    public void AlterIntelect(int changeAmout)
-    {
-        intelect += changeAmout;
-    }
-    public void AlterExperience(int changeAmout)
-    {
-        experience += changeAmout;
-    }
-    public void AlterEquipmentCapacity(int changeAmount)
-    {
-        equipmentCapacity += changeAmount;
-    }
-    public void LevelUp(int _level, int _maxHealth, int _health, int _strength,
-                            int _dexterity, int _intelect, int _experience)
-    {
-        level += _level;
-        maxHealth += _maxHealth;
-        health += _health;
-        strength += _strength;
-        dexterity += _dexterity;
-        intelect += _intelect;
-        experience += _experience;
-    }
-    public void SetName(string _name)
-    {
-        name = _name;
-    }
-    public void InitializeCharacter(string _name, ECharacterType _charType, int _level)
-    {
-        name = _name;
-        charType = _charType;
-        level = _level;
+        get { return level; }
+        set
+        {
+            health = value;
+            health = Mathf.Clamp(health, 0, maxHealth);
 
-        SetStats();
-        SetCharacterType();
+            if (health == 0)
+                dead = true;
+            else
+                dead = false;
+        }
     }
-    public void SetIcon(Sprite newIcon)
+    public int Strength
     {
-        icon = newIcon;
+        get { return strength; }
+        set { strength = value; }
+    }
+    public int Dexterity
+    {
+        get { return dexterity; }
+        set { dexterity = value; }
+    }
+    public int Intelect
+    {
+        get { return intelect; }
+        set { dexterity = value; }
+    }
+    public int Experience
+    {
+        get { return experience; }
+        set { experience = value; }
+    }
+    public int EquipmentCapacity
+    {
+        get { return equipmentCapacity; }
+        set { equipmentCapacity = value; }
+    }
+    public string Name
+    {
+        get { return characterName; }
+        set { characterName = value; }
+    }
+    public Sprite Icon
+    {
+        get { return icon; }
+        set { icon = value; }
+    }
+    public ECharacterType CharacterType
+    {
+        get { return characterType; }
+        set { characterType = value; }
     }
 }
