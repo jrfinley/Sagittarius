@@ -26,6 +26,7 @@ public class InventoryItemDisplay : MonoBehaviour
     public void Prime(InventoryItem item)
     {
         this.item = item;
+
         if (textName != null)
             textName.text = item.displayName;
         if (sprite != null)
