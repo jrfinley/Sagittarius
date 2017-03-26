@@ -12,14 +12,20 @@ public class AutoAddITems : MonoBehaviour
 {
     public List<InventoryItem> items = new List<InventoryItem>();
 
-    public InventoryDisplay inventory;
+    public InventoryDisplay inventoryDisplay;
+
 
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
-            inventory.Prime(items);
-            Destroy(this.gameObject);
+            foreach(InventoryItem item in items)
+            {
+                inventoryDisplay.Prime(items);
+                gameObject.SetActive(false);
+                inventoryDisplay.items.Add(item);
+            }
+
         }
     }
 }
