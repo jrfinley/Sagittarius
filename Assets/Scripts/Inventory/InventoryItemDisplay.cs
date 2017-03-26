@@ -18,7 +18,7 @@ public class InventoryItemDisplay : MonoBehaviour
     public Text scrap;
 
 
-    void Start()
+    void Awake()
     {
         if (item != null) Prime(item);
     }
