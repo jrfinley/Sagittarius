@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<ActorCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Actors>
+    <Actor Name="John">
+      <PosX>15</PosX>
+      <PosY>1</PosY>
+      <PosZ>-45</PosZ>
+      <Health>70</Health>
+      <Level>7</Level>
+    </Actor>
+  </Actors>
+</ActorCollection>

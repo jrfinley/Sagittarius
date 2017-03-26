@@ -12,27 +12,22 @@ public class InventoryDisplay : MonoBehaviour
     public List<InventoryItem> items = new List<InventoryItem>();
 
     private float carryCap;
-    private float carryTrack = 0;
+    public float currentItemCount = 0;
 
-    void Start()
+    void Awake()
     {
         playerParty = FindObjectOfType<PlayerParty>();
         carryCap = playerParty.maxEquipmentLoad;
     }
 
-public void Prime(List<InventoryItem> items)
+    public void Prime(List<InventoryItem> items)
     {
         foreach(InventoryItem item in items)
         {
-            if(carryTrack < carryCap)
-            {
-                InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(itemDisplayPrefab);
-                display.transform.SetParent(targetTransform, false);
-                display.Prime(item);
-                carryTrack += Random.Range(5, 15);
-                Debug.Log("equipLoad at: " + carryTrack);
-            }
-            
+            InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(itemDisplayPrefab);
+            display.transform.SetParent(targetTransform, false);
+            display.Prime(item);
+            currentItemCount++;
         }
     }
 }
