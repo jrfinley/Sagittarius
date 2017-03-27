@@ -156,14 +156,6 @@ public class BaseCharacter : MonoBehaviour
             }
         }
     }
-    public void OnMove()
-    {
-        OnPartyMove();
-    }
-    public void OnBattle()
-    {
-        OnBattleStart();
-    }
 
     //Properties
     public int Level
