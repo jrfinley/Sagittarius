@@ -8,6 +8,8 @@ public class CurrencyManager : Currencies
 
     private Currencies cS;
 
+    public static GameObject[] currencyObj;
+
     public int goldAmount;
 
     public int scrapAmount;
@@ -24,6 +26,8 @@ public class CurrencyManager : Currencies
         {
             maxCurrency = this.amount;
         }
+
+        currencyObj = FindObjectsOfType<GameObject>();
 
         goldText.text += goldAmount.ToString();
 
@@ -50,5 +54,10 @@ public class CurrencyManager : Currencies
 
             return currencyInstance;
         }
+    }
+
+    private static CurrencyManager CurrencyObjects
+    {
+       
     }
 }
