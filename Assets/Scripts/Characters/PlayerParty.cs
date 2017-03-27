@@ -27,6 +27,37 @@ public class PlayerParty : MonoBehaviour
         characters = new BaseCharacter[maxPartySize];
     }
 
+    /*
+    This function is just brain storming for what might work when the dungeon gen is done
+    
+    public void NewSetMoveDirection(InputDirection direction, Tile currentTile)
+    {
+        Hallways[] tileHallways = currentTile.hallways;
+
+        switch (direction)
+        {
+            case north:
+                for (int i = 0; i < tileHallways.Length; i++)
+                {
+                    if(tileHallways[i].direction == Directions.North)
+                    {
+                        movePosition = tileHallways[i].position;
+                    }
+                }
+                break;
+
+            case east:
+                    break;
+
+            case south:
+                    break;
+
+            case west:
+                    break;
+        }
+    }
+    */
+
     public void SetMoveDirection(Vector3 moveDirection)
     {
         if (transform.position != movePosition)
@@ -150,14 +181,6 @@ public class PlayerParty : MonoBehaviour
 			
 			loopCutoff += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
-        }
-
-        for (int i = 0; i < maxPartySize; i++)
-        {
-            if (characters[i] == null)
-                continue;
-
-            characters[i].OnMove();
         }
 		
 		if (loopCutoff >= 5)
