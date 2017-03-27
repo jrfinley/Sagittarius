@@ -6,15 +6,15 @@ public class Actor : MonoBehaviour
 {
     public ActorData data = new ActorData();
 
-    public BaseCharacter baseCharacter;
+    public PlayerParty[] playerParty;
 
-    private int _level;
-    private int _health;
-    private string _name;
+    private float tempHealth;
+    private float tempLevel;
+    private string tempName;
 
     void Start()
     {
-        baseCharacter = FindObjectOfType<BaseCharacter>();
+        playerParty = GetComponents<PlayerParty>();
     }
 
     public void StoreData()
@@ -23,26 +23,32 @@ public class Actor : MonoBehaviour
         data.posX = pos.x;
         data.posY = pos.y;
         data.posZ = pos.z;
-        //data.name = baseCharacter.GetName();
-        //data.health = baseCharacter.GetHealth();
-        //data.level = baseCharacter.GetLevel();   
+        foreach (PlayerParty player in playerParty)
+        {
+            data.playerParty = player.characters;
+            data.name = tempName;
+            data.level = tempLevel;
+            data.health = tempHealth;
+            //data.name = player.GetComponent<BaseCharacter>().Name;
+            //data.level = player.GetComponent<BaseCharacter>().Level;
+            //data.health = player.GetComponent<BaseCharacter>().Health;
+        }       
     }
 
     public void LoadData()
     {
         transform.position = new Vector3(data.posX, data.posY, data.posZ);
-        _name = data.name;
-        _level = (int)data.level;
-        _health = (int)data.health;
-        //SetAfterLoad();
+        foreach(PlayerParty player in playerParty)
+        {
+            player.characters = data.playerParty;
+            tempName = data.name;
+            tempLevel = data.level;
+            tempHealth = data.health;
+            //player.GetComponent<BaseCharacter>().Name = data.name;
+            //player.GetComponent<BaseCharacter>().Level = (int)data.level;
+            //player.GetComponent<BaseCharacter>().Health = (int)data.health;
+        }
     }
-
-    /*void SetAfterLoad()
-    {
-        baseCharacter.SetName(_name);
-        baseCharacter.AlterHealth(_health);
-        baseCharacter.AlterExperience(_level);
-    }*/
 
     void OnEnable()
     {
@@ -79,4 +85,7 @@ public class ActorData
 
     [XmlElement("Level")]
     public float level;
+
+    [XmlArray("PlayerParty")]
+    public BaseCharacter[] playerParty;
 }

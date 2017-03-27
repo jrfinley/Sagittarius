@@ -60,7 +60,7 @@ public class BaseCharacter : MonoBehaviour
         switch (itemSlot)
         {
             case 1:
-                if (item.ItemType == EItemType.ARMOR)
+                if (item.ItemTypes.ItemType == EItemType.ARMOR)
                     break;
 
                 if (armor != null)
@@ -70,7 +70,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 2:
-                if (item.ItemType != EItemType.WEAPON)
+                if (item.ItemTypes.ItemType != EItemType.WEAPON)
                     break;
 
                 if (leftHand != null)
@@ -80,7 +80,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 3:
-                if (item.ItemType != EItemType.WEAPON)
+                if (item.ItemTypes.ItemType != EItemType.WEAPON)
                     break;
 
                 if (rightHand != null)
@@ -90,7 +90,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             default:
-                if (item.ItemType != EItemType.AMULET)
+                if (item.ItemTypes.ItemType != EItemType.AMULET)
                     break;
 
                 if (amulet != null)
