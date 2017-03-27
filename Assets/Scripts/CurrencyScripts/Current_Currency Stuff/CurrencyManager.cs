@@ -6,8 +6,6 @@ public class CurrencyManager : Currencies
 {
     private static CurrencyManager currencyInstance = null;
 
-    private static Dictionary<Currencies, string> currencies = new Dictionary<Currencies, string>();
-
     private Currencies cS;
 
     public int goldAmount;
@@ -20,31 +18,18 @@ public class CurrencyManager : Currencies
 
     public int maxCurrency = 100000;
 
-    public CurrencyManager (int g, int s, int f, int mC)
-    {
-        this.goldAmount = g;
-
-        this.scrapAmount = s;
-
-        this.foodAmount = f;
-
-        this.maxCurrency = mC; 
-    }
-
     void Awake()
     {
-        Currencies currencies = FindObjectOfType<Currencies>();
-
         if (maxCurrency >= 100000)
         {
             maxCurrency = this.amount;
         }
 
-        goldText.text += goldAmount.ToString("40");
+        goldText.text += goldAmount.ToString();
 
-        scrapText.text += scrapAmount.ToString("35");
+        scrapText.text += scrapAmount.ToString();
 
-        foodText.text += foodAmount.ToString("25");
+        foodText.text += foodAmount.ToString();
     }
 
     private static CurrencyManager CurrencyInstance
@@ -65,36 +50,5 @@ public class CurrencyManager : Currencies
 
             return currencyInstance;
         }
-    }
-
-    struct CurrencyStruct
-    {
-        private int currencyAmount;
-
-        private int Currency
-        {
-            get
-            {
-                return currencyAmount;
-            }
-
-            set
-            {
-                if (value < 100)
-                {
-                    currencyAmount = value;
-                }
-            }
-        }
-    }
-
-    public void SumCurrencies(int currencies)
-    {
-        currencies += maxCurrency;
-    }
-
-    private static void PickUp()
-    {
-
     }
 }

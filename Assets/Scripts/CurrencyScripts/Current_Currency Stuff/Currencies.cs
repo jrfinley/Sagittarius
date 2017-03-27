@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class Currencies : MonoBehaviour
 {
@@ -16,12 +15,10 @@ public class Currencies : MonoBehaviour
 
     public enum CurrencyType
     {
-        Gold = 0,
-        Scrap = 1,
-        Food = 2
+        Gold,
+        Scrap,
+        Food
     }
-
-    private CurrencyManager cM = new CurrencyManager(40, 35, 25, 100000);
 
     void Start()
     {
@@ -46,16 +43,37 @@ public class Currencies : MonoBehaviour
 
     public static void AddCurrency(CurrencyManager add)
     {
-        
+        add.goldAmount += add.currencyManager.maxCurrency;
+
+        add.scrapAmount += add.currencyManager.maxCurrency;
+
+        add.foodAmount += add.currencyManager.maxCurrency;
     }
 
     public static void RemoveCurrency(CurrencyManager remove)
     {
+        remove.goldAmount -= remove.currencyManager.maxCurrency;
 
+        remove.scrapAmount -= remove.currencyManager.maxCurrency;
+
+        remove.foodAmount -= remove.currencyManager.maxCurrency;
     }
 
     public static void GetCurrencyType(Currencies getCurrency)
     {
+        if(getCurrency.currencyType == CurrencyType.Gold)
+        {
+            getCurrency.currencyType += getCurrency.currencyManager.goldAmount;
+        }
 
+        if (getCurrency.currencyType == CurrencyType.Scrap)
+        {
+            getCurrency.currencyType += getCurrency.currencyManager.scrapAmount;
+        }
+
+        if (getCurrency.currencyType == CurrencyType.Food)
+        {
+            getCurrency.currencyType += getCurrency.currencyManager.foodAmount;
+        }
     }
 }
