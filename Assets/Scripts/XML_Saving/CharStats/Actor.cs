@@ -23,9 +23,9 @@ public class Actor : MonoBehaviour
         data.posX = pos.x;
         data.posY = pos.y;
         data.posZ = pos.z;
-        data.name = baseCharacter.GetName();
-        data.health = baseCharacter.GetHealth();
-        data.level = baseCharacter.GetLevel();   
+        //data.name = baseCharacter.GetName();
+        //data.health = baseCharacter.GetHealth();
+        //data.level = baseCharacter.GetLevel();   
     }
 
     public void LoadData()
