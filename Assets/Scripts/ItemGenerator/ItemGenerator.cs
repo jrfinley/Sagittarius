@@ -81,7 +81,7 @@ public static class ItemGenerator {
         item.FlavorText = flavorGenerator.GenerateFlavor(item.ItemTypes.EquipmentType);
     }
     private static void GenerateIcon() {
-        item.IconName = iconGenerator.GenerateIcon(item.ItemTypes.EquipmentType);
+        item.IconName = iconGenerator.GenerateIcon(item.ItemTypes.EquipmentType, item.ItemTypes.ItemType);
     }
     private static void GenerateItemStats() {
         item.ItemStats = new ItemStats(itemStatsGenerator.GenerateItemStats(item.ItemTypes.EquipmentType, item.ItemTypes.ItemRarity, item.ItemLevel)); //new to avoid refrence
