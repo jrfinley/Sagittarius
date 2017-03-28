@@ -33,7 +33,7 @@ public class InventoryItemDisplay : MonoBehaviour
         strength.text = "STR:  " + item.strength.ToString();
         dexterity.text = "DEX:  " + item.dexterity.ToString();
         intellect.text = "INT:  " + item.intellect.ToString();
-        gold.text = "value:  " + item.gold.ToString();
+        //gold.text = "value:  " + item.gold.ToString();
         scrap.text = "scrap:  " + item.scrap.ToString();
     }
 }
