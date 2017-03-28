@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ItemCollection>
+
+<Items>
+  <Item Name = "">
+    <Item Description = "">
+      <ID></ID>
+      <Health>10</Health>
+      <Damage>100</Damage>
+      <Strength>100</Strength>
+      <Dexterity>100</Dexterity>
+      <Intellect>100</Intellect>
+      <GoldValue>100</GoldValue>
+      <ScrapValue>100</ScrapValue>
+      <ItemCount>1</ItemCount>
+    </Item>
+  </Item>
+</Items>
+</ItemCollection>

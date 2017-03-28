@@ -20,12 +20,7 @@ public class InventoryItem : MonoBehaviour
 
     private Item item;
 
-    public Item GetItem
-    {
-        get { return item; }
-    }
-
-    void Start()
+    void Awake()
     {
         item = ItemGenerator.GenerateItem();
 

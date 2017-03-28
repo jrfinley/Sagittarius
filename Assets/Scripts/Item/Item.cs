@@ -7,16 +7,9 @@ public class Item {
     private string name = string.Empty;
     private string flavorText = string.Empty;
     private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
-    private EItemType itemType = EItemType.AMULET;
-    private EEquipmentType equipmentType = EEquipmentType.AMULET;
-    private EItemEquipSlot equipSlot = EItemEquipSlot.NONE;
-    private EItemWeightClass weightClass = EItemWeightClass.NONE;
-    private EWeaponDamageType damageType = EWeaponDamageType.NONE;
-    private EWeaponRange weaponRange = EWeaponRange.NONE;
-    private EItemRarity itemRarity = EItemRarity.COMMON;
     private int itemLevel = 0;
+    private ItemTypes itemTypes;
     private ItemStats itemStats;
-
     private bool statProtection = true;
     #endregion
 
@@ -57,33 +50,6 @@ public class Item {
                 iconName = value;
         }
     }
-    public EItemType ItemType {
-        get {
-            return itemType;
-        }
-        set {
-            if(!statProtection)
-                itemType = value;
-        }
-    }
-    public EEquipmentType EquipmentType {
-        get {
-            return equipmentType;
-        }
-        set {
-            if(!statProtection)
-                equipmentType = value;
-        }
-    }
-    public EItemRarity ItemRarity {
-        get {
-            return itemRarity;
-        }
-        set {
-            if(!statProtection)
-                itemRarity = value;
-        }
-    }
     public int ItemLevel {
         get {
             return itemLevel;
@@ -91,6 +57,15 @@ public class Item {
         set {
             if(!statProtection)
                 itemLevel = value;
+        }
+    }
+    public ItemTypes ItemTypes {
+        get {
+            return itemTypes;
+        }
+        set {
+            if(!statProtection)
+                itemTypes = value;
         }
     }
     public ItemStats ItemStats {
@@ -110,17 +85,14 @@ public class Item {
     #endregion
     
     #region Constructors
-    public Item(int id, string name, string flavorText, string iconName, EItemType itemType, EEquipmentType equipmentType, EItemRarity itemRarity, int itemLevel,  
-            float weight, float health, float strength, float intelect, float dexterity, float equipLoad, float durability, float goldValue, float scrapValue) {
+    public Item(int id, string name, string flavorText, string iconName, int itemLevel, ItemTypes itemTypes, ItemStats itemStats) {
         this.id = id;
         this.name = name;
         this.flavorText = flavorText;
         this.iconName = iconName;
-        this.itemType = itemType;
-        this.equipmentType = equipmentType;
-        this.itemRarity = itemRarity;
         this.itemLevel = itemLevel;
-        this.itemStats = new ItemStats(weight, health, strength, intelect, dexterity, equipLoad, durability, goldValue, scrapValue);
+        this.itemTypes = new ItemTypes(ItemTypes);
+        this.itemStats = new ItemStats(ItemStats);
         this.statProtection = true;
     }
     public Item(Item item) {
@@ -128,10 +100,8 @@ public class Item {
         this.name = item.name;
         this.flavorText = item.flavorText;
         this.iconName = item.iconName;
-        this.itemType = item.itemType;
-        this.equipmentType = item.equipmentType;
-        this.itemRarity = item.itemRarity;
         this.itemLevel = item.itemLevel;
+        this.itemTypes = new ItemTypes(item.ItemTypes);
         this.itemStats = new ItemStats(item.ItemStats);
         this.statProtection = true;
     }
@@ -140,15 +110,14 @@ public class Item {
         this.name = item.name;
         this.flavorText = item.flavorText;
         this.iconName = item.iconName;
-        this.itemType = item.itemType;
-        this.equipmentType = item.equipmentType;
-        this.itemRarity = item.itemRarity;
         this.itemLevel = item.itemLevel;
+        this.itemTypes = new ItemTypes(item.ItemTypes);
         this.itemStats = new ItemStats(item.ItemStats);
         this.statProtection = statProtection;
     }
     public Item(bool statProtection) { //used in generating items
         this.statProtection = statProtection;
+        this.itemTypes = new ItemTypes();
         itemStats = new ItemStats();
     }
     #endregion
@@ -164,10 +133,14 @@ public class Item {
             "Name: " + name + spc +
             "Flavor Text: " + flavorText + spc + 
             "Icon Name: " + iconName + spc +
-            "Item Type: " + itemType + spc +
-            "Equipment Type: " + equipmentType + spc + 
-            "Rarity: " + itemRarity + spc + "\n" +
-            "Item Level: " + ItemLevel + spc +
+            "Item Level: " + ItemLevel + spc + "\n" +
+            "Item Type: " + itemTypes.ItemType + spc +
+            "Equipment Type: " + itemTypes.EquipmentType + spc + 
+            "Equip Slot: " + itemTypes.EquipSlot + spc +
+            "Weight Class: " + itemTypes.WeightClass + spc +
+            "Damage Type: " + itemTypes.DamageType + spc +
+            "Weapon Range: " + itemTypes.WeaponRange + spc +
+            "Rarity: " + itemTypes.ItemRarity + spc + "\n" +
             "Weight: " + itemStats.Weight + spc + 
             "Equip Load: " + itemStats.EquipLoad + spc +
             "Gold Value: " + itemStats.GoldValue + spc +
@@ -177,6 +150,10 @@ public class Item {
             "Dexterity: " + itemStats.Dexterity + spc +
             "Stat Protection: " + statProtection
             );
+    }
+    public Sprite GetSprite()
+    {
+        return Resources.Load<Sprite>(iconName);
     }
     #endregion
 }

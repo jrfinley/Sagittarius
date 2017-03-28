@@ -17,7 +17,8 @@ public class InventoryItemDisplay : MonoBehaviour
     public Text gold;
     public Text scrap;
 
-    void Start()
+
+    void Awake()
     {
         if (item != null) Prime(item);
     }
@@ -25,6 +26,7 @@ public class InventoryItemDisplay : MonoBehaviour
     public void Prime(InventoryItem item)
     {
         this.item = item;
+
         if (textName != null)
             textName.text = item.displayName;
         if (sprite != null)
@@ -33,7 +35,7 @@ public class InventoryItemDisplay : MonoBehaviour
         strength.text = "STR:  " + item.strength.ToString();
         dexterity.text = "DEX:  " + item.dexterity.ToString();
         intellect.text = "INT:  " + item.intellect.ToString();
-        //gold.text = "value:  " + item.gold.ToString();
+        gold.text = "value:  " + item.gold.ToString();
         scrap.text = "scrap:  " + item.scrap.ToString();
     }
 }

@@ -31,9 +31,10 @@ public class InventorySort : MonoBehaviour
             sb.ResetSortDirection();
         ToggleSortMode("NAME"); //Sort by name to start.
     }
-
-    public void UpdateSortedInventory()
+                                                          
+    public void UpdateSortedInventory() //Sorting functions have been commented out temporarily due to item script refactoring.
     {
+        /*
         switch(sort)
         {
             case Sort.NAME_HIGH:
@@ -68,6 +69,7 @@ public class InventorySort : MonoBehaviour
                 break;
         }
         inventory.UpdateInventory(inventory.items);
+        */
     }
 
     public void ToggleSortMode(string sortName) 
@@ -100,6 +102,6 @@ public class InventorySort : MonoBehaviour
                 Debug.LogError("Can not sort parameter: " + sortName);
                 break;
         }
-        UpdateSortedInventory();
+        UpdateSortedInventory(); 
     }
 }

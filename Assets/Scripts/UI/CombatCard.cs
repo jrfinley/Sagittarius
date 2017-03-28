@@ -15,10 +15,10 @@ public class CombatCard : MonoBehaviour
 
     public void CreateCombatCard(BaseCharacter character) //Players
     {
-        nameText.text = character.GetName();
-        levelText.text = "Level: " + character.GetLevel().ToString();
-        int charHealth = character.GetHealth();
-        int charMaxHealth = character.GetMaxHealth();
+        nameText.text = character.Name;
+        levelText.text = "Level: " + character.Level.ToString();
+        int charHealth = character.Health;
+        int charMaxHealth = character.MaxHealth;
         health = charHealth;
         maxHealth = charMaxHealth;
         healthText.text = charHealth.ToString() + "/" + charMaxHealth.ToString();
