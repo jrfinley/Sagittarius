@@ -2,8 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 
-
-public class ActorController : MonoBehaviour
+/*
+public class ActorController_xml : MonoBehaviour
 {
     public Button saveButton;
     public Button loadButton;
@@ -36,24 +36,24 @@ public class ActorController : MonoBehaviour
 
     }
 
-    public static Actor CreateActor(string path, Vector3 pos, Quaternion rotation)
+    public static Actor_xml CreateActor(string path, Vector3 pos, Quaternion rotation)
     {
         GameObject prefab = Resources.Load<GameObject>(path);
 
         GameObject go = GameObject.Instantiate(prefab, pos, rotation) as GameObject;
 
-        Actor actor = go.GetComponent<Actor>() ?? go.AddComponent<Actor>();
+        Actor_xml actor = go.GetComponent<Actor_xml>() ?? go.AddComponent<Actor_xml>();
 
         return actor;
     }
 
-    public static Actor CreateActor(ActorData data, string path, Vector3 pos, Quaternion rotation)
+    public static Actor_xml CreateActor(ActorData_xml data, string path, Vector3 pos, Quaternion rotation)
     {
         GameObject prefab = Resources.Load<GameObject>(path);
 
         GameObject go = GameObject.Instantiate(prefab, pos, rotation) as GameObject;
 
-        Actor actor = go.GetComponent<Actor>() ?? go.AddComponent<Actor>();
+        Actor_xml actor = go.GetComponent<Actor_xml>() ?? go.AddComponent<Actor_xml>();
 
         actor.data = data;
 
@@ -73,3 +73,4 @@ public class ActorController : MonoBehaviour
         loadButton.onClick.RemoveListener(delegate { SaveData.Load(dataPath); });
     }
 }
+*/
