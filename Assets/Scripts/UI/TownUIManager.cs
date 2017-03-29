@@ -7,7 +7,7 @@ using System.Collections;
 
 public class TownUIManager : MonoBehaviour
 {
-    public GameObject[] panels; //0 - Main Menu, 1 - Forge
+    public GameObject[] panels; //0 - Main Menu, 1 - Forge, 2 - Character Training, 3 - Adjust Party, 4 - Shop, 5 - Inventory, 6 - Options
 
     public void LoadScene(string sceneName)
     {
@@ -22,16 +22,9 @@ public class TownUIManager : MonoBehaviour
         }
     }
 
-    public void ShowMainMenuPanel()
+    public void ShowPanel(int index)
     {
         CloseAllPanels();
-        panels[0].SetActive(true);
+        panels[index].SetActive(true);
     }
-
-    public void ShowForgePanel()
-    {
-        CloseAllPanels();
-        panels[1].SetActive(true);
-    }
-
 }

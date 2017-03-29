@@ -14,6 +14,12 @@ public class AutoAddITems : MonoBehaviour
 
     public InventoryDisplay inventoryDisplay;
 
+    private Actor actor;
+
+    void Start()
+    {
+        actor = FindObjectOfType<Actor>();
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -21,9 +27,10 @@ public class AutoAddITems : MonoBehaviour
         {
             foreach(InventoryItem item in items)
             {
-                inventoryDisplay.Prime(items);
                 gameObject.SetActive(false);
+                inventoryDisplay.Prime(items);
                 inventoryDisplay.items.Add(item);
+                actor.StoreData();
             }
 
         }

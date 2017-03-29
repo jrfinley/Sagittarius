@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Xml.Serialization;
-
-public class Actor : MonoBehaviour
+/*
+public class Actor_xml : MonoBehaviour
 {
-    public ActorData data = new ActorData();
+    public ActorData_xml data = new ActorData_xml();
 
     public PlayerParty[] playerParty;
 
@@ -52,21 +52,21 @@ public class Actor : MonoBehaviour
 
     void OnEnable()
     {
-        SaveData.OnLoaded += delegate { LoadData(); };
-        SaveData.OnBeforeSave += delegate { StoreData(); };
-        SaveData.OnBeforeSave += delegate { SaveData.AddActorData(data); };
+        SaveData_xml.OnLoaded += delegate { LoadData(); };
+        SaveData_xml.OnBeforeSave += delegate { StoreData(); };
+        SaveData_xml.OnBeforeSave += delegate { SaveData_xml.AddActorData(data); };
 
     }
 
     void OnDisable()
     {
-        SaveData.OnLoaded -= delegate { LoadData(); };
-        SaveData.OnBeforeSave -= delegate { StoreData(); };
-        SaveData.OnBeforeSave -= delegate { SaveData.AddActorData(data); };
+        SaveData_xml.OnLoaded -= delegate { LoadData(); };
+        SaveData_xml.OnBeforeSave -= delegate { StoreData(); };
+        SaveData_xml.OnBeforeSave -= delegate { SaveData_xml.AddActorData(data); };
     }
 }
 
-public class ActorData
+public class ActorData_xml
 {
     [XmlAttribute("Name")]
     public string name;
@@ -89,3 +89,4 @@ public class ActorData
     [XmlArray("PlayerParty")]
     public BaseCharacter[] playerParty;
 }
+*/

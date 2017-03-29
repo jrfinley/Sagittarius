@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Xml.Serialization;
 using System.IO;
-
-public class SaveData
+/*
+public class SaveData_xml
 {
-    public static ActorContainer actorContainer = new ActorContainer();
+    public static ActorContainer_xml actorContainer = new ActorContainer_xml();
 
     public delegate void SerializeAction();
     public static event SerializeAction OnLoaded;
@@ -17,7 +17,7 @@ public class SaveData
 
         foreach(ActorData data in actorContainer.actors)
         {
-            ActorController.CreateActor(data, ActorController.playerPath, 
+            ActorController_xml.CreateActor(data, ActorController_xml.playerPath, 
                 new Vector3(data.posX, data.posY, data.posZ), Quaternion.identity);
 
         }
@@ -25,7 +25,7 @@ public class SaveData
         OnLoaded();
     }
 
-    public static void Save(string path, ActorContainer actors)
+    public static void Save(string path, ActorContainer_xml actors)
     {
         OnBeforeSave();
 
@@ -45,22 +45,22 @@ public class SaveData
         actorContainer.actors.Clear();
     }
 
-    private static ActorContainer LoadActors(string path)
+    private static ActorContainer_xml LoadActors(string path)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(ActorContainer));
+        XmlSerializer serializer = new XmlSerializer(typeof(ActorContainer_xml));
 
         FileStream stream = new FileStream(path, FileMode.Open);
 
-        ActorContainer actors = serializer.Deserialize(stream) as ActorContainer; 
+        ActorContainer_xml actors = serializer.Deserialize(stream) as ActorContainer_xml; 
 
         stream.Close();
 
         return actors;
     }
 
-    private static void SaveActors(string path, ActorContainer actors)
+    private static void SaveActors(string path, ActorContainer_xml actors)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(ActorContainer));
+        XmlSerializer serializer = new XmlSerializer(typeof(ActorContainer_xml));
 
         FileStream stream = new FileStream(path, FileMode.Truncate);
 
@@ -69,3 +69,4 @@ public class SaveData
         stream.Close();
     }
 }
+*/
