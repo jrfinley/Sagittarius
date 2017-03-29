@@ -120,8 +120,6 @@ public class UIManager : MonoBehaviour
         return dialogueBox.ShowDialogueBox(dialogue);
     }
 
-
-
     void HideAllContentPanels()
     {
         foreach (GameObject p in contentPanels)
