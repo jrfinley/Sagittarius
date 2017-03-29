@@ -159,6 +159,21 @@ public class PlayerParty : MonoBehaviour
 
         characters[partySlot].AddStatusEffect(statusEffect);
     }
+    public void RemoveStatusEffect(EBuffType typeToRemove)
+    {
+        for (int i = 0; i < characters.Length; i++)
+        {
+            if (characters[i] != null)
+                characters[i].RemoveStatusEffect(typeToRemove);
+        }
+    }
+    public void RemoveStatusEffect(EBuffType typeToRemove, int partySlot)
+    {
+        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
+        partySlot -= 1;
+
+        characters[partySlot].RemoveStatusEffect(typeToRemove);
+    }
 
     IEnumerator MovePlayer(Vector3 moveDestination)
     {
