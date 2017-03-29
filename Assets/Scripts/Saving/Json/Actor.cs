@@ -33,11 +33,11 @@ public class Actor : MonoBehaviour
         inventoryItem = FindObjectsOfType<InventoryItem>();
     }
 
-    void StoreData()
+    public void StoreData()
     {
         data.items = inventoryDisplay.items;
 
-        foreach(InventoryItem inventoryItem in inventoryDisplay.items)
+        foreach(InventoryItem inventoryItem in data.items)
         {
             data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
             data.targetTransform = targetTransform;
