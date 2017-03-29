@@ -2,6 +2,7 @@
 //Aidan Lawrence
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum Sort
 {
@@ -22,11 +23,10 @@ public class InventorySort : MonoBehaviour
 {
     public Sort sort = Sort.NAME_LOW;
     public SortButton[] sortButtons;
-    Inventory inventory;
+    public InventoryDisplay inventory;
     
     void Start()
     {
-        inventory = GetComponent<Inventory>();
         foreach (SortButton sb in sortButtons)
             sb.ResetSortDirection();
         ToggleSortMode("NAME"); //Sort by name to start.
@@ -34,42 +34,41 @@ public class InventorySort : MonoBehaviour
                                                           
     public void UpdateSortedInventory() //Sorting functions have been commented out temporarily due to item script refactoring.
     {
-        /*
-        switch(sort)
+        List<InventoryItem> items = inventory.items;
+        switch (sort)
         {
             case Sort.NAME_HIGH:
-                inventory.items.Sort((x, y) => x.GetItem.Name.CompareTo(y.GetItem.Name));
+                inventory.items.Sort((x, y) => x.displayName.CompareTo(y.displayName));
                 break;
             case Sort.NAME_LOW:
-                inventory.items.Sort((x, y) => y.GetItem.Name.CompareTo(x.GetItem.Name));
+                inventory.items.Sort((x, y) => y.displayName.CompareTo(x.displayName));
                 break;
             case Sort.STR_HIGH:
-                inventory.items.Sort((x, y) => x.GetItem.ItemStats.Strength.CompareTo(y.GetItem.ItemStats.Strength));
+                inventory.items.Sort((x, y) => x.strength.CompareTo(y.strength));
                 break;
             case Sort.STR_LOW:
-                inventory.items.Sort((x, y) => y.GetItem.ItemStats.Strength.CompareTo(x.GetItem.ItemStats.Strength));
+                inventory.items.Sort((x, y) => y.strength.CompareTo(x.strength));
                 break;
             case Sort.DEX_HIGH:
-                inventory.items.Sort((x, y) => x.GetItem.ItemStats.Dexterity.CompareTo(y.GetItem.ItemStats.Dexterity));
+                inventory.items.Sort((x, y) => x.dexterity.CompareTo(y.dexterity));
                 break;
             case Sort.DEX_LOW:
-                inventory.items.Sort((x, y) => y.GetItem.ItemStats.Dexterity.CompareTo(x.GetItem.ItemStats.Dexterity));
+                inventory.items.Sort((x, y) => y.dexterity.CompareTo(x.dexterity));
                 break;
             case Sort.INT_HIGH:
-                inventory.items.Sort((x, y) => x.GetItem.ItemStats.Intelect.CompareTo(y.GetItem.ItemStats.Intelect));
+                inventory.items.Sort((x, y) => x.intellect.CompareTo(y.intellect));
                 break;
             case Sort.INT_LOW:
-                inventory.items.Sort((x, y) => y.GetItem.ItemStats.Intelect.CompareTo(x.GetItem.ItemStats.Intelect));
+                inventory.items.Sort((x, y) => y.intellect.CompareTo(x.intellect));
                 break;
             case Sort.VALUE_HIGH:
-                inventory.items.Sort((x, y) => x.GetItem.ItemStats.GoldValue.CompareTo(y.GetItem.ItemStats.GoldValue));
+                inventory.items.Sort((x, y) => x.gold.CompareTo(y.gold));
                 break;
             case Sort.VALUE_LOW:
-                inventory.items.Sort((x, y) => y.GetItem.ItemStats.GoldValue.CompareTo(x.GetItem.ItemStats.GoldValue));
+                inventory.items.Sort((x, y) => y.gold.CompareTo(x.gold));
                 break;
         }
-        inventory.UpdateInventory(inventory.items);
-        */
+        inventory.Prime(items);
     }
 
     public void ToggleSortMode(string sortName) 
