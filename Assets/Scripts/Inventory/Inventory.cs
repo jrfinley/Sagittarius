@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour
 
     public InventoryDisplay inventory;
 
-    void Start()
+    void Awake()
     {
         inventory.Prime(items);
     }

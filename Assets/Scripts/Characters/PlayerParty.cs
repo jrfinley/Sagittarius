@@ -30,30 +30,30 @@ public class PlayerParty : MonoBehaviour
     /*
     This function is just brain storming for what might work when the dungeon gen is done
     
-    public void NewSetMoveDirection(InputDirection direction, Tile currentTile)
+    public void NewSetMoveDirection(InputDirection inputDirection, Tile currentTile)
     {
-        Hallways[] tileHallways = currentTile.hallways;
+        Vector3 oldPosition = transform.position;
+        Hallway[] tileHallways = currentTile.hallways;
+        Hallway selectedHallway;
 
-        switch (direction)
+        for (int i = 0; i < tileHallways.Length; i++)
         {
-            case north:
-                for (int i = 0; i < tileHallways.Length; i++)
-                {
-                    if(tileHallways[i].direction == Directions.North)
-                    {
-                        movePosition = tileHallways[i].position;
-                    }
-                }
-                break;
+            if (tileHallways[i].direction == inputDirection)
+            {
+                selectedHallway = tileHallways[i];
+                movePosition = selectedHallway.transform.position;
+                StartCoroutine(MovePlayer());
+            }
+        }
 
-            case east:
-                    break;
-
-            case south:
-                    break;
-
-            case west:
-                    break;
+        if (selectedHallway.hasBlocker)
+        {
+            //Do stat check stuff.
+            if(failedStatCheck)
+            {
+                movePosition = oldPosition;
+                StartCoroutine(MovePlayer());
+            }
         }
     }
     */
@@ -90,7 +90,7 @@ public class PlayerParty : MonoBehaviour
             return;
         }
 
-        StartCoroutine(MovePlayer(moveDirection));
+        StartCoroutine(MovePlayer());
     }
     public void AddPartyMember(int partyPosition, string name, ECharacterType characterType, int level)
     {
@@ -175,7 +175,7 @@ public class PlayerParty : MonoBehaviour
         characters[partySlot].RemoveStatusEffect(typeToRemove);
     }
 
-    IEnumerator MovePlayer(Vector3 moveDestination)
+    IEnumerator MovePlayer()
     {
 		float loopCutoff = 0;
 		Vector3 oldPosition = transform.position;

@@ -6,16 +6,15 @@ public static class ItemGenerator {
     private static Item item = new Item(false);
     private static NameGenerator nameGenerator = new NameGenerator();
     private static FlavorTextGenerator flavorGenerator = new FlavorTextGenerator();
-    private static EquipmentTypeGenerator equipmentGenerator = new EquipmentTypeGenerator();
+    private static ItemTypesGenerator itemTypesGenerator = new ItemTypesGenerator();
     private static ItemStatsGenerator itemStatsGenerator = new ItemStatsGenerator();
     private static IconGenerator iconGenerator = new IconGenerator();
     #endregion
     
     public static Item GenerateItem() {
         GenerateItemID();
+        GenerateItemTypes();
         GenerateItemRarity();
-        GenerateItemType();
-        GenereteEquipmentType();
         GenerateItemLevel();
         GenerateItemName();
         GenerateFlavorText();
@@ -25,9 +24,8 @@ public static class ItemGenerator {
     }
     private static Item GenerateItemDrop(int monsterLevel, int dungeonLevel) {
         GenerateItemID();
+        GenerateItemTypes();
         GenerateItemRarity();
-        GenerateItemType();
-        GenereteEquipmentType();
         GenerateItemLevel(monsterLevel, dungeonLevel);
         GenerateItemName();
         GenerateFlavorText();
@@ -38,7 +36,7 @@ public static class ItemGenerator {
     public static Item ReforgeItem(Item itemToReforge) {
         item = new Item(itemToReforge, false);
         GenerateItemID();
-        item.ItemRarity = (EItemRarity)(Mathf.Min((int)item.ItemRarity + 1, 3));
+        item.ItemTypes.ItemRarity = (EItemRarity)(Mathf.Min((int)item.ItemTypes.ItemRarity + 1, 3));
         GenerateItemName();
         GenerateFlavorText();
         GenerateIcon();
@@ -49,7 +47,7 @@ public static class ItemGenerator {
     { 
         item = new Item(itemToReforge, false);
         GenerateItemID();
-        item.ItemRarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.ItemRarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
+        item.ItemTypes.ItemRarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.ItemTypes.ItemRarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
         GenerateItemName();
         GenerateFlavorText();
         GenerateIcon();
@@ -65,13 +63,10 @@ public static class ItemGenerator {
         ItemIDDatabase.Instance.AddID(item.ID);
     }
     private static void GenerateItemRarity() {
-        item.ItemRarity = (EItemRarity)Random.Range(0, 4);
+        item.ItemTypes.ItemRarity = (EItemRarity)Random.Range(0, 4);
     }
-    private static void GenerateItemType() {
-        item.ItemType = (EItemType)Random.Range(0, 4);
-    }
-    private static void GenereteEquipmentType() {
-        item.EquipmentType = equipmentGenerator.GenereteEquipmentType(item.ItemType);
+    private static void GenerateItemTypes() {
+        item.ItemTypes = new ItemTypes(itemTypesGenerator.GenerateItemTypes());
     }
     private static void GenerateItemLevel() {
         item.ItemLevel = Random.Range((int)1, 100);
@@ -80,15 +75,15 @@ public static class ItemGenerator {
         item.ItemLevel = Random.Range((int)dungeonLevel * 5, monsterLevel + dungeonLevel * 5);
     }
     private static void GenerateItemName() {
-        item.Name = nameGenerator.GenerateName(item.EquipmentType, item.ItemRarity);
+        item.Name = nameGenerator.GenerateName(item.ItemTypes.EquipmentType, item.ItemTypes.ItemRarity);
     }
     private static void GenerateFlavorText() {
-        item.FlavorText = flavorGenerator.GenerateFlavor(item.EquipmentType);
+        item.FlavorText = flavorGenerator.GenerateFlavor(item.ItemTypes.EquipmentType);
     }
     private static void GenerateIcon() {
-        item.IconName = iconGenerator.GenerateIcon(item.EquipmentType);
+        item.IconName = iconGenerator.GenerateIcon(item.ItemTypes.EquipmentType);
     }
     private static void GenerateItemStats() {
-        item.ItemStats = new ItemStats(itemStatsGenerator.GenerateItemStats(item.EquipmentType, item.ItemRarity, item.ItemLevel)); //new to avoid refrence
+        item.ItemStats = new ItemStats(itemStatsGenerator.GenerateItemStats(item.ItemTypes.EquipmentType, item.ItemTypes.ItemRarity, item.ItemLevel)); //new to avoid refrence
     }
 }

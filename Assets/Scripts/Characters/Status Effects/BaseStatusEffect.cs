@@ -28,7 +28,7 @@ public class BaseStatusEffect : MonoBehaviour
             baseCharacter.ExpMultipier = experienceMultiplier;
 
         if (expirationType == EBuffExpiration.TIME_BASED)
-            StartCoroutine(Expire());
+            StartCoroutine(TimeExpire());
     }
     public void RemoveStatusEffect()
     {
@@ -42,8 +42,15 @@ public class BaseStatusEffect : MonoBehaviour
         baseCharacter.statusEffectNames.Remove(statusName);
         Destroy(this);
     }
+    public void CountDownExpiration()
+    {
+        expirationTime--;
 
-    IEnumerator Expire()
+        if (expirationTime <= 0)
+            RemoveStatusEffect();
+    }
+
+    IEnumerator TimeExpire()
     {
         yield return new WaitForSeconds(expirationTime);
 
