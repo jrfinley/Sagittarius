@@ -5,91 +5,150 @@ public class MonsterPartyManager : MonoBehaviour
 {
     public Vector3 position;
 
-    private Rigidbody rigidBody = null;
+    private Rigidbody _rigidBody = null;
 
-    [SerializeField] private int partyNum = 0;
-    [SerializeField] private int monsterLevel = 0;
+    [SerializeField] private int _partyNum = 0;
+    [SerializeField] private int _itemLevel = 0;
 
-    private int minMonsters = 0;
-    private int maxMonsters = 5;
-    private int characterLevel = 0;
+    private int _minMonsters = 2;
+    private int _maxMonsters = 6;
+    private int _characterLevel = 0;
+    private int _levelModifier = 0;
 
-    private float speed;
+    private float _speed;
 
-    [SerializeField] private BaseMonster[] monsterParty;
-    private PlayerParty playerParty = null;
-    private BaseCharacter player = null;
+    [SerializeField] private BaseMonster[] _monsterParty;
+    [SerializeField]private int[] _levelArray;
+    [SerializeField]private EMonsterType[] _typeArray;
+    private PlayerParty _playerParty = null;
+    private BaseCharacter _player = null;
 
-    public GameObject playerObject;
+    private GameObject _playerObject;
+    private GameObject _room;
 
 	void Start ()
     {
         position = transform.position;
-        rigidBody = transform.GetComponent<Rigidbody>();
-        playerObject = GameObject.FindGameObjectWithTag("Player");
-        playerParty = playerObject.GetComponent<PlayerParty>();
-        player = playerObject.GetComponent<BaseCharacter>();
-        characterLevel = player.GetLevel();
+        _rigidBody = transform.GetComponent<Rigidbody>();
+        _playerObject = GameObject.FindGameObjectWithTag("Player");
+        _playerParty = _playerObject.GetComponent<PlayerParty>();
+        _player = _playerObject.GetComponent<BaseCharacter>();
+        _characterLevel = _player.GetLevel();
 
         InitializeParty();
     }
 	
 	void Update ()
     {
-	
-	}
+        //if (_room == _player._currentRoom)
+        //{
+        //    Encounter();
+        //}
+    }
 
     //to be changed
-    IEnumerator Move(Vector3 Destination)
-    {
-        float loopCutoff = 0;
-        Vector3 oldposition = transform.position;
-
-        while (transform.position != position && loopCutoff < 5)
-        {
-            Vector3 moveDir = (position - transform.position);
-
-            if (moveDir.magnitude > 0.2f)
-            {
-                moveDir = moveDir.normalized * speed * Time.fixedDeltaTime;
-                rigidBody.MovePosition(rigidBody.position + moveDir);
-            }
-            else
-            {
-                transform.position = position;
-            }
-
-            loopCutoff += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
-
-        if (loopCutoff >= 5)
-        {
-            transform.position = oldposition;
-            Debug.LogError("Move player while loop reached cut off time");
-        }
-    }
+    //IEnumerator Move(Vector3 Destination)
+    //{
+        
+    //}
 
     private void InitializeParty()
     {
-        partyNum = Random.Range(2, maxMonsters);
+        _partyNum = Random.Range(_minMonsters, _maxMonsters);
 
-        int minLevel;
-        minLevel = characterLevel - 2;
-        if (minLevel <= 0)
-        {
-            minLevel = 1;
-        }
-        monsterLevel = Random.Range(minLevel, characterLevel + 2);
+        _monsterParty = new BaseMonster[_partyNum];
+        _levelArray = new int[_partyNum];
+        _typeArray = new EMonsterType[_partyNum];
 
-        monsterParty = new BaseMonster[partyNum]; 
-        for (int i = 0; i < partyNum; i++)
+        for (int i = 0; i < _partyNum; i++)
         {
-            monsterParty[i] = gameObject.AddComponent<BaseMonster>();
-            monsterParty[i].SetLevel(monsterLevel);
+            _levelArray[i] = LevelCalc();
+            _typeArray[i] = TypeCalc(_partyNum);
+            
+            _monsterParty[i] = gameObject.AddComponent<BaseMonster>();
+            _monsterParty[i].SetLevel(_levelArray[i]);
+            _monsterParty[i].SetType(_typeArray[i]);
         }
+        //_room = currentroom;
     }
+
+    private void CurrentRoom()
+    {
+        /*
+            
+        */
+    }
+
+    private void Encounter()
+    {
+        /*
+            pass payload
+            load battle scene
+        */
+    }
+    private int LevelCalc()
+    {
+        int level;
+        level = Random.Range(_itemLevel - _levelModifier, _itemLevel + _levelModifier);
+
+        if (level <= 0)
+        {
+            level = 1;
+        }
+
+        return level; 
+    }
+    private EMonsterType TypeCalc(int partyNum)
+    {
+        EMonsterType type = EMonsterType.E_TEMP_ONE;
+        int size = _maxMonsters/ partyNum;
+        int totalSize = _maxMonsters;
+
+        if (size == 3)
+        {
+            size = 4;
+        }
+        
+
+        if (size > totalSize)
+        {
+            size = totalSize;
+        }
+        totalSize -= size;
+        
+        Debug.Log(totalSize);
+
+
+        switch (size)
+        {
+            case 1:
+                type = EMonsterType.E_TEMP_ONE; // type/size one
+                break;
+
+            case 2:
+                type = EMonsterType.E_TEMP_TWO; // type/size two
+                break;
+
+            case 4:
+                type = EMonsterType.E_TEMP_THREE; // type/size three (size four)
+                break;
+        }
+
+        return type;
+
+    }
+
+    public void SetItemLevel(int level)
+    {
+        _itemLevel = level;
+    }
+    public void SetLevelModifier(int mod)
+    {
+        _levelModifier = mod;
+    }
+
+    
 }
 
-//Create an enemy-party system that the world generator can apply to specific rooms.Should a player encounter a room with an enemy party inside, a combat sequence will be initiated.
+//Should a player encounter a room with an enemy party inside, a combat sequence will be initiated.
 //Allow the enemy parties to move around the dungeon. This enemy movement should not happen automatically, only when prompted by specific player actions (such overt actions).

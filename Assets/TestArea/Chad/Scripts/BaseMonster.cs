@@ -54,11 +54,6 @@ public class BaseMonster : MonoBehaviour
         health = maxHealth;
     }
 
-    void Defeat()
-    {
-        //Monsters will have item drop tables that will have the chance randomly drop loot on death based on the type of monster and its level.
-    }
-
     //Getters
     public int GetLevel()
     {
@@ -79,6 +74,10 @@ public class BaseMonster : MonoBehaviour
     public int GetDefense()
     {
         return defense;
+    }
+    public EMonsterType GetMonsterType()
+    {
+        return monsterType;
     }
 
     //Setters
