@@ -25,6 +25,7 @@ public class PlayerParty : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         characters = new BaseCharacter[maxPartySize];
+        movePosition = transform.position;
     }
 
     /*
