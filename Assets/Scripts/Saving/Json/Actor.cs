@@ -7,15 +7,7 @@ public class Actor : MonoBehaviour
 {
     public ActorData data = new ActorData();
 
-    public string itemName;
-    [Multiline]
-    public string desc;
-    public int strength;
-    public int intellect;
-    public int dexterity;
-    public int gold;
-    public int scrap;
-    public int id;
+    //public int id;
 
     public InventoryItemDisplay inventoryItemDisplayPrefab;
 
@@ -24,60 +16,48 @@ public class Actor : MonoBehaviour
 
     public Vector3 pos;
 
-    public Transform targetTransform;
+    public static Transform targetTransform;
+
+    public List<int> ids = new List<int>();
+
+    public static PlayerParty playerParty;
 
 
     void Start()
     {
         inventoryDisplay = GetComponent<InventoryDisplay>();
-        inventoryItem = FindObjectsOfType<InventoryItem>();
+        inventoryItem = FindObjectsOfType<InventoryItem>();       
     }
 
     public void StoreData()
     {
         data.items = inventoryDisplay.items;
 
-        foreach(InventoryItem inventoryItem in data.items)
+        foreach(InventoryItem inventoryItem in inventoryDisplay.items)
         {
-            data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
-            data.targetTransform = targetTransform;
-            data.itemName = inventoryItem.name;
-            data.desc = inventoryItem.desc;
-            data.strength = inventoryItem.strength;
-            data.intellect = inventoryItem.intellect;
-            data.dexterity = inventoryItem.dexterity;
-            data.gold = inventoryItem.gold;
-            data.scrap = inventoryItem.scrap;
-            data.id = inventoryItem.id;
-
-            //data.items.Add(inventoryItem);
-            
+            //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
+            //data.targetTransform = targetTransform;
+            //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
+            //data.targetTransform = targetTransform;
+            data.ids.Add(inventoryItem.id);
+            Debug.Log("inventoryItemID = " + inventoryItem.id);
         }
     }
 
     void LoadData()
     {
         inventoryDisplay.items = data.items;
+        //ids = data.ids;
 
-        foreach (InventoryItem inventoryItem in data.items)
+        foreach (int id in data.ids)
         {
-            inventoryItemDisplayPrefab = data.inventoryItemDisplayPrefab;
-            InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(data.inventoryItemDisplayPrefab);
-            targetTransform = data.targetTransform;
-            display.transform.SetParent(targetTransform, false);
-            display.Prime(inventoryItem);
-
-            inventoryItem.name = data.itemName;
-            inventoryItem.desc = data.desc;
-            inventoryItem.strength = data.strength;
-            inventoryItem.intellect = data.intellect;
-            inventoryItem.dexterity = data.dexterity;
-            inventoryItem.gold = data.gold;
-            inventoryItem.scrap = data.scrap;
-            inventoryItem.id = data.id;
-
-            //inventoryDisplay.items.Add(inventoryItem);
-
+            //inventoryItemDisplayPrefab = data.inventoryItemDisplayPrefab;
+            //InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(data.inventoryItemDisplayPrefab);
+            //targetTransform = data.targetTransform;
+            //display.transform.SetParent(targetTransform, false);
+            //display.Prime(inventoryItem);
+            ids.Add(id);
+            Debug.Log("inventoryItemID = " + id.ToString());
         }
     }
 
@@ -103,17 +83,7 @@ public class Actor : MonoBehaviour
 [Serializable]
 public class ActorData
 {
-    public string itemName;
-
-    [Multiline]
-    public string desc;
-
-    public int strength;
-    public int intellect;
-    public int dexterity;
-    public int gold;
-    public int scrap;
-    public int id;
+    public List<int> ids = new List<int>();
 
     public InventoryItemDisplay inventoryItemDisplayPrefab;
 

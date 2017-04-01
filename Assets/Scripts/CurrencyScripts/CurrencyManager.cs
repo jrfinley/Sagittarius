@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
-
+/*
 public class CurrencyManager : MonoBehaviour
 {
 	public int gold = 100;
@@ -190,4 +190,4 @@ public class CurrencyManager : MonoBehaviour
 			}
 		}
 	}
-}
+}*/
