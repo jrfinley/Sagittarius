@@ -20,17 +20,29 @@ public class Actor : MonoBehaviour
 
     public static PlayerParty playerParty;
 
+    public static CurrencyManager currencyManager;
+
+    public int gold;
+    public int scrap;
+    public int food;
+
 
     void Start()
     {
         playerParty = FindObjectOfType<PlayerParty>();
+        currencyManager = FindObjectOfType<CurrencyManager>();
 
-        inventoryDisplay = GetComponent<InventoryDisplay>();
+        inventoryDisplay = FindObjectOfType<InventoryDisplay>();
         inventoryItem = FindObjectsOfType<InventoryItem>();
     }
 
     public void StoreData()
     {
+        data.food = currencyManager.food;
+        data.scrap = currencyManager.scrap;
+        data.gold = currencyManager.gold;
+
+
         //stores item/ inventory info
         data.items = inventoryDisplay.items;
 
@@ -58,6 +70,16 @@ public class Actor : MonoBehaviour
 
     void LoadData()
     {
+        if (this.gameObject.GetComponent<DestroyOnLoad>())
+        {
+            Destroy(this.gameObject);
+        }
+
+        currencyManager.gold = data.gold;
+        currencyManager.scrap = data.scrap;
+        currencyManager.food = data.food;
+
+
         //loads item/ inventory info
         inventoryDisplay.items = data.items;
 
@@ -148,4 +170,10 @@ public class ActorData
     public BaseCharacter[] characters;
 
     public PlayerParty playerParty;
+
+    public static CurrencyManager currencyManager;
+
+    public int gold;
+    public int scrap;
+    public int food;
 }
