@@ -8,13 +8,14 @@ public class GameController : MonoBehaviour
     public Button loadButton;
 
     public GameObject playerPrefab;
-    public const string playerPath = "Prefabs/Player";
+    public const string playerPath = "Prefabs/Loader";
 
     private static string dataPath = string.Empty;
 
     void Awake()
     {
         dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");//path combiner combines strings we put in with backslash, last bit is file name
+        Debug.Log(dataPath);
     }
 
     public static Actor CreateActor(string path, Vector3 pos, Quaternion rotation)
