@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using System;
 
 public class CurrencyManager : MonoBehaviour
@@ -12,6 +13,12 @@ public class CurrencyManager : MonoBehaviour
 	
 	public int currencyBalance = 99999;
 
+    public Text goldText;
+
+    public Text scrapText;
+
+    public Text foodText;
+
     private CurrencyType currencyType = CurrencyType.Gold;
 
     public enum CurrencyType 
@@ -23,6 +30,12 @@ public class CurrencyManager : MonoBehaviour
 
     void Start()
 	{
+        goldText = GetComponent<Text>();
+
+        scrapText = GetComponent<Text>();
+
+        foodText = GetComponent<Text>();
+
         currencyType = CurrencyType.Gold;
         
 		currencyBalance = 99999;
@@ -38,38 +51,99 @@ public class CurrencyManager : MonoBehaviour
 	{
 		if(currencyType == CurrencyType.Gold)
 		{
-			Add(gold);
+            // Add(gold);
+
+            goldText.text = currencyBalance.ToString();
 
             gold = this.currencyBalance;
 		}
         else
         {
-            Remove(gold);
+           // Remove(gold);
         }
 		
 		if(currencyType == CurrencyType.Scrap)
 		{
-			Add(scrap);
+            // Add(scrap);
+
+            scrapText.text = currencyBalance.ToString();
 
             scrap = this.currencyBalance;
 		}
         else
         {
-            Remove(scrap);
+          //  Remove(scrap);
         }
 		
 		if(currencyType == CurrencyType.Food)
 		{
-			Add(food);
+            // Add(food);
+
+            foodText.text = currencyBalance.ToString();
 
             food = this.currencyBalance;
 		}
         else
         {
-            Remove(food);
+           // Remove(food);
         }
 	}
+
+    public void AddCurrency(int add)
+    {
+        if(currencyType == CurrencyType.Gold)
+        {
+            goldText.text += gold;
+
+            add = this.gold /= currencyBalance;
+        }
+
+        if (currencyType == CurrencyType.Scrap)
+        {
+            scrapText.text += scrap;
+
+            add = this.scrap /= currencyBalance;
+        }
+
+        if (currencyType == CurrencyType.Food)
+        {
+            goldText.text += food;
+
+            add = this.food /= currencyBalance;
+        }
+    }
+
+    public void RemoveCurrency(int remove)
+    {
+        if (currencyType == CurrencyType.Gold)
+        {
+            remove -= currencyBalance;
+
+            goldText.text = remove.ToString();
+
+            remove = this.gold / currencyBalance;
+        }
+
+        if (currencyType == CurrencyType.Scrap)
+        {
+            remove -= currencyBalance;
+
+            scrapText.text = remove.ToString();
+
+            remove = this.scrap / currencyBalance;
+        }
+
+        if (currencyType == CurrencyType.Food)
+        {
+            remove -= currencyBalance;
+
+            foodText.text = remove.ToString();
+
+            remove = this.food / currencyBalance;
+        }
+    }
 	
+    /*
 	public void Add(int amount)
 	{
 	    amount = 10;
@@ -190,4 +264,5 @@ public class CurrencyManager : MonoBehaviour
 			}
 		}
 	}
+    */
 }
