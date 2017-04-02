@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IMGoldValue : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+public class IMGoldValue : AItemModifyer {
+    public IMGoldValue() {
+        Initialize(EItemModifyer.GOLD_VALUE,
+            new ItemStats(0, 0, 0, 0, 0, 0, 0, 1, 0),
+            new string[] { "Gold Plated", "Golden", "Extravagent" },
+            new string[] { "of Wealth", "of the Wealthy", "of Gold" }
+            );
+    }
 }

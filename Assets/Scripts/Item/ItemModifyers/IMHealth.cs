@@ -6,7 +6,7 @@ public class IMHealth : AItemModifyer {
         Initialize(EItemModifyer.HEALTH,
             new ItemStats(0, 1, 0, 0, 0, 0, 0, 0, 0),
             new string[] { "Sturdy", "Hardy", "Tough" },
-            new string[] { "of Sturdyness", "of Swoleness", "of Ripped Abs" }
+            new string[] { "of Sturdyness", "of Good Health" }
             );
     }
 }

@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IMEquipLoad : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+public class IMEquipLoad : AItemModifyer {
+    public IMEquipLoad() {
+        Initialize(EItemModifyer.EQUIP_LOAD,
+            new ItemStats(0, 0, 0, 0, -1, 0, 0, 0, 0),
+            new string[] { "Light", "Hole Filled" },
+            new string[] { "of Low Equip Weight" }
+            );
+    }
 }

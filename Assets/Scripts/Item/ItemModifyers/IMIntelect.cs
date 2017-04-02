@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IMIntelect : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+public class IMIntelect : AItemModifyer {
+    public IMIntelect() {
+        Initialize(EItemModifyer.INTELECT,
+            new ItemStats(0, 0, 0, 1, 0, 0, 0, 0, 0),
+            new string[] { "Witty", "Educated" },
+            new string[] { "That Is Smarter Than You", "of Intelect", "of Information" }
+            );
+    }
 }

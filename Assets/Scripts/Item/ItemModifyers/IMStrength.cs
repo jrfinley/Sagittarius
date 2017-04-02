@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IMStrength : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+public class IMStrength : AItemModifyer {
+    public IMStrength() {
+        Initialize(EItemModifyer.STRENGTH,
+            new ItemStats(0, 0, 1, 0, 0, 0, 0, 0, 0),
+            new string[] { "Strong", "Swole", "Bulky" },
+            new string[] { "of Swoleness", "of Power", "of Ripped Abs" }
+            );
+    }
 }
