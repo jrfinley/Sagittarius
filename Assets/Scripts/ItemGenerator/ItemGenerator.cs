@@ -8,9 +8,10 @@ public static class ItemGenerator {
     private static FlavorTextGenerator flavorGenerator = new FlavorTextGenerator();
     private static ItemTypesGenerator itemTypesGenerator = new ItemTypesGenerator();
     private static ItemStatsGenerator itemStatsGenerator = new ItemStatsGenerator();
+    private static ItemModifyerGenerator itemModifyerGenerator = new ItemModifyerGenerator();
     private static IconGenerator iconGenerator = new IconGenerator();
     #endregion
-    
+    //to do fix item stats
     public static Item GenerateItem() {
         GenerateItemID();
         GenerateItemTypes();
@@ -20,6 +21,7 @@ public static class ItemGenerator {
         GenerateFlavorText();
         GenerateIcon();
         GenerateItemStats();
+        GenerateItemModifyers();
         return new Item(item);
     }
     private static Item GenerateItemDrop(int monsterLevel, int dungeonLevel) {
@@ -31,6 +33,7 @@ public static class ItemGenerator {
         GenerateFlavorText();
         GenerateIcon();
         GenerateItemStats();
+        GenerateItemModifyers();
         return new Item(item);
     }
     public static Item ReforgeItem(Item itemToReforge) {
@@ -41,6 +44,7 @@ public static class ItemGenerator {
         GenerateFlavorText();
         GenerateIcon();
         GenerateItemStats();
+        GenerateItemModifyers();
         return new Item(item);
     }
     public static Item ReforgeItem(Item itemToReforge, float successChance)
@@ -52,15 +56,12 @@ public static class ItemGenerator {
         GenerateFlavorText();
         GenerateIcon();
         GenerateItemStats();
+        GenerateItemModifyers();
         return new Item(item);
     }
 
-    private static void GenerateItemID() { //The idea is that we need id to diferentiate items. This will check agaist all current items for id's and assign one that isn't taken
-        do {
-            item.ID = Random.Range(1, int.MaxValue);
-        }
-        while(ItemIDDatabase.Instance.ContainsID(item.ID)); //Genereate an ID while it is a duplicate
-        ItemIDDatabase.Instance.AddID(item.ID);
+    private static void GenerateItemID() { 
+        item.ID = Random.Range(1, int.MaxValue);
     }
     private static void GenerateItemRarity() {
         item.ItemTypes.ItemRarity = (EItemRarity)Random.Range(0, 4);
@@ -85,5 +86,8 @@ public static class ItemGenerator {
     }
     private static void GenerateItemStats() {
         item.ItemStats = new ItemStats(itemStatsGenerator.GenerateItemStats(item.ItemTypes.EquipmentType, item.ItemTypes.ItemRarity, item.ItemLevel)); //new to avoid refrence
+    }
+    public static void GenerateItemModifyers() {
+        item.Name = itemModifyerGenerator.GenerateIM(item.ItemTypes.ItemRarity, item.Name);
     }
 }
