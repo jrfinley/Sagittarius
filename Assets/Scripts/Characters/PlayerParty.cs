@@ -25,7 +25,39 @@ public class PlayerParty : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         characters = new BaseCharacter[maxPartySize];
+        movePosition = transform.position;
     }
+
+    /*
+    This function is just brain storming for what might work when the dungeon gen is done
+    
+    public void NewSetMoveDirection(InputDirection inputDirection, Tile currentTile)
+    {
+        Vector3 oldPosition = transform.position;
+        Hallway[] tileHallways = currentTile.hallways;
+        Hallway selectedHallway;
+
+        for (int i = 0; i < tileHallways.Length; i++)
+        {
+            if (tileHallways[i].direction == inputDirection)
+            {
+                selectedHallway = tileHallways[i];
+                movePosition = selectedHallway.transform.position;
+                StartCoroutine(MovePlayer());
+            }
+        }
+
+        if (selectedHallway.hasBlocker)
+        {
+            //Do stat check stuff.
+            if(failedStatCheck)
+            {
+                movePosition = oldPosition;
+                StartCoroutine(MovePlayer());
+            }
+        }
+    }
+    */
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
@@ -59,7 +91,7 @@ public class PlayerParty : MonoBehaviour
             return;
         }
 
-        StartCoroutine(MovePlayer(moveDirection));
+        StartCoroutine(MovePlayer());
     }
     public void AddPartyMember(int partyPosition, string name, ECharacterType characterType, int level)
     {
@@ -128,8 +160,23 @@ public class PlayerParty : MonoBehaviour
 
         characters[partySlot].AddStatusEffect(statusEffect);
     }
+    public void RemoveStatusEffect(EBuffType typeToRemove)
+    {
+        for (int i = 0; i < characters.Length; i++)
+        {
+            if (characters[i] != null)
+                characters[i].RemoveStatusEffect(typeToRemove);
+        }
+    }
+    public void RemoveStatusEffect(EBuffType typeToRemove, int partySlot)
+    {
+        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
+        partySlot -= 1;
 
-    IEnumerator MovePlayer(Vector3 moveDestination)
+        characters[partySlot].RemoveStatusEffect(typeToRemove);
+    }
+
+    IEnumerator MovePlayer()
     {
 		float loopCutoff = 0;
 		Vector3 oldPosition = transform.position;
@@ -150,14 +197,6 @@ public class PlayerParty : MonoBehaviour
 			
 			loopCutoff += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
-        }
-
-        for (int i = 0; i < maxPartySize; i++)
-        {
-            if (characters[i] == null)
-                continue;
-
-            characters[i].OnMove();
         }
 		
 		if (loopCutoff >= 5)

@@ -23,6 +23,8 @@ public class BaseCharacter : MonoBehaviour
                 intelect,
                 experience,
                 equipmentCapacity;
+
+    private float expMultiplier = 1;
     
     [SerializeField]
     private ECharacterType characterType;
@@ -60,7 +62,7 @@ public class BaseCharacter : MonoBehaviour
         switch (itemSlot)
         {
             case 1:
-                if (item.ItemTypes.ItemType == EItemType.ARMOR)
+                if (item.ItemTypes.ItemType != EItemType.ARMOR)
                     break;
 
                 if (armor != null)
@@ -141,9 +143,10 @@ public class BaseCharacter : MonoBehaviour
     }
     public void AddStatusEffect<T>(T statusEffect) where T: BaseStatusEffect
     {
-        statusEffectNames.Add(statusEffect.name);
+        statusEffectNames.Add(statusEffect.statusName);
         statusEffects.Add(statusEffect);
         statusEffect.InitializeStatusEffect(this);
+        print(statusEffectNames[0]);
     }
     public void RemoveStatusEffect(EBuffType buffType)
     {
@@ -155,14 +158,6 @@ public class BaseCharacter : MonoBehaviour
                 break;
             }
         }
-    }
-    public void OnMove()
-    {
-        OnPartyMove();
-    }
-    public void OnBattle()
-    {
-        OnBattleStart();
     }
 
     //Properties
@@ -212,12 +207,17 @@ public class BaseCharacter : MonoBehaviour
     public int Experience
     {
         get { return experience; }
-        set { experience = value; }
+        set { experience = (int)(value * expMultiplier); }
     }
     public int EquipmentCapacity
     {
         get { return equipmentCapacity; }
         set { equipmentCapacity = value; }
+    }
+    public float ExpMultipier
+    {
+        get { return expMultiplier; }
+        set { expMultiplier = value; }
     }
     public string Name
     {

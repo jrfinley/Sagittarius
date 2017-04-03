@@ -140,5 +140,16 @@ public class ItemStats {
         goldValue *= number;
         scrapValue *= number;
     }
+    public void AddStats(ItemStats statsToAdd) {
+        weight += statsToAdd.weight;
+        health += statsToAdd.health;
+        strength += statsToAdd.strength;
+        intelect += statsToAdd.intelect;
+        dexterity += statsToAdd.dexterity;
+        equipLoad += statsToAdd.equipLoad;
+        durability += statsToAdd.durability;
+        goldValue += statsToAdd.goldValue;
+        scrapValue += statsToAdd.scrapValue;
+    }
     #endregion
 }

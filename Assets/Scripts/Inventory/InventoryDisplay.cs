@@ -9,7 +9,6 @@ public class InventoryDisplay : MonoBehaviour
 
     public List<InventoryItem> items = new List<InventoryItem>();
 
-
     public void Prime(List<InventoryItem> items)
     {
         foreach(InventoryItem item in items)
