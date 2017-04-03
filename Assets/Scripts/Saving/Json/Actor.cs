@@ -30,7 +30,7 @@ public class Actor : MonoBehaviour
     void Start()
     {
         playerParty = FindObjectOfType<PlayerParty>();
-        currencyManager = FindObjectOfType<CurrencyManager>();
+        currencyManager = GameManager.Instance.CurrencyManager;
 
         inventoryDisplay = FindObjectOfType<InventoryDisplay>();
         inventoryItem = FindObjectsOfType<InventoryItem>();
@@ -38,9 +38,9 @@ public class Actor : MonoBehaviour
 
     public void StoreData()
     {
-        data.food = currencyManager.food;
-        data.scrap = currencyManager.scrap;
-        data.gold = currencyManager.gold;
+        data.food = currencyManager.Food.FloorIntValue;
+        data.scrap = currencyManager.Scrap.FloorIntValue;
+        data.gold = currencyManager.Gold.FloorIntValue;
 
 
         //stores item/ inventory info
@@ -79,9 +79,9 @@ public class Actor : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        currencyManager.gold = data.gold;
-        currencyManager.scrap = data.scrap;
-        currencyManager.food = data.food;
+        currencyManager.Gold.Value = data.gold;
+        currencyManager.Scrap.Value = data.scrap;
+        currencyManager.Food.Value = data.food;
 
 
         //loads item/ inventory info
