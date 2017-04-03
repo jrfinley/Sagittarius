@@ -4,7 +4,6 @@
     INTELECT,
     DEXTERITY,
     EQUIP_LOAD,
-    DURABILITY,
     GOLD_VALUE,
     SCRAP_VALUE
 };

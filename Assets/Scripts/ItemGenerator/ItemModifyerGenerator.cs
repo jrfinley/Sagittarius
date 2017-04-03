@@ -32,8 +32,9 @@ public class ItemModifyerGenerator {
         getSuffix = true;
         if(Random.Range((int)0, 2) == 0)
             getSuffix = false;
+        itemModifyer = (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
         for(int i = 0; i < imToGen; i++) {
-            itemModifyer = EItemModifyer.STRENGTH;// (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+            
             if(getSuffix)
                 itemName = itemName + " " + itemModifyers[itemModifyer].GetSuffix();
             else
