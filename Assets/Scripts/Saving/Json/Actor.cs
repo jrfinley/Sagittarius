@@ -18,7 +18,7 @@ public class Actor : MonoBehaviour
 
     public List<int> ids = new List<int>();
 
-    public static PlayerParty playerParty;
+    public PlayerParty playerParty;
 
     public static CurrencyManager currencyManager;
 
@@ -56,20 +56,24 @@ public class Actor : MonoBehaviour
             Debug.Log("inventoryItemID = " + inventoryItem.id);
         }
 
+        #region
         //Saves player party info
-        foreach (BaseCharacter character in playerParty.characters)
+        /*foreach (BaseCharacter character in playerParty.characters)
         {
-            data.characters = new BaseCharacter[3];
+            int counter = 0;
+           // data.characters = new BaseCharacter[3];
             data.characters = playerParty.characters;
-            Debug.Log("Saved BaseCharacters = " + data.characters[0]);
-            Debug.Log("Saved BaseCharacters = " + data.characters[1]);
-            Debug.Log("Saved BaseCharacters = " + data.characters[2]);
-
-        }
+            data.characters[counter].Name = playerParty.characters[counter].Name;
+            data.characters[counter].Level = playerParty.characters[counter].Level;
+            data.characters[counter].Health = playerParty.characters[counter].Health;
+            counter++;
+        }*/
+        #endregion
     }
 
     void LoadData()
     {
+        data.playerParty = FindObjectOfType<PlayerParty>();
         if (this.gameObject.GetComponent<DestroyOnLoad>())
         {
             Destroy(this.gameObject);
@@ -96,43 +100,10 @@ public class Actor : MonoBehaviour
             Debug.Log("inventoryItemID = " + id.ToString());
         }
 
-        foreach(BaseCharacter character in data.characters)
-        {
-            int count = 0;
-            //playerParty.characters = new BaseCharacter[3];
-            playerParty.characters = data.characters;
-            playerParty.characters[count] = data.characters[count];
-            Debug.Log("Saved BaseCharacters = " + data.characters[0]);
-            Debug.Log("Saved BaseCharacters = " + data.characters[1]);
-            Debug.Log("Saved BaseCharacters = " + data.characters[2]);
+        /*playerParty.AddPartyMember(1, "Chad", ECharacterType.MAGE, 100);
+        playerParty.AddPartyMember(1 + 1, "Bob", ECharacterType.ROGUE, 100);
+        playerParty.AddPartyMember(1 + 2, "Rando", ECharacterType.WARRIOR, 100);*/
 
-            /*playerParty.AddPartyMember(count, playerParty.characters[count].name,
-                playerParty.characters[count].CharacterType, playerParty.characters[count].Level);*/
-
-            #region
-            /*playerParty.characters[count].MaxHealth = data.characters[count].MaxHealth;
-            playerParty.characters[count].Level = data.characters[count].Level;
-            playerParty.characters[count].Strength = data.characters[count].Strength;
-            playerParty.characters[count].Intelect = data.characters[count].Intelect;
-            playerParty.characters[count].Dexterity = data.characters[count].Dexterity;
-            playerParty.characters[count].Experience = data.characters[count].Experience;
-            playerParty.characters[count].EquipmentCapacity = data.characters[count].EquipmentCapacity;
-
-
-
-            Debug.Log("Loaded BaseCharacter" + playerParty.characters[count]);
-            Debug.Log("Loaded BaseCharacter Health = " + playerParty.characters[count].MaxHealth);
-            Debug.Log("Loaded BaseCharacter level = " + playerParty.characters[count].Level);
-            Debug.Log("Loaded BaseCharacter strength = " + playerParty.characters[count].Strength);
-            Debug.Log("Loaded BaseCharacter dexterity = " + playerParty.characters[count].Dexterity);
-            Debug.Log("Loaded BaseCharacter intellect = " + playerParty.characters[count].Intelect);
-            Debug.Log("Loaded BaseCharacter experience = " + playerParty.characters[count].Experience);
-            Debug.Log("Loaded BaseCharacter equipCap = " + playerParty.characters[count].EquipmentCapacity);
-            */
-            #endregion
-            count++;
-
-        }
     }
 
     public void ApplyData()
@@ -176,4 +147,6 @@ public class ActorData
     public int gold;
     public int scrap;
     public int food;
+
+
 }
