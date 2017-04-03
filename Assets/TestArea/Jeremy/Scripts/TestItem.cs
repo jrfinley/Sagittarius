@@ -21,7 +21,6 @@ public class TestItem : MonoBehaviour {
     }
 
     private void GenerateNewItem() {
-        item.RemoveFromIDDatabase();
         item = ItemGenerator.GenerateItem();
         item.DebugLog();
         image = GetComponent<Image>();

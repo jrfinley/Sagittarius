@@ -123,9 +123,6 @@ public class Item {
     #endregion
 
     #region Methods
-    public void RemoveFromIDDatabase() {
-        ItemIDDatabase.Instance.RemoveID(id);
-    }
     public void DebugLog() {
         string spc = "  ";
         Debug.Log(
