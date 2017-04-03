@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     bool isMenuOpen = false;
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
+    public Text[] currencyTexts; //0-Gold, 1-Food, 2-Scrap
     public Image[] heroIcons;
     int selectedHero = 0;
     public RectTransform MasterMenuBacking;
@@ -26,6 +27,9 @@ public class UIManager : MonoBehaviour
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
         SelectHero(selectedHero);
+        SetCurrencyGold(0);
+        SetCurrencyFood(0);
+        SetCurrencyScrap(0);
         Canvas.ForceUpdateCanvases();
     }
 
@@ -128,5 +132,20 @@ public class UIManager : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void SetCurrencyGold(int value)
+    {
+        currencyTexts[0].text = value.ToString();
+    }
+
+    public void SetCurrencyFood(int value)
+    {
+        currencyTexts[1].text = value.ToString();
+    }
+
+    public void SetCurrencyScrap(int value)
+    {
+        currencyTexts[2].text = value.ToString();
     }
 }
