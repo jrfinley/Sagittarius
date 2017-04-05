@@ -22,34 +22,49 @@ public class FOW : MonoBehaviour
         this.rend.material.color = unLit;
         currentState = STATE.Unseen;       
     }
-
-    void stateControl()
+    
+    //Port this to StateMachineEngine
+    void fowState()
     {
         switch (currentState)
         {
-            case STATE.Unseen:               
+            case STATE.Unseen:
                 break;
 
             case STATE.Seeing:
-                this.rend.material.color = lit;
+                if (this.rend.material.color == unLit)
+                {
+                    this.rend.material.color = Color32.Lerp(unLit, lit, Time.time);
+                }
+                if(this.rend.material.color == kindaLit)
+                {
+                    this.rend.material.color = Color32.Lerp(kindaLit, lit, Time.time);
+                }
                 break;
 
             case STATE.Seen:
-                this.rend.material.color = kindaLit;
+                this.rend.material.color = Color32.Lerp(lit, kindaLit, Time.time);
                 break;
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        currentState = STATE.Seeing;
-        stateControl();
+        if(other.tag == "PlayerParty")
+        {
+            currentState = STATE.Seeing;
+            fowState();
+        }
+            
     }
 
     void OnTriggerExit(Collider other)
     {
-        currentState = STATE.Seen;
-        stateControl();
+        if (other.tag == "PlayerParty")
+        {
+            currentState = STATE.Seen;
+            fowState();
+        }
     }
 
 }
