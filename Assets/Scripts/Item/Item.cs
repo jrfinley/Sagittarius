@@ -83,69 +83,61 @@ public class Item {
         }
     }
     #endregion
-    
+
     #region Constructors
-    public Item(int id, string name, string flavorText, string iconName, int itemLevel, ItemTypes itemTypes, ItemStats itemStats) {
-        this.id = id;
-        this.name = name;
-        this.flavorText = flavorText;
-        this.iconName = iconName;
-        this.itemLevel = itemLevel;
-        this.itemTypes = new ItemTypes(ItemTypes);
-        this.itemStats = new ItemStats(ItemStats);
-        this.statProtection = true;
-    }
-    public Item(Item item) {
-        this.id = item.id;
-        this.name = item.name;
-        this.flavorText = item.flavorText;
-        this.iconName = item.iconName;
-        this.itemLevel = item.itemLevel;
-        this.itemTypes = new ItemTypes(item.ItemTypes);
-        this.itemStats = new ItemStats(item.ItemStats);
-        this.statProtection = true;
-    }
-    public Item(Item item, bool statProtection) {
-        this.id = item.id;
-        this.name = item.name;
-        this.flavorText = item.flavorText;
-        this.iconName = item.iconName;
-        this.itemLevel = item.itemLevel;
-        this.itemTypes = new ItemTypes(item.ItemTypes);
-        this.itemStats = new ItemStats(item.ItemStats);
-        this.statProtection = statProtection;
-    }
-    public Item(bool statProtection) { //used in generating items
+    public Item(bool statProtection = false)
+    {
         this.statProtection = statProtection;
         this.itemTypes = new ItemTypes();
         itemStats = new ItemStats();
+    }
+    public Item(string name, string flavorText, string iconName, ItemStats itemStats, ItemTypes itemTypes, bool statProtection = false) {
+        this.name = name;
+        this.flavorText = flavorText;
+        this.iconName = iconName;
+        this.itemTypes = new ItemTypes(ItemTypes);
+        this.itemStats = new ItemStats(ItemStats);
+        this.statProtection = statProtection;
+    }
+    public Item(Item item, bool statProtection = false) {
+        this.id = item.id;
+        this.name = item.name;
+        this.flavorText = item.flavorText;
+        this.iconName = item.iconName;
+        this.itemLevel = item.itemLevel;
+        this.itemTypes = new ItemTypes(item.ItemTypes);
+        this.itemStats = new ItemStats(item.ItemStats);
+        this.statProtection = statProtection;
     }
     #endregion
 
     #region Methods
     public void DebugLog() {
+        string col = ": ";
         string spc = "  ";
         Debug.Log(
-            "ID: " + id + spc +
-            "Name: " + name + spc +
-            "Flavor Text: " + flavorText + spc + 
-            "Icon Name: " + iconName + spc +
-            "Item Level: " + ItemLevel + spc + "\n" +
-            "Item Type: " + itemTypes.ItemType + spc +
-            "Equipment Type: " + itemTypes.EquipmentType + spc + 
-            "Equip Slot: " + itemTypes.EquipSlot + spc +
-            "Weight Class: " + itemTypes.WeightClass + spc +
-            "Damage Type: " + itemTypes.DamageType + spc +
-            "Weapon Range: " + itemTypes.WeaponRange + spc +
-            "Rarity: " + itemTypes.ItemRarity + spc + "\n" +
-            "Weight: " + itemStats.Weight + spc + 
-            "Equip Load: " + itemStats.EquipLoad + spc +
-            "Gold Value: " + itemStats.GoldValue + spc +
-            "Scrap Value: " + itemStats.ScrapValue + spc +
-            "Health: " + itemStats.Health + spc +
-            "Intelect: " + itemStats.Intelect + spc +
-            "Dexterity: " + itemStats.Dexterity + spc +
-            "Stat Protection: " + statProtection
+            "ID" + col + id + spc +
+            "Name" + col + name + spc +
+            "Flavor Text" + col + flavorText + spc + 
+            "Icon Name" + col + iconName + spc +
+            "Item Level" + col + ItemLevel + spc + "\n" +
+            "Item Type" + col + itemTypes.ItemType + spc +
+            "Equipment Type" + col + itemTypes.EquipmentType + spc + 
+            "Equip Slot" + col + itemTypes.EquipSlot + spc +
+            "Weight Class" + col + itemTypes.WeightClass + spc +
+            "Damage Type" + col + itemTypes.DamageType + spc +
+            "Weapon Range" + col + itemTypes.WeaponRange + spc +
+            "Rarity" + col + itemTypes.ItemRarity + spc + "\n" +
+            "Weight" + col + itemStats.Weight + spc +
+            "Health" + col + itemStats.Health + spc +
+            "Attack" + col + itemStats.Attack + spc +
+            "Intelect" + col + itemStats.Intelect + spc +
+            "Dexterity" + col + itemStats.Dexterity + spc +
+            "Equip Load" + col + itemStats.EquipLoad + spc +
+            "Durability" + col + itemStats.Durability + spc +
+            "Gold Value" + col + itemStats.GoldValue + spc +
+            "Scrap Value" + col + itemStats.ScrapValue + spc +
+            "Stat Protection" + col + statProtection
             );
     }
     public Sprite GetSprite()
