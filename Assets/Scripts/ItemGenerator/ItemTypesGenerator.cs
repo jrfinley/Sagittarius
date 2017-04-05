@@ -34,7 +34,7 @@ public class ItemTypesGenerator {
                                                     EItemWeightClass.HEAVY, EWeaponDamageType.SLASHING, EWeaponRange.REACH, EItemRarity.COMMON) },
 
         { EEquipmentType.GREAT_SWORD,         new ItemTypes(EItemType.WEAPON, EEquipmentType.GREAT_SWORD, EItemEquipSlot.TWO_HAND,
-                                                    EItemWeightClass.VERY_HEAVY, EWeaponDamageType.PIERCING, EWeaponRange.LONG_REACH, EItemRarity.COMMON) },
+                                                    EItemWeightClass.VERY_HEAVY, EWeaponDamageType.SLASHING, EWeaponRange.LONG_REACH, EItemRarity.COMMON) },
 
         { EEquipmentType.RAPIER,              new ItemTypes(EItemType.WEAPON, EEquipmentType.RAPIER, EItemEquipSlot.ONE_HAND,
                                                     EItemWeightClass.MEDIUM, EWeaponDamageType.PIERCING, EWeaponRange.REACH, EItemRarity.COMMON) },

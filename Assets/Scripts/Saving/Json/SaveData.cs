@@ -12,7 +12,7 @@ public class SaveData
 
     public static void Load(string path)
     {
-        //actorContainer = LoadActors(path);
+        actorContainer = LoadActors(path);//
 
         foreach (ActorData data in actorContainer.actors)
         {
@@ -27,7 +27,7 @@ public class SaveData
     {
         OnBeforeSave();
 
-        //SaveActors(path, actors);
+        SaveActors(path, actors);//
 
         ClearActorList();
     }
@@ -43,7 +43,7 @@ public class SaveData
         actorContainer.actors.Clear();
     }
 
-    /*private static ActorContainer LoadActors(string path)
+    private static ActorContainer LoadActors(string path)//start
     {
         string json = File.ReadAllText(path);//loading all text in the file into a string
 
@@ -59,5 +59,5 @@ public class SaveData
         sw.Close();
 
         File.WriteAllText(path, json);
-    }*/
+    }//end
 }

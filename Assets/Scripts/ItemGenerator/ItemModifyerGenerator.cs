@@ -67,7 +67,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.DEXTERITY, 
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, 1, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                 new string[] { "Nimble", "Hardy", "Dexterous" },
                 new string[] { "of Dexterity", "of Dodging", "of Nimbleness" }
                 )
@@ -77,7 +77,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.EQUIP_LOAD,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, -1, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 0, 0, -1, 0, 0, 0, 0),
                 new string[] { "Light", "Hole Filled" },
                 new string[] { "of Low Equip Weight" }
                 )
@@ -87,7 +87,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.GOLD_VALUE,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, 0, 0, 0, 1, 0),
+                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
                 new string[] { "Gold Plated", "Golden", "Extravagent" },
                 new string[] { "of Wealth", "of the Wealthy", "of Gold" }
                 )
@@ -97,7 +97,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.HEALTH,
             new ItemModifyer(
-                new ItemStats(0, 1, 0, 0, 0, 0, 0, 0, 0),
+                new ItemStats(0, 1, 0, 0, 0, 0, 0, 0, 0, 0),
                 new string[] { "Sturdy", "Hardy", "Tough" },
                 new string[] { "of Sturdyness", "of Good Health" }
                 )
@@ -107,7 +107,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.INTELECT,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 1, 0, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
                 new string[] { "Witty", "Educated" },
                 new string[] { "That Is Smarter Than You", "of Intelect", "of Information" }
                 )
@@ -117,7 +117,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.SCRAP_VALUE,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 1),
+                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
                 new string[] { "sCrappy", "Junky", "Junkyark" },
                 new string[] { "of Junk", "of Metal Scraps" }
                 )
@@ -127,7 +127,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.STRENGTH,
             new ItemModifyer(
-                new ItemStats(0, 0, 1, 0, 0, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 1, 0, 0, 0, 0, 0, 0),
                 new string[] { "Strong", "Swole", "Bulky" },
                 new string[] { "of Swoleness", "of Power", "of Ripped Abs" }
                 )
