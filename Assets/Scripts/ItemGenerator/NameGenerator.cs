@@ -33,7 +33,7 @@ public class NameGenerator {
     #region Methods
     public string GenerateName(EEquipmentType equipmentType, EItemRarity itemRarity) {
         name = baseName[equipmentType];
-        AddRarityModifyer(itemRarity);
+        //AddRarityModifyer(itemRarity);
         return name;
     }
     private void AddToStartOfName(string addition) {
