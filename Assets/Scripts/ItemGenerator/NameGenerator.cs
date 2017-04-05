@@ -25,10 +25,6 @@ public class NameGenerator {
 
         { EEquipmentType.TEST_QEUST_ITEM, "Test Quest Item" }
     };
-    private string[] nameModifyer = new string[]{
-        "Flaming", "Frosty", "Poisonus",
-        "Sharp", "Large", "Nimble", "Bloody", "Light"
-    };
     private string[] rarityModifyer = new string[3] { "Rare", "Epic", "Legendary" };
     private string name = string.Empty;
     private string space = " ";
@@ -42,11 +38,6 @@ public class NameGenerator {
     }
     private void AddToStartOfName(string addition) {
         name = addition + space + name;
-    }
-    private void AddNameModifyers(EItemRarity itemRarity) {
-        for(int i = 1; i <= (int)itemRarity; i++) { //Adds +1 random name mod for each rarity above common
-            AddToStartOfName(nameModifyer[Random.Range(0, nameModifyer.Length)]);
-        }
     }
     private void AddRarityModifyer(EItemRarity itemRarity) {
         switch(itemRarity) {
