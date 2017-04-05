@@ -5,23 +5,21 @@ public class MonsterPartyManager : MonoBehaviour
 {
     public Vector3 position;
 
-    private Rigidbody _rigidBody = null;
-
     [SerializeField] private int _partyNum = 0;
     [SerializeField] private int _itemLevel = 0;
 
     private int _minMonsters = 2;
     private int _maxMonsters = 6;
-    private int _characterLevel = 0;
-    private int _levelModifier = 0;
 
-    private float _speed;
+    private int _levelModifier = 2;
+
+    private int _size = 0;
+    private int _maxSize = 0;
 
     [SerializeField] private BaseMonster[] _monsterParty;
-    [SerializeField]private int[] _levelArray;
-    [SerializeField]private EMonsterType[] _typeArray;
-    private PlayerParty _playerParty = null;
-    private BaseCharacter _player = null;
+    [SerializeField] private int[] _levelArray;
+    [SerializeField] private EMonsterType[] _typeArray;
+    [SerializeField] private int[] _lootValueArray;
 
     private GameObject _playerObject;
     private GameObject _room;
@@ -29,11 +27,7 @@ public class MonsterPartyManager : MonoBehaviour
 	void Start ()
     {
         position = transform.position;
-        _rigidBody = transform.GetComponent<Rigidbody>();
         _playerObject = GameObject.FindGameObjectWithTag("Player");
-        _playerParty = _playerObject.GetComponent<PlayerParty>();
-        _player = _playerObject.GetComponent<BaseCharacter>();
-        _characterLevel = _player.GetLevel();
 
         InitializeParty();
     }
@@ -46,24 +40,22 @@ public class MonsterPartyManager : MonoBehaviour
         //}
     }
 
-    //to be changed
-    //IEnumerator Move(Vector3 Destination)
-    //{
-        
-    //}
-
     private void InitializeParty()
     {
-        _partyNum = Random.Range(_minMonsters, _maxMonsters);
+        _partyNum = Random.Range(_minMonsters, _maxMonsters+1);
 
         _monsterParty = new BaseMonster[_partyNum];
         _levelArray = new int[_partyNum];
         _typeArray = new EMonsterType[_partyNum];
+        _lootValueArray = new int[_partyNum];
+
+        _maxSize = _maxMonsters;
 
         for (int i = 0; i < _partyNum; i++)
         {
             _levelArray[i] = LevelCalc();
-            _typeArray[i] = TypeCalc(_partyNum);
+            _typeArray[i] = TypeCalc(i);
+            _lootValueArray[i] = LootCalc(i);
             
             _monsterParty[i] = gameObject.AddComponent<BaseMonster>();
             _monsterParty[i].SetLevel(_levelArray[i]);
@@ -89,7 +81,7 @@ public class MonsterPartyManager : MonoBehaviour
     private int LevelCalc()
     {
         int level;
-        level = Random.Range(_itemLevel - _levelModifier, _itemLevel + _levelModifier);
+        level = Random.Range(_itemLevel - _levelModifier, _itemLevel + _levelModifier + 1);
 
         if (level <= 0)
         {
@@ -98,43 +90,73 @@ public class MonsterPartyManager : MonoBehaviour
 
         return level; 
     }
-    private EMonsterType TypeCalc(int partyNum)
+    private EMonsterType TypeCalc(int i)
     {
-        EMonsterType type = EMonsterType.E_TEMP_ONE;
-        int size = _maxMonsters/ partyNum;
-        int totalSize = _maxMonsters;
+        EMonsterType monsterType;
+        _size = _maxMonsters / _partyNum;
 
-        if (size == 3)
+        if (_size == 3)
         {
-            size = 4;
+            _size = 4;
         }
-        
 
-        if (size > totalSize)
+        if (_maxSize <= _size)
         {
-            size = totalSize;
+            _size = _maxSize;
         }
-        totalSize -= size;
-        
-        Debug.Log(totalSize);
+        else if (_maxSize == 2 && i == _partyNum - 1)
+        {
+            _size++;
 
+        }
+        else if (_maxSize > 2 && i == _partyNum - 1)
+        {
+            _size++;
+            _typeArray[i - 1]++;
+            _monsterParty[i - 1].SetType(_typeArray[i-1]);
+            _lootValueArray[i - 1] = LootCalc(i - 1);
+        }
 
-        switch (size)
+        _maxSize -= _size;
+
+        switch (_size)
         {
             case 1:
-                type = EMonsterType.E_TEMP_ONE; // type/size one
+                monsterType = EMonsterType.E_TEMP_ONE;
                 break;
 
             case 2:
-                type = EMonsterType.E_TEMP_TWO; // type/size two
+                monsterType = EMonsterType.E_TEMP_TWO;
                 break;
 
             case 4:
-                type = EMonsterType.E_TEMP_THREE; // type/size three (size four)
+                monsterType = EMonsterType.E_TEMP_THREE;
+                break;
+
+            default:
+                monsterType = EMonsterType.E_TEMP_ONE;
                 break;
         }
 
-        return type;
+        return monsterType;
+    }
+
+    private int LootCalc(int i)
+    {
+        int lootValue;
+
+        lootValue = (_itemLevel + (_levelArray[i] * ((int)_typeArray[i]+1)));
+
+        if (lootValue <= 0)
+        {
+            lootValue = 1;
+        }
+
+        return lootValue;
+    }
+
+    public void MoveTowardsPlayer()
+    {
 
     }
 
@@ -146,9 +168,8 @@ public class MonsterPartyManager : MonoBehaviour
     {
         _levelModifier = mod;
     }
-
-    
 }
 
 //Should a player encounter a room with an enemy party inside, a combat sequence will be initiated.
 //Allow the enemy parties to move around the dungeon. This enemy movement should not happen automatically, only when prompted by specific player actions (such overt actions).
+//Monsters will have item drop tables that will have the chance randomly drop loot on death based on the type of monster and its level.
