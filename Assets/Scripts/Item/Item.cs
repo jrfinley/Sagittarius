@@ -83,42 +83,31 @@ public class Item {
         }
     }
     #endregion
-    
+
     #region Constructors
-    public Item(int id, string name, string flavorText, string iconName, int itemLevel, ItemTypes itemTypes, ItemStats itemStats) {
-        this.id = id;
-        this.name = name;
-        this.flavorText = flavorText;
-        this.iconName = iconName;
-        this.itemLevel = itemLevel;
-        this.itemTypes = new ItemTypes(ItemTypes);
-        this.itemStats = new ItemStats(ItemStats);
-        this.statProtection = true;
-    }
-    public Item(Item item) {
-        this.id = item.id;
-        this.name = item.name;
-        this.flavorText = item.flavorText;
-        this.iconName = item.iconName;
-        this.itemLevel = item.itemLevel;
-        this.itemTypes = new ItemTypes(item.ItemTypes);
-        this.itemStats = new ItemStats(item.ItemStats);
-        this.statProtection = true;
-    }
-    public Item(Item item, bool statProtection) {
-        this.id = item.id;
-        this.name = item.name;
-        this.flavorText = item.flavorText;
-        this.iconName = item.iconName;
-        this.itemLevel = item.itemLevel;
-        this.itemTypes = new ItemTypes(item.ItemTypes);
-        this.itemStats = new ItemStats(item.ItemStats);
-        this.statProtection = statProtection;
-    }
-    public Item(bool statProtection) { //used in generating items
+    public Item(bool statProtection = false)
+    {
         this.statProtection = statProtection;
         this.itemTypes = new ItemTypes();
         itemStats = new ItemStats();
+    }
+    public Item(string name, string flavorText, string iconName, ItemStats itemStats, ItemTypes itemTypes, bool statProtection = false) {
+        this.name = name;
+        this.flavorText = flavorText;
+        this.iconName = iconName;
+        this.itemTypes = new ItemTypes(ItemTypes);
+        this.itemStats = new ItemStats(ItemStats);
+        this.statProtection = statProtection;
+    }
+    public Item(Item item, bool statProtection = false) {
+        this.id = item.id;
+        this.name = item.name;
+        this.flavorText = item.flavorText;
+        this.iconName = item.iconName;
+        this.itemLevel = item.itemLevel;
+        this.itemTypes = new ItemTypes(item.ItemTypes);
+        this.itemStats = new ItemStats(item.ItemStats);
+        this.statProtection = statProtection;
     }
     #endregion
 
