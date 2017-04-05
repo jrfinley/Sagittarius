@@ -44,7 +44,7 @@ public class Intro : MonoBehaviour
 
             hasFallen = true;
 
-            camAnim.GetBool(0).ToString();
+            camAnim.SendMessage("HasFallen", true);
         }
         else 
         {

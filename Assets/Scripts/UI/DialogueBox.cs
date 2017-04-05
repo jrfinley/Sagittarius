@@ -84,5 +84,4 @@ public class DialogueBox : MonoBehaviour
         isWaitingForInput = false;
         continueMarker.color = Color.clear;
     }
-
 }
