@@ -62,7 +62,7 @@ public class BaseCharacter : MonoBehaviour
         switch (itemSlot)
         {
             case 1:
-                if (item.ItemTypes.ItemType != EItemType.ARMOR)
+                if (item.Types.ItemType != EItemType.ARMOR)
                     break;
 
                 if (armor != null)
@@ -72,7 +72,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 2:
-                if (item.ItemTypes.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.WEAPON)
                     break;
 
                 if (leftHand != null)
@@ -82,7 +82,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 3:
-                if (item.ItemTypes.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.WEAPON)
                     break;
 
                 if (rightHand != null)
@@ -92,7 +92,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             default:
-                if (item.ItemTypes.ItemType != EItemType.AMULET)
+                if (item.Types.ItemType != EItemType.AMULET)
                     break;
 
                 if (amulet != null)
@@ -102,11 +102,11 @@ public class BaseCharacter : MonoBehaviour
                 break;
         }
 
-        MaxHealth += (int)item.ItemStats.Health;
-        Health += (int)item.ItemStats.Health;
-        Strength += (int)item.ItemStats.Strength;
-        Dexterity += (int)item.ItemStats.Dexterity;
-        Intelect += (int)item.ItemStats.Intelect;
+        MaxHealth += (int)item.Stats.Health;
+        Health += (int)item.Stats.Health;
+        Strength += (int)item.Stats.Strength;
+        Dexterity += (int)item.Stats.Dexterity;
+        Intelect += (int)item.Stats.Intelect;
     }
     public void RemoveItem(int itemPosition)
     {
@@ -135,11 +135,11 @@ public class BaseCharacter : MonoBehaviour
                 break;
         }
 
-        MaxHealth -= (int)item.ItemStats.Health;
-        Health -= (int)item.ItemStats.Health;
-        Strength -= (int)item.ItemStats.Strength;
-        Dexterity -= (int)item.ItemStats.Dexterity;
-        Intelect -= (int)item.ItemStats.Intelect;
+        MaxHealth -= (int)item.Stats.Health;
+        Health -= (int)item.Stats.Health;
+        Strength -= (int)item.Stats.Strength;
+        Dexterity -= (int)item.Stats.Dexterity;
+        Intelect -= (int)item.Stats.Intelect;
     }
     public void AddStatusEffect<T>(T statusEffect) where T: BaseStatusEffect
     {

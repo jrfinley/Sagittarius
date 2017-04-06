@@ -24,11 +24,14 @@ public class ItemModifyerGenerator {
     #endregion
 
     #region Methods
-    public string GenerateIM(EItemRarity itemRarity, string itemName) {
+    public void GenerateIM(int id, EItemRarity itemRarity, string inputName, ref string outputName, ref ItemStats outputStats) {
+        outputName = inputName;
+
         imToGen = Mathf.Clamp((int)itemRarity - 1, 0, 2);
-        
+
         if(imToGen <= 0)
-            return itemName;
+            return;
+
         getSuffix = true;
         if(Random.Range((int)0, 2) == 0)
             getSuffix = false;
@@ -36,13 +39,12 @@ public class ItemModifyerGenerator {
         for(int i = 0; i < imToGen; i++) {
             
             if(getSuffix)
-                itemName = itemName + " " + itemModifyers[itemModifyer].GetSuffix();
+                outputName = outputName + " " + itemModifyers[itemModifyer].GetSuffix();
             else
-                itemName = itemModifyers[itemModifyer].GetPrefix() + " " + itemName;
+                outputName = itemModifyers[itemModifyer].GetPrefix() + " " + outputName;
             getSuffix = !getSuffix;
-            //itemStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
+            outputStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
         }
-        return itemName;
     }
     private string GetIMPrefix(EItemModifyer modifyer) {
         return GetIM(modifyer).GetPrefix();

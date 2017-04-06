@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class ItemLookUp {
     #region Variables
     #region ItemLookUp
-    private Dictionary<EEquipmentType, Item> itemLookUp = new Dictionary<EEquipmentType, Item>() {
+    private Dictionary<EEquipmentType, Item> itemLookUpTable = new Dictionary<EEquipmentType, Item>() {
         { EEquipmentType.POTION_OF_HEALING, new Item(
                 "Potion of Healing", "Tastes like cereal with a hint of not dying a horible death", "Potion_of_Healing",
                 new ItemStats(0, 5, 0, 0, 0, 0, 0, 1, 2, 2),
@@ -83,5 +83,11 @@ public class ItemLookUp {
             ) }
     };
     #endregion
+    #endregion
+
+    #region Properties
+    public Dictionary<EEquipmentType, Item> ItemLookUpTable {
+        get { return itemLookUpTable; }
+    }
     #endregion
 }

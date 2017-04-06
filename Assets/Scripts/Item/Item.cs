@@ -41,7 +41,7 @@ public class Item {
                 flavorText = value;
         }
     }
-    public string IconName {
+    public string IconPath {
         get {
             return iconName;
         }
@@ -50,7 +50,7 @@ public class Item {
                 iconName = value;
         }
     }
-    public int ItemLevel {
+    public int Level {
         get {
             return itemLevel;
         }
@@ -59,7 +59,7 @@ public class Item {
                 itemLevel = value;
         }
     }
-    public ItemTypes ItemTypes {
+    public ItemTypes Types {
         get {
             return itemTypes;
         }
@@ -68,7 +68,7 @@ public class Item {
                 itemTypes = value;
         }
     }
-    public ItemStats ItemStats {
+    public ItemStats Stats {
         get {
             return itemStats;
         }
@@ -89,14 +89,14 @@ public class Item {
     {
         this.statProtection = statProtection;
         this.itemTypes = new ItemTypes();
-        itemStats = new ItemStats();
+        this.itemStats = new ItemStats();
     }
     public Item(string name, string flavorText, string iconName, ItemStats itemStats, ItemTypes itemTypes, bool statProtection = false) {
         this.name = name;
         this.flavorText = flavorText;
         this.iconName = iconName;
-        this.itemTypes = new ItemTypes(ItemTypes);
-        this.itemStats = new ItemStats(ItemStats);
+        this.itemTypes = new ItemTypes(itemTypes);
+        this.itemStats = new ItemStats(itemStats);
         this.statProtection = statProtection;
     }
     public Item(Item item, bool statProtection = false) {
@@ -105,8 +105,8 @@ public class Item {
         this.flavorText = item.flavorText;
         this.iconName = item.iconName;
         this.itemLevel = item.itemLevel;
-        this.itemTypes = new ItemTypes(item.ItemTypes);
-        this.itemStats = new ItemStats(item.ItemStats);
+        this.itemTypes = new ItemTypes(item.Types);
+        this.itemStats = new ItemStats(item.Stats);
         this.statProtection = statProtection;
     }
     #endregion
@@ -120,7 +120,7 @@ public class Item {
             "Name" + col + name + spc +
             "Flavor Text" + col + flavorText + spc + 
             "Icon Name" + col + iconName + spc +
-            "Item Level" + col + ItemLevel + spc + "\n" +
+            "Item Level" + col + Level + spc + "\n" +
             "Item Type" + col + itemTypes.ItemType + spc +
             "Equipment Type" + col + itemTypes.EquipmentType + spc + 
             "Equip Slot" + col + itemTypes.EquipSlot + spc +
