@@ -5,6 +5,7 @@ public class ItemStats {
     #region Variables
     private float weight = 0;
     private float health = 0; //These will work like stat modifyers
+    private float attack = 0;
     private float strength = 0;
     private float intelect = 0;
     private float dexterity = 0;
@@ -29,6 +30,17 @@ public class ItemStats {
         }
         set {
             health = value;
+        }
+    }
+    public float Attack
+    {
+        get
+        {
+            return attack;
+        }
+        set
+        {
+            attack = value;
         }
     }
     public float Strength {
@@ -90,9 +102,10 @@ public class ItemStats {
     #endregion
 
     #region Constructors
-    public ItemStats(float weight, float health, float strength, float intelect, float dexterity, float equipLoad, float durability, float goldValue, float scrapValue) {
+    public ItemStats(float weight, float health, float attack, float strength, float intelect, float dexterity, float equipLoad, float durability, float goldValue, float scrapValue) {
         this.weight = weight;
         this.health = health;
+        this.attack = attack;
         this.strength = strength;
         this.intelect = intelect;
         this.dexterity = dexterity;
@@ -106,6 +119,7 @@ public class ItemStats {
     }
     public ItemStats(ItemStats itemStats) {
         weight = itemStats.weight;
+        attack = itemStats.attack;
         health = itemStats.health;
         strength = itemStats.strength;
         intelect = itemStats.intelect;
@@ -121,6 +135,7 @@ public class ItemStats {
     public void AddToAll(float number) {
         weight += number;
         health += number;
+        attack += number;
         strength += number;
         intelect += number;
         dexterity += number;
@@ -132,6 +147,7 @@ public class ItemStats {
     public void MultiplyByAll(float number) {
         weight *= number;
         health *= number;
+        attack *= number;
         strength *= number;
         intelect *= number;
         dexterity *= number;
@@ -143,6 +159,7 @@ public class ItemStats {
     public void AddStats(ItemStats statsToAdd) {
         weight += statsToAdd.weight;
         health += statsToAdd.health;
+        attack += statsToAdd.attack;
         strength += statsToAdd.strength;
         intelect += statsToAdd.intelect;
         dexterity += statsToAdd.dexterity;

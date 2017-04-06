@@ -20,29 +20,17 @@ public class Actor : MonoBehaviour
 
     public PlayerParty playerParty;
 
-    public static CurrencyManager currencyManager;
-
-    public int gold;
-    public int scrap;
-    public int food;
-
 
     void Start()
     {
         playerParty = FindObjectOfType<PlayerParty>();
-        currencyManager = FindObjectOfType<CurrencyManager>();
-
+        data.playerParty = FindObjectOfType<PlayerParty>();
         inventoryDisplay = FindObjectOfType<InventoryDisplay>();
         inventoryItem = FindObjectsOfType<InventoryItem>();
     }
 
     public void StoreData()
     {
-        data.food = currencyManager.food;
-        data.scrap = currencyManager.scrap;
-        data.gold = currencyManager.gold;
-
-
         //stores item/ inventory info
         data.items = inventoryDisplay.items;
 
@@ -58,31 +46,33 @@ public class Actor : MonoBehaviour
 
         #region
         //Saves player party info
-        /*foreach (BaseCharacter character in playerParty.characters)
+        foreach (BaseCharacter character in playerParty.characters)
         {
-            int counter = 0;
-           // data.characters = new BaseCharacter[3];
-            data.characters = playerParty.characters;
-            data.characters[counter].Name = playerParty.characters[counter].Name;
-            data.characters[counter].Level = playerParty.characters[counter].Level;
-            data.characters[counter].Health = playerParty.characters[counter].Health;
+            int counter = 1;
+
+            data.charLevel = playerParty.characters[0].Level;
+            data.charHealth = playerParty.characters[0].MaxHealth;
+            data.charStr = playerParty.characters[0].Strength;
+            data.charDex = playerParty.characters[0].Dexterity;
+            data.charInt = playerParty.characters[0].Intelect;
+            data.charExp = playerParty.characters[0].Experience;
+            data.charEquipCap = playerParty.characters[0].EquipmentCapacity;
+
+
             counter++;
-        }*/
+        }
         #endregion
     }
 
     void LoadData()
     {
         data.playerParty = FindObjectOfType<PlayerParty>();
+        playerParty = FindObjectOfType<PlayerParty>();
+
         if (this.gameObject.GetComponent<DestroyOnLoad>())
         {
             Destroy(this.gameObject);
         }
-
-        currencyManager.gold = data.gold;
-        currencyManager.scrap = data.scrap;
-        currencyManager.food = data.food;
-
 
         //loads item/ inventory info
         inventoryDisplay.items = data.items;
@@ -100,9 +90,16 @@ public class Actor : MonoBehaviour
             Debug.Log("inventoryItemID = " + id.ToString());
         }
 
-        /*playerParty.AddPartyMember(1, "Chad", ECharacterType.MAGE, 100);
-        playerParty.AddPartyMember(1 + 1, "Bob", ECharacterType.ROGUE, 100);
-        playerParty.AddPartyMember(1 + 2, "Rando", ECharacterType.WARRIOR, 100);*/
+        playerParty.AddPartyMember(1, "Chad", ECharacterType.WARRIOR, 100);
+        //assign stuff
+        playerParty.characters[0].Name = data.charName;
+        playerParty.characters[0].Level = data.charLevel;
+        playerParty.characters[0].MaxHealth = data.charHealth;
+        playerParty.characters[0].Strength = data.charStr;
+        playerParty.characters[0].Dexterity = data.charDex;
+        playerParty.characters[0].Intelect = data.charInt;
+        playerParty.characters[0].Experience = data.charExp;
+        playerParty.characters[0].EquipmentCapacity = data.charEquipCap;
 
     }
 
@@ -138,15 +135,19 @@ public class ActorData
 
     public Transform targetTransform;
 
-    public BaseCharacter[] characters;
+    //public BaseCharacter[] characters;
 
     public PlayerParty playerParty;
 
     public static CurrencyManager currencyManager;
 
-    public int gold;
-    public int scrap;
-    public int food;
-
-
+    public string charName;
+    public int charLevel;
+    public int charHealth;
+    public int charStr;
+    public int charDex;
+    public int charInt;
+    public int charExp;
+    public int charEquipCap;
+   
 }
