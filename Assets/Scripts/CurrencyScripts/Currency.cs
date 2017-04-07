@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Currency {
+public class Currency{
     #region Variables
     private ECurrencyType type;
     private string name;
