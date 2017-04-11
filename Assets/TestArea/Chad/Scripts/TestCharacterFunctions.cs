@@ -14,11 +14,11 @@ public class TestCharacterFunctions : MonoBehaviour
     {
         //Add and remove party members
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            playerParty.AddPartyMember(1, "Chad", (ECharacterType)Random.Range(0, 3), 100);
+            playerParty.AddPartyMember(1, "Chad");
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            playerParty.AddPartyMember(2, "John", (ECharacterType)Random.Range(0, 3), 100);
+            playerParty.AddPartyMember(2, "John");
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-            playerParty.AddPartyMember(3, "Jane", (ECharacterType)Random.Range(0, 3), 100);
+            playerParty.AddPartyMember(3, "Jane");
 
         else if (Input.GetKeyDown(KeyCode.Q))
             playerParty.RemovePartyMember(1);

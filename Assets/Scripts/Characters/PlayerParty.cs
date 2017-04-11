@@ -19,13 +19,18 @@ public class PlayerParty : MonoBehaviour
     public Rigidbody rb;
 
     [SerializeField]
+    private int characterOneID;
+
     private Sprite icon;
+
+    private CharacterManager characterManager;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         characters = new BaseCharacter[maxPartySize];
         movePosition = transform.position;
+        characterManager = FindObjectOfType<CharacterManager>();
     }
 
     /*
@@ -93,45 +98,32 @@ public class PlayerParty : MonoBehaviour
 
         StartCoroutine(MovePlayer());
     }
-    public void AddPartyMember(int partyPosition, string name, ECharacterType characterType, int level)
+
+    public void AddPartyMember(int partyPosition, string name)
     {
         partyPosition = Mathf.Clamp(partyPosition, 1, maxPartySize);
         partyPosition -= 1;
 
-        switch (characterType)
+        if (characters[partyPosition] != null)
+            RemovePartyMember(partyPosition + 1);
+
+        for (int i = 0; i < characterManager.allCharacters.Count; i++)
         {
-            case ECharacterType.MAGE:
-                Mage newMage = gameObject.AddComponent<Mage>();
-                newMage.InitializeCharacter(name, level);
+            if (characterManager.allCharacters[i].Name == name)
+            {
+                if (!characterManager.allCharacters[i].isUnlocked)
+                {
+                    Debug.LogError("That character is not unlocked yet");
+                    return;
+                }
 
-                if (characters[partyPosition] != null)
-                    RemovePartyMember(partyPosition + 1);
-
-                characters[partyPosition] = (newMage);
-                break;
-
-            case ECharacterType.ROGUE:
-                Rogue newRogue = gameObject.AddComponent<Rogue>();
-                newRogue.InitializeCharacter(name, level);
-
-                if (characters[partyPosition] != null)
-                    RemovePartyMember(partyPosition + 1);
-
-                characters[partyPosition] = (newRogue);
-                break;
-
-            case ECharacterType.WARRIOR:
-                Warrior newWarrior = gameObject.AddComponent<Warrior>();
-                newWarrior.InitializeCharacter(name, level);
-
-                if (characters[partyPosition] != null)
-                    RemovePartyMember(partyPosition + 1);
-
-                characters[partyPosition] = (newWarrior);
-                break;
+                characters[partyPosition] = characterManager.allCharacters[i];
+                maxEquipmentLoad += characterManager.allCharacters[i].EquipmentCapacity;
+                return;
+            }
+            else if (i == characterManager.allCharacters.Count - 1)
+                Debug.LogError("No character with that name exists.");
         }
-
-        maxEquipmentLoad += characters[partyPosition].EquipmentCapacity;
     }
     public void RemovePartyMember(int partyPosition)
     {
@@ -142,9 +134,9 @@ public class PlayerParty : MonoBehaviour
             return;
 
         maxEquipmentLoad -= characters[partyPosition].EquipmentCapacity;
-        Destroy(characters[partyPosition]);
         characters[partyPosition] = null;
     }
+
     public void AddStatusEffect<T>(T statusEffect)where T : BaseStatusEffect
     {
         for (int i = 0; i < characters.Length; i++)
@@ -160,6 +152,7 @@ public class PlayerParty : MonoBehaviour
 
         characters[partySlot].AddStatusEffect(statusEffect);
     }
+
     public void RemoveStatusEffect(EBuffType typeToRemove)
     {
         for (int i = 0; i < characters.Length; i++)

@@ -24,11 +24,14 @@ public class ItemModifyerGenerator {
     #endregion
 
     #region Methods
-    public string GenerateIM(EItemRarity itemRarity, string itemName) {
+    public void GenerateIM(int id, EItemRarity itemRarity, string inputName, ref string outputName, ref ItemStats outputStats) {
+        outputName = inputName;
+
         imToGen = Mathf.Clamp((int)itemRarity - 1, 0, 2);
-        
+
         if(imToGen <= 0)
-            return itemName;
+            return;
+
         getSuffix = true;
         if(Random.Range((int)0, 2) == 0)
             getSuffix = false;
@@ -36,13 +39,12 @@ public class ItemModifyerGenerator {
         for(int i = 0; i < imToGen; i++) {
             
             if(getSuffix)
-                itemName = itemName + " " + itemModifyers[itemModifyer].GetSuffix();
+                outputName = outputName + " " + itemModifyers[itemModifyer].GetSuffix();
             else
-                itemName = itemModifyers[itemModifyer].GetPrefix() + " " + itemName;
+                outputName = itemModifyers[itemModifyer].GetPrefix() + " " + outputName;
             getSuffix = !getSuffix;
-            //itemStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
+            outputStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
         }
-        return itemName;
     }
     private string GetIMPrefix(EItemModifyer modifyer) {
         return GetIM(modifyer).GetPrefix();
@@ -67,7 +69,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.DEXTERITY, 
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, 1, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                 new string[] { "Nimble", "Hardy", "Dexterous" },
                 new string[] { "of Dexterity", "of Dodging", "of Nimbleness" }
                 )
@@ -77,7 +79,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.EQUIP_LOAD,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, -1, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 0, 0, -1, 0, 0, 0, 0),
                 new string[] { "Light", "Hole Filled" },
                 new string[] { "of Low Equip Weight" }
                 )
@@ -87,7 +89,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.GOLD_VALUE,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, 0, 0, 0, 1, 0),
+                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
                 new string[] { "Gold Plated", "Golden", "Extravagent" },
                 new string[] { "of Wealth", "of the Wealthy", "of Gold" }
                 )
@@ -97,7 +99,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.HEALTH,
             new ItemModifyer(
-                new ItemStats(0, 1, 0, 0, 0, 0, 0, 0, 0),
+                new ItemStats(0, 1, 0, 0, 0, 0, 0, 0, 0, 0),
                 new string[] { "Sturdy", "Hardy", "Tough" },
                 new string[] { "of Sturdyness", "of Good Health" }
                 )
@@ -107,7 +109,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.INTELECT,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 1, 0, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
                 new string[] { "Witty", "Educated" },
                 new string[] { "That Is Smarter Than You", "of Intelect", "of Information" }
                 )
@@ -117,7 +119,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.SCRAP_VALUE,
             new ItemModifyer(
-                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 1),
+                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
                 new string[] { "sCrappy", "Junky", "Junkyark" },
                 new string[] { "of Junk", "of Metal Scraps" }
                 )
@@ -127,7 +129,7 @@ public class ItemModifyerGenerator {
         itemModifyers.Add(
             EItemModifyer.STRENGTH,
             new ItemModifyer(
-                new ItemStats(0, 0, 1, 0, 0, 0, 0, 0, 0),
+                new ItemStats(0, 0, 0, 1, 0, 0, 0, 0, 0, 0),
                 new string[] { "Strong", "Swole", "Bulky" },
                 new string[] { "of Swoleness", "of Power", "of Ripped Abs" }
                 )

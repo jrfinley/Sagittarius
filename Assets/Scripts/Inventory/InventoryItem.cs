@@ -15,6 +15,7 @@ public class InventoryItem : MonoBehaviour
     public int dexterity;
     public int gold;
     public int scrap;
+    public EItemType itemType;
 
     public int id;
 
@@ -22,15 +23,16 @@ public class InventoryItem : MonoBehaviour
 
     void Awake()
     {
-        item = ItemGenerator.GenerateItem();
+        item = ItemGenerator.GenerateRandomItem();
 
         displayName = item.Name;
         desc = item.FlavorText;
-        strength = (int)item.ItemStats.Strength;
-        intellect = (int)item.ItemStats.Intelect;
-        dexterity = (int)item.ItemStats.Dexterity;
-        gold = (int)item.ItemStats.GoldValue;
-        scrap = (int)item.ItemStats.ScrapValue;
+        strength = (int)item.Stats.Strength;
+        intellect = (int)item.Stats.Intelect;
+        dexterity = (int)item.Stats.Dexterity;
+        gold = (int)item.Stats.GoldValue;
+        scrap = (int)item.Stats.ScrapValue;
+        itemType = item.Types.ItemType;
 
         id = item.ID;
     }
