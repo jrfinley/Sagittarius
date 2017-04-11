@@ -144,7 +144,7 @@ public class Actor : MonoBehaviour
         }
 
 
-        playerParty.AddPartyMember(1, "Chad", ECharacterType.WARRIOR, 100);
+        playerParty.AddPartyMember(1, "Default");
         //assign stuff
         playerParty.characters[0].Name = data.charName1;
         playerParty.characters[0].Level = data.charLevel1;
@@ -156,7 +156,7 @@ public class Actor : MonoBehaviour
         playerParty.characters[0].EquipmentCapacity = data.charEquipCap1;
         playerParty.characters[0].CharacterType = data.charType1;
 
-        playerParty.AddPartyMember(2, "bob", ECharacterType.WARRIOR, 100);
+        playerParty.AddPartyMember(2, "Default");
         //assign stuff
         playerParty.characters[1].Name = data.charName2;
         playerParty.characters[1].Level = data.charLevel2;
@@ -168,7 +168,7 @@ public class Actor : MonoBehaviour
         playerParty.characters[1].EquipmentCapacity = data.charEquipCap2;
         playerParty.characters[1].CharacterType = data.charType2;
 
-        playerParty.AddPartyMember(3, "Chad", ECharacterType.WARRIOR, 100);
+        playerParty.AddPartyMember(3, "Default");
         //assign stuff
         playerParty.characters[2].Name = data.charName3;
         playerParty.characters[2].Level = data.charLevel3;

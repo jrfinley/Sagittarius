@@ -5,10 +5,6 @@ using UnityEngine;
 public class BaseCharacter : MonoBehaviour
 {
     //Serialized almost all stats for easy testing and balancing purposes
-    public delegate void BasicFunction();
-    public event BasicFunction OnPartyMove;
-    public event BasicFunction OnBattleStart;
-
     private bool dead;
 
     [SerializeField]
@@ -31,7 +27,9 @@ public class BaseCharacter : MonoBehaviour
 
     [SerializeField]
     private Sprite icon;
-        
+
+    public bool isUnlocked = true;
+
     public Item armor;
     public Item leftHand;
     public Item rightHand;
