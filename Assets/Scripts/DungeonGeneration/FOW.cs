@@ -11,12 +11,12 @@ public class FOW : MonoBehaviour
 
     public float lerpSpeed;
 
-    private enum STATE
+    public enum STATE
     {
         Unseen, Seeing, Seen
     };
 
-    private STATE currentState;
+    public STATE currentState;
 
     void Start ()
     {

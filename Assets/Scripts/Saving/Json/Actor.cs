@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Actor : MonoBehaviour
 {
@@ -25,8 +26,14 @@ public class Actor : MonoBehaviour
 
     public CurrencyUI currencyUI;
 
+    public CharacterManager characterManager;
+
+    public FOW fogOfWar;
+
+
     void Start()
     {
+        characterManager = FindObjectOfType<CharacterManager>();
         playerParty = FindObjectOfType<PlayerParty>();
         data.playerParty = FindObjectOfType<PlayerParty>();
         inventoryDisplay = FindObjectOfType<InventoryDisplay>();
@@ -62,47 +69,64 @@ public class Actor : MonoBehaviour
         }
 
         #region
-        //Saves player party info
-        foreach (BaseCharacter character in playerParty.characters)
-        {
-            int counter = 1;
+        //Saves Character info
+        //0
+        data.characterName0 = characterManager.allCharacters[0].Name;
+        data.characterLevel0 = characterManager.allCharacters[0].Level;
+        data.characterHealth0 = characterManager.allCharacters[0].MaxHealth;
+        data.characterStrength0 = characterManager.allCharacters[0].Strength;
+        data.characterDexterity0 = characterManager.allCharacters[0].Dexterity;
+        data.characterIntellect0 = characterManager.allCharacters[0].Intelect;
+        data.characterExperience0 = characterManager.allCharacters[0].Experience;
+        data.characterEquipCap0 = characterManager.allCharacters[0].EquipmentCapacity;
+        data.characterType0 = characterManager.allCharacters[0].CharacterType;
+        data.characterUnlocked0 = characterManager.allCharacters[0].isUnlocked;
 
-            data.charName1 = playerParty.characters[0].Name;
-            data.charLevel1 = playerParty.characters[0].Level;
-            data.charHealth1 = playerParty.characters[0].MaxHealth;
-            data.charStr1 = playerParty.characters[0].Strength;
-            data.charDex1 = playerParty.characters[0].Dexterity;
-            data.charInt1 = playerParty.characters[0].Intelect;
-            data.charExp1 = playerParty.characters[0].Experience;
-            data.charEquipCap1 = playerParty.characters[0].EquipmentCapacity;
-            data.charType1 = playerParty.characters[0].CharacterType;
+        //1
+        data.characterName1 = characterManager.allCharacters[1].Name;
+        data.characterLevel1 = characterManager.allCharacters[1].Level;
+        data.characterHealth1 = characterManager.allCharacters[1].MaxHealth;
+        data.characterStrength1 = characterManager.allCharacters[1].Strength;
+        data.characterDexterity1 = characterManager.allCharacters[1].Dexterity;
+        data.characterIntellect1 = characterManager.allCharacters[1].Intelect;
+        data.characterExperience1 = characterManager.allCharacters[1].Experience;
+        data.characterEquipCap1 = characterManager.allCharacters[1].EquipmentCapacity;
+        data.characterType1 = characterManager.allCharacters[1].CharacterType;
+        data.characterUnlocked1 = characterManager.allCharacters[1].isUnlocked;
 
-            data.charName2 = playerParty.characters[1].Name;
-            data.charLevel2 = playerParty.characters[1].Level;
-            data.charHealth2 = playerParty.characters[1].MaxHealth;
-            data.charStr2 = playerParty.characters[1].Strength;
-            data.charDex2 = playerParty.characters[1].Dexterity;
-            data.charInt2 = playerParty.characters[1].Intelect;
-            data.charExp2 = playerParty.characters[1].Experience;
-            data.charEquipCap2 = playerParty.characters[1].EquipmentCapacity;
-            data.charType2 = playerParty.characters[1].CharacterType;
+        //2
+        data.characterName2 = characterManager.allCharacters[2].Name;
+        data.characterLevel2 = characterManager.allCharacters[2].Level;
+        data.characterHealth2 = characterManager.allCharacters[2].MaxHealth;
+        data.characterStrength2 = characterManager.allCharacters[2].Strength;
+        data.characterDexterity2 = characterManager.allCharacters[2].Dexterity;
+        data.characterIntellect2 = characterManager.allCharacters[2].Intelect;
+        data.characterExperience2 = characterManager.allCharacters[2].Experience;
+        data.characterEquipCap2 = characterManager.allCharacters[2].EquipmentCapacity;
+        data.characterType2 = characterManager.allCharacters[2].CharacterType;
+        data.characterUnlocked2 = characterManager.allCharacters[2].isUnlocked;
 
-            data.charName3 = playerParty.characters[2].Name;
-            data.charLevel3 = playerParty.characters[2].Level;
-            data.charHealth3 = playerParty.characters[2].MaxHealth;
-            data.charStr3 = playerParty.characters[2].Strength;
-            data.charDex3 = playerParty.characters[2].Dexterity;
-            data.charInt3 = playerParty.characters[2].Intelect;
-            data.charExp3 = playerParty.characters[2].Experience;
-            data.charEquipCap3 = playerParty.characters[2].EquipmentCapacity;
-            data.charType3 = playerParty.characters[2].CharacterType;
-            counter++;
-        }
+        //3
+        data.characterName3 = characterManager.allCharacters[3].Name;
+        data.characterLevel3 = characterManager.allCharacters[3].Level;
+        data.characterHealth3 = characterManager.allCharacters[3].MaxHealth;
+        data.characterStrength3 = characterManager.allCharacters[3].Strength;
+        data.characterDexterity3 = characterManager.allCharacters[3].Dexterity;
+        data.characterIntellect3 = characterManager.allCharacters[3].Intelect;
+        data.characterExperience3 = characterManager.allCharacters[3].Experience;
+        data.characterEquipCap3 = characterManager.allCharacters[3].EquipmentCapacity;
+        data.characterType3 = characterManager.allCharacters[3].CharacterType;
+        data.characterUnlocked3 = characterManager.allCharacters[3].isUnlocked;
         #endregion
     }
 
     void LoadData()
     {
+        if (this.gameObject.GetComponent<DestroyOnLoad>())
+        {
+            Destroy(this.gameObject);
+        }
+
         //currencies loaded
         currencyManager = GetComponent<CurrencyManager>();
         currencyUI = FindObjectOfType<CurrencyUI>();
@@ -115,12 +139,6 @@ public class Actor : MonoBehaviour
 
         data.playerParty = FindObjectOfType<PlayerParty>();
         playerParty = FindObjectOfType<PlayerParty>();
-
-        //kills this object if its the first version
-        if (this.gameObject.GetComponent<DestroyOnLoad>())
-        {
-            Destroy(this.gameObject);
-        }
 
         //loads item/ inventory info
         inventoryDisplay.items = data.items;
@@ -142,44 +160,58 @@ public class Actor : MonoBehaviour
             itemTypes.Add(itemType);
             Debug.Log("InventoryItemType = " + itemType.ToString());
         }
+        
 
+        #region
+        characterManager = FindObjectOfType<CharacterManager>();
+        //character 0
+        characterManager.allCharacters[0].Name = data.characterName0;
+        characterManager.allCharacters[0].Level = data.characterLevel0;
+        characterManager.allCharacters[0].MaxHealth = data.characterHealth0;
+        characterManager.allCharacters[0].Strength = data.characterStrength0;
+        characterManager.allCharacters[0].Dexterity = data.characterDexterity0;
+        characterManager.allCharacters[0].Intelect = data.characterIntellect0;
+        characterManager.allCharacters[0].Experience = data.characterExperience0;
+        characterManager.allCharacters[0].EquipmentCapacity = data.characterEquipCap0;
+        characterManager.allCharacters[0].CharacterType = data.characterType0;
+        characterManager.allCharacters[0].isUnlocked = data.characterUnlocked0;
 
-        playerParty.AddPartyMember(1, "Default");
-        //assign stuff
-        playerParty.characters[0].Name = data.charName1;
-        playerParty.characters[0].Level = data.charLevel1;
-        playerParty.characters[0].MaxHealth = data.charHealth1;
-        playerParty.characters[0].Strength = data.charStr1;
-        playerParty.characters[0].Dexterity = data.charDex1;
-        playerParty.characters[0].Intelect = data.charInt1;
-        playerParty.characters[0].Experience = data.charExp1;
-        playerParty.characters[0].EquipmentCapacity = data.charEquipCap1;
-        playerParty.characters[0].CharacterType = data.charType1;
+        //character 1
+        characterManager.allCharacters[1].Name = data.characterName1;
+        characterManager.allCharacters[1].Level = data.characterLevel1;
+        characterManager.allCharacters[1].MaxHealth = data.characterHealth1;
+        characterManager.allCharacters[1].Strength = data.characterStrength1;
+        characterManager.allCharacters[1].Dexterity = data.characterDexterity1;
+        characterManager.allCharacters[1].Intelect = data.characterIntellect1;
+        characterManager.allCharacters[1].Experience = data.characterExperience1;
+        characterManager.allCharacters[1].EquipmentCapacity = data.characterEquipCap1;
+        characterManager.allCharacters[1].CharacterType = data.characterType1;
+        characterManager.allCharacters[1].isUnlocked = data.characterUnlocked1;
 
-        playerParty.AddPartyMember(2, "Default");
-        //assign stuff
-        playerParty.characters[1].Name = data.charName2;
-        playerParty.characters[1].Level = data.charLevel2;
-        playerParty.characters[1].MaxHealth = data.charHealth2;
-        playerParty.characters[1].Strength = data.charStr2;
-        playerParty.characters[1].Dexterity = data.charDex2;
-        playerParty.characters[1].Intelect = data.charInt2;
-        playerParty.characters[1].Experience = data.charExp2;
-        playerParty.characters[1].EquipmentCapacity = data.charEquipCap2;
-        playerParty.characters[1].CharacterType = data.charType2;
+        //character 2
+        characterManager.allCharacters[2].Name = data.characterName2;
+        characterManager.allCharacters[2].Level = data.characterLevel2;
+        characterManager.allCharacters[2].MaxHealth = data.characterHealth2;
+        characterManager.allCharacters[2].Strength = data.characterStrength2;
+        characterManager.allCharacters[2].Dexterity = data.characterDexterity2;
+        characterManager.allCharacters[2].Intelect = data.characterIntellect2;
+        characterManager.allCharacters[2].Experience = data.characterExperience2;
+        characterManager.allCharacters[2].EquipmentCapacity = data.characterEquipCap2;
+        characterManager.allCharacters[2].CharacterType = data.characterType2;
+        characterManager.allCharacters[2].isUnlocked = data.characterUnlocked2;
 
-        playerParty.AddPartyMember(3, "Default");
-        //assign stuff
-        playerParty.characters[2].Name = data.charName3;
-        playerParty.characters[2].Level = data.charLevel3;
-        playerParty.characters[2].MaxHealth = data.charHealth3;
-        playerParty.characters[2].Strength = data.charStr3;
-        playerParty.characters[2].Dexterity = data.charDex3;
-        playerParty.characters[2].Intelect = data.charInt3;
-        playerParty.characters[2].Experience = data.charExp3;
-        playerParty.characters[2].EquipmentCapacity = data.charEquipCap3;
-        playerParty.characters[2].CharacterType = data.charType3;
-
+        //character 3
+        characterManager.allCharacters[3].Name = data.characterName3;
+        characterManager.allCharacters[3].Level = data.characterLevel3;
+        characterManager.allCharacters[3].MaxHealth = data.characterHealth3;
+        characterManager.allCharacters[3].Strength = data.characterStrength3;
+        characterManager.allCharacters[3].Dexterity = data.characterDexterity3;
+        characterManager.allCharacters[3].Intelect = data.characterIntellect3;
+        characterManager.allCharacters[3].Experience = data.characterExperience3;
+        characterManager.allCharacters[3].EquipmentCapacity = data.characterEquipCap3;
+        characterManager.allCharacters[3].CharacterType = data.characterType3;
+        characterManager.allCharacters[3].isUnlocked = data.characterUnlocked3;
+        #endregion
     }
 
     public void ApplyData()
@@ -219,38 +251,56 @@ public class ActorData
     public float scrapValue;
     public float foodValue;
 
+
+
+    #region
     //player party statistics
     public PlayerParty playerParty;
-    //1
-    public string charName1;
-    public int charLevel1;
-    public int charHealth1;
-    public int charStr1;
-    public int charDex1;
-    public int charInt1;
-    public int charExp1;
-    public int charEquipCap1;
-    public ECharacterType charType1; 
-    //2
-    public string charName2;
-    public int charLevel2;
-    public int charHealth2;
-    public int charStr2;
-    public int charDex2;
-    public int charInt2;
-    public int charExp2;
-    public int charEquipCap2;
-    public ECharacterType charType2;
+    //npc 0
+    public string characterName0;
+    public int characterLevel0;
+    public int characterHealth0;
+    public int characterStrength0;
+    public int characterDexterity0;
+    public int characterIntellect0;
+    public int characterExperience0;
+    public int characterEquipCap0;
+    public ECharacterType characterType0;
+    public bool characterUnlocked0;
+    //npc 1
+    public string characterName1;
+    public int characterLevel1;
+    public int characterHealth1;
+    public int characterStrength1;
+    public int characterDexterity1;
+    public int characterIntellect1;
+    public int characterExperience1;
+    public int characterEquipCap1;
+    public ECharacterType characterType1;
+    public bool characterUnlocked1;
 
-    //3
-    public string charName3;
-    public int charLevel3;
-    public int charHealth3;
-    public int charStr3;
-    public int charDex3;
-    public int charInt3;
-    public int charExp3;
-    public int charEquipCap3;
-    public ECharacterType charType3;
+    //npc 2
+    public string characterName2;
+    public int characterLevel2;
+    public int characterHealth2;
+    public int characterStrength2;
+    public int characterDexterity2;
+    public int characterIntellect2;
+    public int characterExperience2;
+    public int characterEquipCap2;
+    public ECharacterType characterType2;
+    public bool characterUnlocked2;
 
+    //npc 3
+    public string characterName3;
+    public int characterLevel3;
+    public int characterHealth3;
+    public int characterStrength3;
+    public int characterDexterity3;
+    public int characterIntellect3;
+    public int characterExperience3;
+    public int characterEquipCap3;
+    public ECharacterType characterType3;
+    public bool characterUnlocked3;
+    #endregion
 }
