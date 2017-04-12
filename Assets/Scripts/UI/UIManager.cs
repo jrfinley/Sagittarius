@@ -132,8 +132,9 @@ public class UIManager : MonoBehaviour
 
     public void DisplayCombatPanel() //Eventually pass in an array of enemy-classes and display their stats dynamically.
     {
-        CreateNewDialogueBox("You are under attack!");
-        combatPanel.gameObject.SetActive(true);
+        //CreateNewDialogueBox("You are under attack!");
+        //combatPanel.gameObject.SetActive(true);
+        SceneManager.LoadScene("Combat", LoadSceneMode.Additive);
         CloseMenu();
         //combatPanel.CreateCombatPanel();
     }
