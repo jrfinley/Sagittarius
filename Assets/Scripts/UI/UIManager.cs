@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,12 +12,16 @@ public class UIManager : MonoBehaviour
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
     public Text[] currencyTexts; //0-Gold, 1-Food, 2-Scrap
+    public List<HeroCard> heroCards = new List<HeroCard>();
     public Image[] heroIcons;
     int selectedHero = 0;
     public RectTransform MasterMenuBacking;
     public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
+    public CharacterStats characterStats;
     CanvasScaler canvasScaler;
+    PlayerParty playerParty;
+
     void Start()
     {
         canvasScaler = GetComponent<CanvasScaler>();
@@ -30,6 +35,7 @@ public class UIManager : MonoBehaviour
         SetCurrencyGold(0);
         SetCurrencyFood(0);
         SetCurrencyScrap(0);
+        playerParty = FindObjectOfType<PlayerParty>();
         Canvas.ForceUpdateCanvases();
     }
 
@@ -54,6 +60,7 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.one;
         menuToggleButtons[0].SetActive(false);
         menuToggleButtons[1].SetActive(true);
+        SelectHero(selectedHero);
         Canvas.ForceUpdateCanvases();
     }
 
@@ -69,6 +76,11 @@ public class UIManager : MonoBehaviour
 
     public void SelectHero(int hero)
     {
+        if(playerParty == null)
+        {
+            Debug.LogError("No PlayerParty found!");
+            return;
+        }
         if(hero == selectedHero)
         {
             Toggle t = heroIcons[hero].GetComponent<Toggle>();
@@ -80,6 +92,18 @@ public class UIManager : MonoBehaviour
         selectedHero = hero;
         toggle = heroIcons[selectedHero].GetComponent<Toggle>();
         heroIcons[hero].GetComponent<Image>().color = toggle.colors.pressedColor;
+        UpdateHeroStats(hero);
+    }
+
+    public void UpdateHeroStats(int hero)
+    {
+        if (playerParty.characters.Length < 1 || playerParty.characters[hero] == null)
+            Debug.LogWarning("Player party is empty or hero index is out of range! No stats updated.");
+        else
+        {
+            characterStats.DrawCharacterStatistics(playerParty.characters[hero]);
+            heroCards[hero].SetHealthBar(playerParty.characters[hero].Health, playerParty.characters[hero].MaxHealth); //Not robust. May want to have this as part of the character class.
+        }
     }
 
     public void DisplayStatsPanel()
