@@ -19,14 +19,8 @@ public class Room : MonoBehaviour
         }
     }
 
-    [SerializeField] private ConnectionData _connections;
+    [SerializeField] protected ConnectionData _connections;
     public ConnectionData Connections { get { return _connections; } }
-
-    [SerializeField] private bool _isNormalRoomSize = false;
-    public bool IsNormalRoomSize { get { return _isNormalRoomSize; } }
-
-    [SerializeField] private bool _isQuadRoom = false;
-    public bool IsQuadRoom { get { return _isQuadRoom; } }
 
     public void RemoveConnection(Transform connectionToRemove)
     {
@@ -41,7 +35,45 @@ public class Room : MonoBehaviour
         }
     }
 
-    private List<Transform> _GetListToRemove(Transform connectionToRemove)
+    public virtual Vector3 GetOffset(Transform connection, Transform connectionToConnect)
+    {
+        return connection.position - connectionToConnect.position;
+        //return connection.transform.forward * 0.5f;
+    }
+
+    public Transform GetConnectionToConnect(Transform connectionToConnectTo)
+    {
+        Vector2 transform = _GetTransformDirection(connectionToConnectTo);
+
+        if (transform.x > 0)
+            return _connections.eastConnections[Random.Range(0, _connections.eastConnections.Count())];
+        else if (transform.x < 0)
+            return _connections.westConnections[Random.Range(0, _connections.westConnections.Count())];
+        else if (transform.y > 0)
+            return _connections.northConnections[Random.Range(0, _connections.northConnections.Count())];
+        else if (transform.y < 0)
+            return _connections.southConnections[Random.Range(0, _connections.southConnections.Count())];
+
+        Debug.LogError("Couldn't find room transfrom from direction: " + transform);
+        return null;
+    }
+
+    protected virtual Vector2 _GetTransformDirection(Transform connectionToConnectTo)
+    {
+        if (connectionToConnectTo.localPosition.x > 0)
+            return new Vector2(-1, 0);
+        else if (connectionToConnectTo.localPosition.x < 0)
+            return new Vector2(1, 0);
+        else if (connectionToConnectTo.localPosition.z > 0)
+            return new Vector2(0, -1);
+        else if (connectionToConnectTo.localPosition.z < 0)
+            return new Vector2(0, 1);
+
+        Debug.LogError("Couldn't find transform of connection");
+        return Vector2.zero;
+    }
+
+    protected virtual List<Transform> _GetListToRemove(Transform connectionToRemove)
     {
         if (connectionToRemove.localPosition.x > 0)
             return _connections.eastConnections;

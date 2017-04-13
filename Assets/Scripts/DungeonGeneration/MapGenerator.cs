@@ -35,36 +35,34 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap(int seed = 0)
     {
-        _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
+        _SetSeed(seed);
         _LoadRooms();
         _GenerateMap();
     }
 
     private void _GenerateMap()
     {
-        Random.seed = _seed;
         _GenerateMainBranch();
     }
     
     private void _GenerateMainBranch()
     {
+        List<Transform> spawnRoomConnections = _CreateSpawnRoomAndGetConnections();
+        
+        Room room = _CreateRoom(_GetRandomConnection(spawnRoomConnections));
+        int dungeonDistance = Random.Range(distanceToFinalRoom.minimum, distanceToFinalRoom.maximum);
+
+        for (int i = 0; i < dungeonDistance; i++)
+        {
+            room = _CreateRoom(_GetRandomConnection(room.Connections.AllConnections()));
+        }
+    }
+
+    private List<Transform> _CreateSpawnRoomAndGetConnections()
+    {
         GameObject spawnRoom = _GetUniqueRoom("Spawn");
         Room spawnRoomData = spawnRoom.GetComponent<Room>();
-        List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
-
-        int index = Random.Range(0, spawnRoomConnections.Count);
-        Transform connectionToStart = spawnRoomConnections[index];
-        Room room = _CreateRoom(connectionToStart);
-        int distance = Random.Range(distanceToFinalRoom.minimum, distanceToFinalRoom.maximum);
-
-        for (int i = 0; i < distance; i++)
-        {
-            index = Random.Range(0, room.Connections.AllConnections().Count());
-            List<Transform> roomConnections = room.Connections.AllConnections();
-            connectionToStart = roomConnections[index];
-
-            room = _CreateRoom(connectionToStart);
-        }
+        return spawnRoomData.Connections.AllConnections();
     }
 
     private GameObject _GetUniqueRoom(string roomName = "", Vector3 position = default(Vector3))
@@ -90,24 +88,12 @@ public class MapGenerator : MonoBehaviour
     private Room _CreateRoom(Transform connection)
     {
         int index = Random.Range(0, _normalRooms.Count);
-        GameObject tempRoom = Instantiate(_normalRooms[1], connection.position, Quaternion.identity) as GameObject;
+        GameObject tempRoom = Instantiate(_normalRooms[index], connection.position, Quaternion.identity) as GameObject;
         Room roomData = tempRoom.GetComponent<Room>();
 
-        Vector3 localOffset = connection.position;
-        Transform connectionToConnect = null;
-        if (roomData.IsNormalRoomSize)
-        {
-            localOffset += connection.transform.forward * 0.5f;
-            connectionToConnect = _GetConnection(_GetTransformDirection(connection), roomData);
-        }
-        else if (roomData.IsQuadRoom)
-        {
-            Vector2 transformToSpawn = _GetTransformDirection(connection);
-            connectionToConnect = _GetConnection(transformToSpawn, roomData, true);
-            localOffset += ((connectionToConnect.position - connection.position) - (connection.forward * 0.5f));
-        }
+        Transform connectionToConnect = roomData.GetConnectionToConnect(connection);
+        tempRoom.transform.position += roomData.GetOffset(connection, connectionToConnect);
 
-        tempRoom.transform.position = localOffset;
         //TODO: Add logic to try and blend in the room
         if (!_validator.CanSpawn(roomData, tempRoom, _activeRooms))
         {
@@ -121,41 +107,22 @@ public class MapGenerator : MonoBehaviour
         return roomData;
     }
 
-    private Transform _GetConnection(Vector2 transform, Room room, bool isQuad = false)
+    private Transform _GetRandomConnection(List<Transform> connections)
     {
-        int index = isQuad ? Random.Range(0, 2) : 0;
-
-        if (transform.x > 0)
-            return room.Connections.eastConnections[index];
-        else if (transform.x < 0)
-            return room.Connections.westConnections[index];
-        else if (transform.y > 0)
-            return room.Connections.northConnections[index];
-        else if (transform.y < 0)
-            return room.Connections.southConnections[index];
-
-        Debug.LogError("Couldn't find room transfrom from direction: " + transform);
-        return null;
-    }
-
-    private Vector2 _GetTransformDirection(Transform connection)
-    {
-        if (connection.position.x > 0)
-            return new Vector2(-1, 0);
-        else if (connection.position.x < 0)
-            return new Vector2(1, 0);
-        else if (connection.position.z > 0)
-            return new Vector2(0, -1);
-        else if (connection.position.z < 0)
-            return new Vector2(0, 1);
-
-        Debug.LogError("Couldn't find transform of connection");
-        return Vector2.zero;
+        int index = Random.Range(0, connections.Count);
+        Transform connectionToStart = connections[index];
+        return connectionToStart;
     }
 
     private void _LoadRooms()
     {
         _normalRooms = Resources.LoadAll("Dungeons/" + _levelToLoad + "/Rooms", typeof(GameObject)).Cast<GameObject>().ToList();
         _uniqueRooms = Resources.LoadAll("Dungeons/" + _levelToLoad + "/UniqueRooms", typeof(GameObject)).Cast<GameObject>().ToList();
+    }
+
+    private void _SetSeed(int seed = 0)
+    {
+        _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
+        Random.seed = _seed;
     }
 }
