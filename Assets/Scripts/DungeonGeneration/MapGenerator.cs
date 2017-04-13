@@ -111,8 +111,7 @@ public class MapGenerator : MonoBehaviour
         //TODO: Add logic to try and blend in the room
         if (!_validator.CanSpawn(roomData, tempRoom, _activeRooms))
         {
-            Debug.Log("finding another location");
-            _CreateRoom(connection);
+            Destroy(tempRoom);
         }
         else
         {
