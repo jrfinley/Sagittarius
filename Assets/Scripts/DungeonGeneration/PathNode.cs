@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class PathNode
 {
     public Vector3 position = Vector3.zero;
-    public List<Vector2> branchesFromNode = null;
     public Room roomToSpawn = null;
     public int indexOfRoom = 1;
     public Vector3 enterConnection = Vector3.zero;

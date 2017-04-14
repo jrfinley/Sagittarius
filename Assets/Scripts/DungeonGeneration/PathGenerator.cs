@@ -71,6 +71,7 @@ public class PathGenerator
 
         if (PathValidator.RoomInPath(position))
         {
+            //TODO: try and merge rooms
             Debug.Log("Room on my path: " + position);
             return null;
         }
@@ -93,11 +94,6 @@ public class PathGenerator
     private void _SetPathRoom(PathNode pathNode, Vector3 enterPosition)
     {
         pathNode.roomToSpawn = _generator.GetRandomRoom(out pathNode.indexOfRoom).GetComponent<Room>();
-        pathNode.enterConnection = _Inverse(enterPosition);
-    }
-
-    private Vector3 _Inverse(Vector3 originalVector)
-    {
-        return originalVector * -1f;
+        pathNode.enterConnection = enterPosition * -1;
     }
 }
