@@ -13,6 +13,8 @@ public class Room : MonoBehaviour
         public List<Transform> eastConnections;
         public List<Transform> westConnections;
 
+        public List<Transform> closedConnections;
+
         public List<Transform> AllConnections()
         {
             return northConnections.Concat(southConnections).Concat(eastConnections).Concat(westConnections).ToList();
@@ -25,11 +27,32 @@ public class Room : MonoBehaviour
     public void RemoveConnection(Transform connectionToRemove)
     {
         List<Transform> list = _GetListToRemove(connectionToRemove);
-        foreach (Transform connection in list)
+        list.Remove(connectionToRemove);
+    }
+
+    public void JoinConnection(Vector3 connectionToClose)
+    {
+        foreach (Transform connection in _connections.AllConnections())
         {
-            if (connectionToRemove.position == connection.position)
+            if (connection.localPosition == connectionToClose)
             {
-                list.Remove(connectionToRemove);
+                _connections.closedConnections.Add(connection);
+                connection.GetComponent<ConnectionGizmos>().color = Color.green;
+                RemoveConnection(connection);
+                break;
+            }
+        }
+    }
+
+    public void BlockConnection(Transform connectionToBlock)
+    {
+        foreach (Transform connection in _connections.AllConnections())
+        {
+            if (connection == connectionToBlock)
+            {
+                _connections.closedConnections.Add(connection);
+                connection.GetComponent<ConnectionGizmos>().color = Color.red;
+                RemoveConnection(connection);
                 break;
             }
         }
@@ -38,7 +61,6 @@ public class Room : MonoBehaviour
     public virtual Vector3 GetOffset(Transform connection, Transform connectionToConnect)
     {
         return connection.position - connectionToConnect.position;
-        //return connection.transform.forward * 0.5f;
     }
 
     public Transform GetConnectionToConnect(Transform connectionToConnectTo)
@@ -60,13 +82,13 @@ public class Room : MonoBehaviour
 
     protected virtual Vector2 _GetTransformDirection(Transform connectionToConnectTo)
     {
-        if (connectionToConnectTo.localPosition.x > 0)
+        if (connectionToConnectTo.localPosition.x > 0.25)
             return new Vector2(-1, 0);
-        else if (connectionToConnectTo.localPosition.x < 0)
+        else if (connectionToConnectTo.localPosition.x < -0.25)
             return new Vector2(1, 0);
-        else if (connectionToConnectTo.localPosition.z > 0)
+        else if (connectionToConnectTo.localPosition.z > 0.25)
             return new Vector2(0, -1);
-        else if (connectionToConnectTo.localPosition.z < 0)
+        else if (connectionToConnectTo.localPosition.z < -0.25)
             return new Vector2(0, 1);
 
         Debug.LogError("Couldn't find transform of connection");
