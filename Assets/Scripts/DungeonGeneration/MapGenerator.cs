@@ -10,6 +10,9 @@ public class MapGenerator : MonoBehaviour
     private int _seed = 0;
     private string _levelToLoad = "TestDungeon";
 
+    public int trasureRooms = 2;
+    public int monsterRooms = 5;
+
     private PathGenerator _pathGenerator = null;
 
     private List<GameObject> _normalRooms = new List<GameObject>();
@@ -19,6 +22,9 @@ public class MapGenerator : MonoBehaviour
 
     private List<PathNode> _pathLine = new List<PathNode>();
     private List<List<PathNode>> _allPaths = new List<List<PathNode>>();
+
+    private List<GameObject> _rooms = new List<GameObject>();
+    private List<List<GameObject>> _allRooms = new List<List<GameObject>>();
 
     void Start()
     {
@@ -49,6 +55,8 @@ public class MapGenerator : MonoBehaviour
 
         _GenerateBranches();
         _GenerateRooms(finalRoom, finalRoomData);
+        _GenerateMonsters();
+        _GenerateTreasure();
     }
 
     private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
@@ -84,6 +92,8 @@ public class MapGenerator : MonoBehaviour
                     _UpdateConnections(tempRoom, node);
 
                     tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
+
+                    _rooms.Add(temp);
                 }
                 else
                 {
@@ -91,6 +101,7 @@ public class MapGenerator : MonoBehaviour
                     forcedRoom.JoinConnection(node.enterConnection * -1);
                 }
             }
+            _allRooms.Add(_rooms);
         }
         foreach (GameObject tempObject in _pathGenerator.tempObjects)
         {
@@ -111,6 +122,31 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+
+    private void _GenerateMonsters()
+    {
+        for (int i = 0; i < monsterRooms; i++)
+        {
+            int monsterIndex = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[monsterIndex];
+            int roomIndex = Random.Range(0, rooms.Count);
+            rooms[roomIndex].GetComponent<Room>().BecomeMonsterRoom();
+            rooms.RemoveAt(roomIndex);
+        }
+    }
+
+    private void _GenerateTreasure()
+    {
+        for (int i = 0; i < trasureRooms; i++)
+        {
+            int monsterIndex = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[monsterIndex];
+            int roomIndex = Random.Range(0, rooms.Count);
+            rooms[roomIndex].GetComponent<Room>().BecomeTreasureRoom();
+            rooms.RemoveAt(roomIndex);
+        }
+    }
+
 
     private void _UpdateConnections(Room tempRoom, PathNode node)
     {

@@ -51,6 +51,7 @@ public class PathGenerator
     private PathNode _ForcePathForUniqueSpawn(PathNode previousNode, Vector3 endingDirection)
     {
         Vector3 oldDirection = previousNode.enterConnection * -1;
+        previousNode.exitConnection = endingDirection;
 
         List<Transform> connectionList = previousNode.roomToSpawn.Connections.AllConnections();
         Vector3 forcedDirection = Vector3.zero;
@@ -68,8 +69,6 @@ public class PathGenerator
                 }
             }
         }
-
-        Vector3 direction = _GetNewStartingDirection(previousNode.roomToSpawn, (forcedDirection * -1) / 2);
         PathNode node = _SetupNode(previousNode.position, endingDirection);
         node.exitConnection = forcedDirection / 2;
         PathNode newNode = _SetupNode(node.position, forcedDirection / 2);

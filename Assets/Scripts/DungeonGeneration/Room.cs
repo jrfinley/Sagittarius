@@ -81,6 +81,16 @@ public class Room : MonoBehaviour
         }
     }
 
+    public void BecomeMonsterRoom()
+    {
+        gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+    }
+
+    public void BecomeTreasureRoom()
+    {
+        gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+    }
+
     private List<Transform> _GetListToRemove(Transform connectionToRemove)
     {
         if (connectionToRemove.localPosition.x > 0)
