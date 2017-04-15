@@ -89,14 +89,6 @@ public class PathGenerator
 
             Vector3 newStartingDirection = newStartingDirection = _GetNewStartingDirection(previousNode.roomToSpawn);
             newNode.exitConnection = newStartingDirection;
-
-            //if (Random.value < 0.25f)
-            //{
-            //    Vector3 branchDirection = _GetNewStartingDirection(previousNode.roomToSpawn);
-            //    if (branchDirection != newNode.enterConnection && branchDirection != newNode.exitConnection)
-            //        newNode.branchConnections.Add(branchDirection);
-            //}
-
             newNode = _SetupNode(newNode.position, newStartingDirection);
             previousNode = newNode;
         }
@@ -149,10 +141,15 @@ public class PathGenerator
     {
         PathNode currentNode = new PathNode();
         currentNode.position = position;
-
-        if (PathValidator.RoomInPath(position))
+        GameObject pathNodeInWay = null;
+        if (PathValidator.RoomInPath(position, out pathNodeInWay))
         {
             //TODO: try and merge rooms
+            Room data = pathNodeInWay.GetComponent<Room>();
+
+            if (data != null)
+                _MergeBranch(data, enterDirection);
+
             Debug.Log("Room on my path: " + position);
             return null;
         }
@@ -164,21 +161,22 @@ public class PathGenerator
         }
     }
 
+    private void _MergeBranch(Room data, Vector3 direction)
+    {
+        List<Transform> connections = data.Connections.AllConnections();
+
+        foreach (Transform connection in connections)
+        {
+            if (connection.position == direction * -1)
+                data.JoinConnection(connection.position);
+        }
+    }
+
     private void _SpawnPathNodeTempObject(Vector3 position, PathNode currentNode)
     {
         GameObject tempObject = new GameObject("pathNode");
         tempObject.transform.position = position;
         tempObject.AddComponent<SphereCollider>().radius = 0.5f;
-        PathData d = tempObject.AddComponent<PathData>();
-
-        d.position = currentNode.position;
-        d.roomToSpawn = currentNode.roomToSpawn;
-        d.indexOfRoom = currentNode.indexOfRoom;
-        d.enterConnection = currentNode.enterConnection;
-        d.exitConnection = currentNode.exitConnection;
-        d.branchConnections = currentNode.branchConnections;
-        d.uniqueRoom = currentNode.uniqueRoom;
-
         tempObjects.Add(tempObject);
     }
 

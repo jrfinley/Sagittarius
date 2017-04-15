@@ -6,11 +6,15 @@ namespace Validator
 {
     public class PathValidator
     {
-        public static bool RoomInPath(Vector3 pointToCheck)
+        public static bool RoomInPath(Vector3 pointToCheck, out GameObject pathNode)
         {
             if (Physics.CheckSphere(pointToCheck, 0.1f))
+            {
+                Collider[] colliders = Physics.OverlapSphere(pointToCheck, 0.5f);
+                pathNode = colliders[0].gameObject;
                 return true;
-
+            }
+            pathNode = null;
             return false;
         }
 
@@ -18,44 +22,28 @@ namespace Validator
         {
             directionToCheck *= -1;
 
-            //prevent it from going backwards immediatly
             if (directionToCheck == directions[directions.Count - 1])
-            {
-                //Debug.Log("False: Went Backwards");
                 return false;
-            }
-
-            //prevent it from making U-Turns
+            
             if (directions.Count > 1 && directionToCheck == directions[directions.Count - 2])
-            {
-                //Debug.Log("False: U-Turn");
                 return false;
-            }
 
             //up, down, left, right
             Vector4 score = Vector4.zero;
             _GetScores(directions, out score);
 
             if (score.x > score.y)
-            {
                 if (!_DirectionScoreCheck(directionToCheck, directions, new Vector3(0f, 0f, -0.5f)))
                     return false;
-            }
             else if (score.y > score.x)
-            {
                 if (!_DirectionScoreCheck(directionToCheck, directions, new Vector3(0f, 0f, 0.5f)))
                     return false;
-            }
             if (score.z > score.w)
-            {
                 if (!_DirectionScoreCheck(directionToCheck, directions, new Vector3(-0.5f, 0f, 0f)))
                     return false;
-            }
             else if (score.w > score.z)
-            {
                 if (!_DirectionScoreCheck(directionToCheck, directions, new Vector3(0.5f, 0f, 0.5f)))
                     return false;
-            }
 
             return true;
         }
@@ -68,7 +56,6 @@ namespace Validator
                     tempScore++;
             if (tempScore > directions.Count / 3)
                 return false;
-
 
             return true;
         }

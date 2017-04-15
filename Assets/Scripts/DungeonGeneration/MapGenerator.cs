@@ -7,20 +7,6 @@ using Debug = UnityEngine.Debug;
 
 public class MapGenerator : MonoBehaviour
 {
-    //TODO: Replace with excel parser data
-    [System.Serializable] public struct Range
-    {
-        public Range(int min, int max)
-        {
-            minimum = min;
-            maximum = max;
-        }
-        [SerializeField] public int minimum;
-        [SerializeField] public int maximum;
-    }
-    [SerializeField] Range distanceToFinalRoom = new Range(5, 6);
-
-
     private int _seed = 0;
     private string _levelToLoad = "TestDungeon";
 
@@ -28,6 +14,8 @@ public class MapGenerator : MonoBehaviour
 
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
+
+    private Dictionary<GameObject, List<Transform>> _connectionRoomDict = new Dictionary<GameObject, List<Transform>>();
 
     private List<PathNode> _pathLine = new List<PathNode>();
     private List<List<PathNode>> _allPaths = new List<List<PathNode>>();
@@ -54,15 +42,19 @@ public class MapGenerator : MonoBehaviour
 
     private void _GenerateMap()
     {
-        _GenerateMainBranch();
+        GameObject finalRoom = _GetUniqueRoom("Final");
+        Room finalRoomData = finalRoom.GetComponent<Room>();
+
+        _GenerateMainBranch(finalRoom, finalRoomData);
+
+        _GenerateBranches();
+        _GenerateRooms(finalRoom, finalRoomData);
     }
 
-    private void _GenerateMainBranch()
+    private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
     {
         GameObject spawnRoom = _GetUniqueRoom("Spawn");
-        GameObject finalRoom = _GetUniqueRoom("Final");
         Room spawnRoomData = spawnRoom.GetComponent<Room>();
-        Room finalRoomData = finalRoom.GetComponent<Room>();
         List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
         List<Transform> finalRoomConnections = finalRoomData.Connections.AllConnections();
 
@@ -72,7 +64,13 @@ public class MapGenerator : MonoBehaviour
 
         _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15, finalConnection.position, finalRoom);
         _allPaths.Add(_pathLine);
-        
+
+        spawnRoomConnections = spawnRoomData.Connections.AllConnections();
+        _connectionRoomDict.Add(spawnRoom, spawnRoomConnections);
+    }
+
+    private void _GenerateRooms(GameObject forcedRoomObject = null, Room forcedRoom = null)
+    {
         foreach (List<PathNode> nodeList in _allPaths)
         {
             foreach (PathNode node in nodeList)
@@ -89,15 +87,27 @@ public class MapGenerator : MonoBehaviour
                 }
                 else
                 {
-                    finalRoom.transform.position = node.position;
-                    finalRoomData.JoinConnection(node.enterConnection * -1);
+                    forcedRoomObject.transform.position = node.position;
+                    forcedRoom.JoinConnection(node.enterConnection * -1);
                 }
             }
         }
-        
-        foreach(GameObject tempObject in _pathGenerator.tempObjects)
+        foreach (GameObject tempObject in _pathGenerator.tempObjects)
         {
             Destroy(tempObject);
+        }
+    }
+
+    private void _GenerateBranches()
+    {
+        foreach (KeyValuePair<GameObject, List<Transform>> entry in _connectionRoomDict)
+        {
+            GameObject startingRoom = entry.Key;
+            List<Transform> connectionList = entry.Value;
+            foreach (Transform connection in connectionList)
+            {
+                _pathLine = _pathGenerator.GeneratePath(startingRoom.transform.position, connection.position, 15);
+            }
         }
     }
 
