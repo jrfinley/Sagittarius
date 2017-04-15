@@ -106,6 +106,7 @@ public class MapGenerator : MonoBehaviour
             List<Transform> connectionList = entry.Value;
             foreach (Transform connection in connectionList)
             {
+                startingRoom.GetComponent<Room>().JoinConnection(connection.position);
                 _pathLine = _pathGenerator.GeneratePath(startingRoom.transform.position, connection.position, 15);
             }
         }
@@ -116,6 +117,7 @@ public class MapGenerator : MonoBehaviour
         tempRoom.JoinConnection(node.enterConnection);
         tempRoom.JoinConnection(node.exitConnection);
         node.branchConnections.ForEach(connection => tempRoom.BranchConnection(connection));
+        node.mergedConnections.ForEach(connection => tempRoom.JoinConnection(connection));
     }
 
     private GameObject _GetUniqueRoom(string roomName = "", Vector3 position = default(Vector3))

@@ -10,5 +10,6 @@ public class PathNode
     public Vector3 enterConnection = Vector3.zero;
     public Vector3 exitConnection = Vector3.zero;
     public List<Vector3> branchConnections = new List<Vector3>();
+    public List<Vector3> mergedConnections = new List<Vector3>();
     public GameObject uniqueRoom = null;
 }

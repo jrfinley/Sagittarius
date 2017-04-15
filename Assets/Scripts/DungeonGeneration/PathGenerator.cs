@@ -90,6 +90,10 @@ public class PathGenerator
             Vector3 newStartingDirection = newStartingDirection = _GetNewStartingDirection(previousNode.roomToSpawn);
             newNode.exitConnection = newStartingDirection;
             newNode = _SetupNode(newNode.position, newStartingDirection);
+
+            if (newNode == null)
+                break;
+
             previousNode = newNode;
         }
         return newNode;
@@ -99,6 +103,10 @@ public class PathGenerator
     {
         Vector3 positionToSpawn = startingDirection * 2f + startingPoint;
         PathNode newNode = _GetPathNode(positionToSpawn, startingDirection);
+
+        if (newNode == null)
+            return null;
+
         _currentPath.Add(newNode);
         return newNode;
     }
@@ -145,12 +153,8 @@ public class PathGenerator
         if (PathValidator.RoomInPath(position, out pathNodeInWay))
         {
             //TODO: try and merge rooms
-            Room data = pathNodeInWay.GetComponent<Room>();
-
-            if (data != null)
-                _MergeBranch(data, enterDirection);
-
-            Debug.Log("Room on my path: " + position);
+            _MergeBranch(position, enterDirection);
+            Debug.Log("Room on my path: " + position + " " + pathNodeInWay.name);
             return null;
         }
         else
@@ -161,14 +165,14 @@ public class PathGenerator
         }
     }
 
-    private void _MergeBranch(Room data, Vector3 direction)
+    private void _MergeBranch(Vector3 position, Vector3 directionOfMerge)
     {
-        List<Transform> connections = data.Connections.AllConnections();
-
-        foreach (Transform connection in connections)
+        foreach (PathNode currentNode in _currentPath)
         {
-            if (connection.position == direction * -1)
-                data.JoinConnection(connection.position);
+            if (position == currentNode.position)
+            {
+                currentNode.mergedConnections.Add(directionOfMerge * -1);
+            }
         }
     }
 
