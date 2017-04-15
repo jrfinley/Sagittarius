@@ -12,6 +12,7 @@ public class MapGenerator : MonoBehaviour
 
     public int trasureRooms = 2;
     public int monsterRooms = 5;
+    public int statChecks = 3;
 
     private PathGenerator _pathGenerator = null;
 
@@ -57,6 +58,7 @@ public class MapGenerator : MonoBehaviour
         _GenerateRooms(finalRoom, finalRoomData);
         _GenerateMonsters();
         _GenerateTreasure();
+        _GenerateStatChecks();
     }
 
     private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
@@ -139,14 +141,25 @@ public class MapGenerator : MonoBehaviour
     {
         for (int i = 0; i < trasureRooms; i++)
         {
-            int monsterIndex = Random.Range(0, _allRooms.Count);
-            List<GameObject> rooms = _allRooms[monsterIndex];
+            int index = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[index];
             int roomIndex = Random.Range(0, rooms.Count);
             rooms[roomIndex].GetComponent<Room>().BecomeTreasureRoom();
             rooms.RemoveAt(roomIndex);
         }
     }
 
+    private void _GenerateStatChecks()
+    {
+        for (int i = 0; i < statChecks; i++)
+        {
+            int index = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[index];
+            int roomIndex = Random.Range(0, rooms.Count);
+            rooms[roomIndex].GetComponent<Room>().BecomeStatCheck();
+            rooms.RemoveAt(roomIndex);
+        }
+    }
 
     private void _UpdateConnections(Room tempRoom, PathNode node)
     {

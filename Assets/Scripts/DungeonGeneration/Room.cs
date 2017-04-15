@@ -91,6 +91,11 @@ public class Room : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
     }
 
+    public void BecomeStatCheck()
+    {
+        gameObject.GetComponent<MeshRenderer>().material.color = Color.black;
+    }
+
     private List<Transform> _GetListToRemove(Transform connectionToRemove)
     {
         if (connectionToRemove.localPosition.x > 0)
