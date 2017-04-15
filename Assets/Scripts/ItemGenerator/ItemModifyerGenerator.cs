@@ -1,0 +1,139 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class ItemModifyerGenerator {
+    #region Varaibles
+    private Dictionary<EItemModifyer, ItemModifyer> itemModifyers = new Dictionary<EItemModifyer, ItemModifyer>();
+    private EItemModifyer itemModifyer;
+    private int imToGen;
+    private bool getSuffix;
+    #endregion
+
+    #region Properties
+    public Dictionary<EItemModifyer, ItemModifyer> ItemModifyers {
+        get { return itemModifyers; }
+        private set { itemModifyers = value; }
+    }
+    #endregion
+
+    #region Constructors
+    public ItemModifyerGenerator() {
+        AddAllItemModifyers();
+    }
+    #endregion
+
+    #region Methods
+    public void GenerateIM(int id, EItemRarity itemRarity, string inputName, ref string outputName, ref ItemStats outputStats) {
+        outputName = inputName;
+
+        imToGen = Mathf.Clamp((int)itemRarity - 1, 0, 2);
+
+        if(imToGen <= 0)
+            return;
+
+        getSuffix = true;
+        if(Random.Range((int)0, 2) == 0)
+            getSuffix = false;
+        itemModifyer = (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+        for(int i = 0; i < imToGen; i++) {
+            
+            if(getSuffix)
+                outputName = outputName + " " + itemModifyers[itemModifyer].GetSuffix();
+            else
+                outputName = itemModifyers[itemModifyer].GetPrefix() + " " + outputName;
+            getSuffix = !getSuffix;
+            outputStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
+        }
+    }
+    private string GetIMPrefix(EItemModifyer modifyer) {
+        return GetIM(modifyer).GetPrefix();
+    }
+    private string GetIMSuffix(EItemModifyer modifyer) {
+        return GetIM(modifyer).GetSuffix();
+    }
+    private ItemModifyer GetIM(EItemModifyer modifyer) {
+        return itemModifyers[modifyer];
+    }
+
+    private void AddAllItemModifyers() {
+        AddIMDexterity();
+        AddIMEquipLoad();
+        AddIMGoldValue();
+        AddIMHealth();
+        AddIMIntelect();
+        AddIMScrapValue();
+        AddIMStrength();
+    }
+    private void AddIMDexterity() {
+        itemModifyers.Add(
+            EItemModifyer.DEXTERITY, 
+            new ItemModifyer(
+                new ItemStats(0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                new string[] { "Nimble", "Hardy", "Dexterous" },
+                new string[] { "of Dexterity", "of Dodging", "of Nimbleness" }
+                )
+            );
+    }
+    private void AddIMEquipLoad() {
+        itemModifyers.Add(
+            EItemModifyer.EQUIP_LOAD,
+            new ItemModifyer(
+                new ItemStats(0, 0, 0, 0, 0, -1, 0, 0, 0, 0),
+                new string[] { "Light", "Hole Filled" },
+                new string[] { "of Low Equip Weight" }
+                )
+            );
+    }
+    private void AddIMGoldValue() {
+        itemModifyers.Add(
+            EItemModifyer.GOLD_VALUE,
+            new ItemModifyer(
+                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+                new string[] { "Gold Plated", "Golden", "Extravagent" },
+                new string[] { "of Wealth", "of the Wealthy", "of Gold" }
+                )
+            );
+    }
+    private void AddIMHealth() {
+        itemModifyers.Add(
+            EItemModifyer.HEALTH,
+            new ItemModifyer(
+                new ItemStats(0, 1, 0, 0, 0, 0, 0, 0, 0, 0),
+                new string[] { "Sturdy", "Hardy", "Tough" },
+                new string[] { "of Sturdyness", "of Good Health" }
+                )
+            );
+    }
+    private void AddIMIntelect() {
+        itemModifyers.Add(
+            EItemModifyer.INTELECT,
+            new ItemModifyer(
+                new ItemStats(0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
+                new string[] { "Witty", "Educated" },
+                new string[] { "That Is Smarter Than You", "of Intelect", "of Information" }
+                )
+            );
+    }
+    private void AddIMScrapValue() {
+        itemModifyers.Add(
+            EItemModifyer.SCRAP_VALUE,
+            new ItemModifyer(
+                new ItemStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+                new string[] { "sCrappy", "Junky", "Junkyark" },
+                new string[] { "of Junk", "of Metal Scraps" }
+                )
+            );
+    }
+    private void AddIMStrength() {
+        itemModifyers.Add(
+            EItemModifyer.STRENGTH,
+            new ItemModifyer(
+                new ItemStats(0, 0, 0, 1, 0, 0, 0, 0, 0, 0),
+                new string[] { "Strong", "Swole", "Bulky" },
+                new string[] { "of Swoleness", "of Power", "of Ripped Abs" }
+                )
+            );
+    }
+    #endregion
+}

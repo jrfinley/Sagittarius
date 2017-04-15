@@ -3,15 +3,29 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class TestItem : MonoBehaviour {
+    public KeyCode generateItemKey = KeyCode.Space;
     private Item item;
     private Image image;
 
-	void Start () {
-        item = ItemGenerator.Instance.GenerateItem();
+    void Start() {
+        item = ItemGenerator.GenerateRandomItem();
         item.DebugLog();
         image = GetComponent<Image>();
-        if (image != null)
-            image.sprite = Resources.Load<Sprite>("ItemIcons/" + item.IconName);
-	}
+        if(image != null)
+            image.sprite = item.GetSprite();
+    }
+
+	void Update() {
+        if(Input.GetKeyDown(generateItemKey))
+            GenerateNewItem();
+    }
+
+    private void GenerateNewItem() {
+        item = ItemGenerator.GenerateRandomItem();
+        item.DebugLog();
+        image = GetComponent<Image>();
+        if(image != null)
+            image.sprite = item.GetSprite();
+    }
 	
 }
