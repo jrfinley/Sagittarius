@@ -14,6 +14,7 @@ public class Room : MonoBehaviour
         public List<Transform> westConnections;
 
         public List<Transform> closedConnections;
+        public List<Transform> openConnections;
 
         public List<Transform> AllConnections()
         {
@@ -24,10 +25,19 @@ public class Room : MonoBehaviour
     [SerializeField] protected ConnectionData _connections;
     public ConnectionData Connections { get { return _connections; } }
 
-    public void RemoveConnection(Transform connectionToRemove)
+    public Vector3 position = Vector3.zero;
+
+    private void _RemoveConnection(Transform connectionToRemove)
     {
         List<Transform> list = _GetListToRemove(connectionToRemove);
         list.Remove(connectionToRemove);
+    }
+
+    private void _OpenConnection(Transform connectionToOpen)
+    {
+        List<Transform> list = _GetListToRemove(connectionToOpen);
+        list.Remove(connectionToOpen);
+        _connections.openConnections.Add(connectionToOpen);
     }
 
     public void JoinConnection(Vector3 connectionToClose)
@@ -38,7 +48,7 @@ public class Room : MonoBehaviour
             {
                 _connections.closedConnections.Add(connection);
                 connection.GetComponent<ConnectionGizmos>().color = Color.green;
-                RemoveConnection(connection);
+                _RemoveConnection(connection);
                 break;
             }
         }
@@ -52,13 +62,26 @@ public class Room : MonoBehaviour
             {
                 _connections.closedConnections.Add(connection);
                 connection.GetComponent<ConnectionGizmos>().color = Color.red;
-                RemoveConnection(connection);
+                _RemoveConnection(connection);
                 break;
             }
         }
     }
 
-    protected virtual List<Transform> _GetListToRemove(Transform connectionToRemove)
+    public void BranchConnection(Vector3 connectionToOpen)
+    {
+        foreach (Transform connection in _connections.AllConnections())
+        {
+            if (connection.localPosition == connectionToOpen)
+            {
+                connection.GetComponent<ConnectionGizmos>().color = Color.cyan;
+                _OpenConnection(connection);
+                break;
+            }
+        }
+    }
+
+    private List<Transform> _GetListToRemove(Transform connectionToRemove)
     {
         if (connectionToRemove.localPosition.x > 0)
             return _connections.eastConnections;

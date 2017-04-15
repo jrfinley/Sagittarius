@@ -60,13 +60,17 @@ public class MapGenerator : MonoBehaviour
     private void _GenerateMainBranch()
     {
         GameObject spawnRoom = _GetUniqueRoom("Spawn");
+        GameObject finalRoom = _GetUniqueRoom("Final");
         Room spawnRoomData = spawnRoom.GetComponent<Room>();
+        Room finalRoomData = finalRoom.GetComponent<Room>();
         List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
+        List<Transform> finalRoomConnections = finalRoomData.Connections.AllConnections();
 
         Transform startingConnection = _GetRandomConnection(spawnRoomConnections);
+        Transform finalConnection = _GetRandomConnection(finalRoomConnections);
         spawnRoomData.JoinConnection(startingConnection.position);
 
-        _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15);
+        _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15, finalConnection.position, finalRoom);
         _allPaths.Add(_pathLine);
         
         foreach (List<PathNode> nodeList in _allPaths)
@@ -74,11 +78,20 @@ public class MapGenerator : MonoBehaviour
             foreach (PathNode node in nodeList)
             {
                 //GameObject temp = Instantiate(_normalRooms[node.indexOfRoom], node.position, Quaternion.identity) as GameObject;
-                GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
-                Room tempRoom = temp.GetComponent<Room>();
-                tempRoom.JoinConnection(node.enterConnection);
-                tempRoom.JoinConnection(node.exitConnection);
-                tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
+                if (node.uniqueRoom == null)
+                {
+                    GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
+                    Room tempRoom = temp.GetComponent<Room>();
+
+                    _UpdateConnections(tempRoom, node);
+
+                    tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
+                }
+                else
+                {
+                    finalRoom.transform.position = node.position;
+                    finalRoomData.JoinConnection(node.enterConnection * -1);
+                }
             }
         }
         
@@ -86,6 +99,13 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(tempObject);
         }
+    }
+
+    private void _UpdateConnections(Room tempRoom, PathNode node)
+    {
+        tempRoom.JoinConnection(node.enterConnection);
+        tempRoom.JoinConnection(node.exitConnection);
+        node.branchConnections.ForEach(connection => tempRoom.BranchConnection(connection));
     }
 
     private GameObject _GetUniqueRoom(string roomName = "", Vector3 position = default(Vector3))
@@ -119,7 +139,7 @@ public class MapGenerator : MonoBehaviour
     {
         _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
         Random.seed = _seed;
-        Debug.Log("Dungeon seed: " + _seed);
+        //Debug.Log("Dungeon seed: " + _seed);
     }
 
     public GameObject GetRandomRoom(out int index)

@@ -16,34 +16,115 @@ public class PathGenerator
         _generator = mapGenerator;
     }
 
-    public List<PathNode> GeneratePath(Vector3 startingPoint, Vector3 startingConnection, int lengthOfPath, Vector3 endingPoint = default(Vector3), Vector3 endingDirection = default(Vector3))
+    public List<PathNode> GeneratePath(Vector3 startingPoint, Vector3 startingDirection, int lengthOfPath, Vector3 endingDirection = default(Vector3), GameObject endingRoom = null)
     {
-        Vector3 directionToGo = startingConnection * 2f + startingPoint;
-        PathNode newNode = _GetPathNode(directionToGo, startingConnection);
+        PathNode newNode = _SetupNode(startingPoint, startingDirection);
         PathNode previousNode = newNode;
-        _currentPath.Add(newNode);
-        _oldDirections.Add(startingConnection);
-        for (int i = 0; i < lengthOfPath - 1; i++)
+        _oldDirections.Add(startingDirection);
+
+        bool hasFinalDestination = endingDirection != Vector3.zero ? true : false;
+        int loopAmount = hasFinalDestination ? lengthOfPath - 1 : lengthOfPath - 2;
+
+        PathNode finalNode = _GeneratePath(loopAmount, previousNode, newNode);
+        
+        if (hasFinalDestination)
+        {
+            Vector3 newStartingDirection = endingDirection * -1f;
+            finalNode.exitConnection = newStartingDirection;
+
+            if (PathValidator.ValidDirection(_oldDirections, newStartingDirection))
+            {
+                newNode = _SetupNode(finalNode.position, newStartingDirection);
+            }
+            else
+            {
+                newNode = _ForcePathForUniqueSpawn(finalNode, endingDirection);
+            }
+
+            newNode.enterConnection = finalNode.exitConnection;
+            newNode.uniqueRoom = endingRoom;
+        }
+
+        return _currentPath;
+    }
+
+    private PathNode _ForcePathForUniqueSpawn(PathNode previousNode, Vector3 endingDirection)
+    {
+        Vector3 oldDirection = previousNode.enterConnection * -1;
+
+        List<Transform> connectionList = previousNode.roomToSpawn.Connections.AllConnections();
+        Vector3 forcedDirection = Vector3.zero;
+
+        foreach(Transform connection in connectionList)
+        {
+            if (connection.position != previousNode.enterConnection && connection.position != previousNode.exitConnection)
+            {
+                if (previousNode.position.x < Mathf.Abs(previousNode.position.z))
+                {
+                    if (previousNode.position.x < 0 && PathValidator.ValidDirection(_oldDirections, Vector3.left))
+                        forcedDirection = Vector3.left;
+                    else
+                        forcedDirection = Vector3.right;
+                }
+            }
+        }
+
+        Vector3 direction = _GetNewStartingDirection(previousNode.roomToSpawn, (forcedDirection * -1) / 2);
+        PathNode node = _SetupNode(previousNode.position, endingDirection);
+        node.exitConnection = forcedDirection / 2;
+        PathNode newNode = _SetupNode(node.position, forcedDirection / 2);
+        newNode.exitConnection = forcedDirection / 2;
+        PathNode secondNode = _SetupNode(newNode.position, forcedDirection / 2);
+        secondNode.exitConnection = endingDirection * -1;
+        PathNode finalNode = _SetupNode(secondNode.position, endingDirection * -1);
+        return finalNode;
+    }
+
+    private PathNode _GeneratePath(int loopAmount, PathNode previousNode, PathNode newNode)
+    {
+        for (int i = 0; i < loopAmount; i++)
         {
             if (previousNode == null)
                 break;
 
-            Vector3 connectionPoint = _GetNewDirection(previousNode.roomToSpawn);
-            directionToGo = previousNode.position + connectionPoint * 2f;
-            newNode.exitConnection = connectionPoint;
-            newNode = _GetPathNode(directionToGo, connectionPoint);
+            Vector3 newStartingDirection = newStartingDirection = _GetNewStartingDirection(previousNode.roomToSpawn);
+            newNode.exitConnection = newStartingDirection;
 
-            _currentPath.Add(newNode);
+            //if (Random.value < 0.25f)
+            //{
+            //    Vector3 branchDirection = _GetNewStartingDirection(previousNode.roomToSpawn);
+            //    if (branchDirection != newNode.enterConnection && branchDirection != newNode.exitConnection)
+            //        newNode.branchConnections.Add(branchDirection);
+            //}
+
+            newNode = _SetupNode(newNode.position, newStartingDirection);
             previousNode = newNode;
         }
-        return _currentPath;
+        return newNode;
     }
 
-    private Vector3 _GetNewDirection(Room oldRoom)
+    private PathNode _SetupNode(Vector3 startingPoint, Vector3 startingDirection)
+    {
+        Vector3 positionToSpawn = startingDirection * 2f + startingPoint;
+        PathNode newNode = _GetPathNode(positionToSpawn, startingDirection);
+        _currentPath.Add(newNode);
+        return newNode;
+    }
+
+    private Vector3 _GetNewStartingDirection(Room oldRoom, Vector3 forcedDirection = default(Vector3))
     {
         List<Transform> connections = oldRoom.Connections.AllConnections();
-        int index = Random.Range(0, connections.Count);
-        Vector3 direction = connections[index].position;
+        Vector3 direction = Vector3.zero;
+
+        if (forcedDirection == Vector3.zero)
+        {
+            int index = Random.Range(0, connections.Count);
+            direction = connections[index].position;
+        }
+        else
+        {
+            direction = forcedDirection;
+        }
 
         if (PathValidator.ValidDirection(_oldDirections, direction))
         {
@@ -64,7 +145,7 @@ public class PathGenerator
         return direction;
     }
 
-    private PathNode _GetPathNode(Vector3 position, Vector3 enterPosition)
+    private PathNode _GetPathNode(Vector3 position, Vector3 enterDirection)
     {
         PathNode currentNode = new PathNode();
         currentNode.position = position;
@@ -77,23 +158,33 @@ public class PathGenerator
         }
         else
         {
-            _SpawnPathNodeTempObject(position);
-            _SetPathRoom(currentNode, enterPosition);
+            _SpawnPathNodeTempObject(currentNode.position, currentNode);
+            _SetPathRoom(currentNode, enterDirection);
             return currentNode;
         }
     }
 
-    private void _SpawnPathNodeTempObject(Vector3 position)
+    private void _SpawnPathNodeTempObject(Vector3 position, PathNode currentNode)
     {
         GameObject tempObject = new GameObject("pathNode");
         tempObject.transform.position = position;
         tempObject.AddComponent<SphereCollider>().radius = 0.5f;
+        PathData d = tempObject.AddComponent<PathData>();
+
+        d.position = currentNode.position;
+        d.roomToSpawn = currentNode.roomToSpawn;
+        d.indexOfRoom = currentNode.indexOfRoom;
+        d.enterConnection = currentNode.enterConnection;
+        d.exitConnection = currentNode.exitConnection;
+        d.branchConnections = currentNode.branchConnections;
+        d.uniqueRoom = currentNode.uniqueRoom;
+
         tempObjects.Add(tempObject);
     }
 
-    private void _SetPathRoom(PathNode pathNode, Vector3 enterPosition)
+    private void _SetPathRoom(PathNode pathNode, Vector3 enterDirection)
     {
         pathNode.roomToSpawn = _generator.GetRandomRoom(out pathNode.indexOfRoom).GetComponent<Room>();
-        pathNode.enterConnection = enterPosition * -1;
+        pathNode.enterConnection = enterDirection * -1;
     }
 }

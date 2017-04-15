@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PathNode
+public class PathData : MonoBehaviour
 {
     public Vector3 position = Vector3.zero;
     public Room roomToSpawn = null;
