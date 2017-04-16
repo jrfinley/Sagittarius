@@ -82,6 +82,27 @@ public class Actor : MonoBehaviour
         data.characterType0 = characterManager.allCharacters[0].CharacterType;
         data.characterUnlocked0 = characterManager.allCharacters[0].isUnlocked;
 
+        if(data.characterName0 == playerParty.characters[0].Name)
+        {
+            data.characterInParty0 = true;
+            data.character0PartyPosition = 0;
+        }
+        else if(data.characterName0 == playerParty.characters[1].Name)
+        {
+            data.characterInParty0 = true;
+            data.character0PartyPosition = 1;
+        }
+        else if (data.characterName0 == playerParty.characters[2].Name)
+        {
+            data.characterInParty0 = true;
+            data.character0PartyPosition = 2;
+        }
+        else
+        {
+            data.characterInParty0 = false;
+            data.character0PartyPosition = -5;
+        }
+
         //1
         data.characterName1 = characterManager.allCharacters[1].Name;
         data.characterLevel1 = characterManager.allCharacters[1].Level;
@@ -93,6 +114,27 @@ public class Actor : MonoBehaviour
         data.characterEquipCap1 = characterManager.allCharacters[1].EquipmentCapacity;
         data.characterType1 = characterManager.allCharacters[1].CharacterType;
         data.characterUnlocked1 = characterManager.allCharacters[1].isUnlocked;
+
+        if (data.characterName1 == playerParty.characters[0].Name)
+        {
+            data.characterInParty1 = true;
+            data.character1PartyPosition = 0;
+        }
+        else if (data.characterName1 == playerParty.characters[1].Name)
+        {
+            data.characterInParty1 = true;
+            data.character1PartyPosition = 1;
+        }
+        else if (data.characterName1 == playerParty.characters[2].Name)
+        {
+            data.characterInParty1 = true;
+            data.character1PartyPosition = 2;
+        }
+        else
+        {
+            data.characterInParty1 = false;
+            data.character1PartyPosition = -5;
+        }
 
         //2
         data.characterName2 = characterManager.allCharacters[2].Name;
@@ -106,6 +148,27 @@ public class Actor : MonoBehaviour
         data.characterType2 = characterManager.allCharacters[2].CharacterType;
         data.characterUnlocked2 = characterManager.allCharacters[2].isUnlocked;
 
+        if (data.characterName2 == playerParty.characters[0].Name)
+        {
+            data.characterInParty2 = true;
+            data.character2PartyPosition = 0;
+        }
+        else if (data.characterName2 == playerParty.characters[1].Name)
+        {
+            data.characterInParty2 = true;
+            data.character2PartyPosition = 1;
+        }
+        else if (data.characterName2 == playerParty.characters[2].Name)
+        {
+            data.characterInParty2 = true;
+            data.character2PartyPosition = 2;
+        }
+        else
+        {
+            data.characterInParty2 = false;
+            data.character2PartyPosition = -5;
+        }
+
         //3
         data.characterName3 = characterManager.allCharacters[3].Name;
         data.characterLevel3 = characterManager.allCharacters[3].Level;
@@ -117,6 +180,27 @@ public class Actor : MonoBehaviour
         data.characterEquipCap3 = characterManager.allCharacters[3].EquipmentCapacity;
         data.characterType3 = characterManager.allCharacters[3].CharacterType;
         data.characterUnlocked3 = characterManager.allCharacters[3].isUnlocked;
+
+        if (data.characterName3 == playerParty.characters[0].Name)
+        {
+            data.characterInParty3 = true;
+            data.character3PartyPosition = 0;
+        }
+        else if (data.characterName3 == playerParty.characters[1].Name)
+        {
+            data.characterInParty3 = true;
+            data.character3PartyPosition = 1;
+        }
+        else if (data.characterName3 == playerParty.characters[2].Name)
+        {
+            data.characterInParty3 = true;
+            data.character3PartyPosition = 2;
+        }
+        else
+        {
+            data.characterInParty3 = false;
+            data.character3PartyPosition = -5;
+        }
         #endregion
     }
 
@@ -176,6 +260,21 @@ public class Actor : MonoBehaviour
         characterManager.allCharacters[0].CharacterType = data.characterType0;
         characterManager.allCharacters[0].isUnlocked = data.characterUnlocked0;
 
+        characterManager.allCharacters[0].IsPartyMember = data.characterInParty0;
+        if(characterManager.allCharacters[0].IsPartyMember == true)
+        {
+            characterManager.allCharacters[0].PartyPosition = data.character0PartyPosition;
+            if(characterManager.allCharacters[0].PartyPosition >= 0 && characterManager.allCharacters[0].PartyPosition < 3)
+            {
+                playerParty.AddPartyMember(characterManager.allCharacters[0].PartyPosition + 1, characterManager.allCharacters[0].Name);
+            }
+        }
+        else
+        {
+            characterManager.allCharacters[0].PartyPosition = -1;
+        }
+
+
         //character 1
         characterManager.allCharacters[1].Name = data.characterName1;
         characterManager.allCharacters[1].Level = data.characterLevel1;
@@ -187,6 +286,20 @@ public class Actor : MonoBehaviour
         characterManager.allCharacters[1].EquipmentCapacity = data.characterEquipCap1;
         characterManager.allCharacters[1].CharacterType = data.characterType1;
         characterManager.allCharacters[1].isUnlocked = data.characterUnlocked1;
+
+        characterManager.allCharacters[1].IsPartyMember = data.characterInParty1;
+        if (characterManager.allCharacters[1].IsPartyMember == true)
+        {
+            characterManager.allCharacters[1].PartyPosition = data.character1PartyPosition;
+            if (characterManager.allCharacters[1].PartyPosition >= 0 && characterManager.allCharacters[1].PartyPosition < 4)
+            {
+                playerParty.AddPartyMember(characterManager.allCharacters[1].PartyPosition + 1, characterManager.allCharacters[1].Name);
+            }
+        }
+        else
+        {
+            characterManager.allCharacters[1].PartyPosition = -1;
+        }
 
         //character 2
         characterManager.allCharacters[2].Name = data.characterName2;
@@ -200,6 +313,20 @@ public class Actor : MonoBehaviour
         characterManager.allCharacters[2].CharacterType = data.characterType2;
         characterManager.allCharacters[2].isUnlocked = data.characterUnlocked2;
 
+        characterManager.allCharacters[2].IsPartyMember = data.characterInParty2;
+        if (characterManager.allCharacters[2].IsPartyMember == true)
+        {
+            characterManager.allCharacters[2].PartyPosition = data.character2PartyPosition;
+            if (characterManager.allCharacters[2].PartyPosition >= 0 && characterManager.allCharacters[2].PartyPosition < 3)
+            {
+                playerParty.AddPartyMember(characterManager.allCharacters[2].PartyPosition + 1, characterManager.allCharacters[2].Name);
+            }
+        }
+        else
+        {
+            characterManager.allCharacters[2].PartyPosition = -1;
+        }
+
         //character 3
         characterManager.allCharacters[3].Name = data.characterName3;
         characterManager.allCharacters[3].Level = data.characterLevel3;
@@ -211,6 +338,20 @@ public class Actor : MonoBehaviour
         characterManager.allCharacters[3].EquipmentCapacity = data.characterEquipCap3;
         characterManager.allCharacters[3].CharacterType = data.characterType3;
         characterManager.allCharacters[3].isUnlocked = data.characterUnlocked3;
+
+        characterManager.allCharacters[3].IsPartyMember = data.characterInParty3;
+        if (characterManager.allCharacters[3].IsPartyMember == true)
+        {
+            characterManager.allCharacters[3].PartyPosition = data.character3PartyPosition;
+            if (characterManager.allCharacters[3].PartyPosition >= 0 && characterManager.allCharacters[3].PartyPosition < 3)
+            {
+                playerParty.AddPartyMember(characterManager.allCharacters[3].PartyPosition + 1, characterManager.allCharacters[3].Name);
+            }
+        }
+        else
+        {
+            characterManager.allCharacters[3].PartyPosition = -1;
+        }
         #endregion
     }
 
@@ -267,6 +408,9 @@ public class ActorData
     public int characterEquipCap0;
     public ECharacterType characterType0;
     public bool characterUnlocked0;
+    public bool characterInParty0;
+    public int character0PartyPosition;
+
     //npc 1
     public string characterName1;
     public int characterLevel1;
@@ -278,6 +422,9 @@ public class ActorData
     public int characterEquipCap1;
     public ECharacterType characterType1;
     public bool characterUnlocked1;
+    public bool characterInParty1;
+    public int character1PartyPosition;
+
 
     //npc 2
     public string characterName2;
@@ -290,6 +437,9 @@ public class ActorData
     public int characterEquipCap2;
     public ECharacterType characterType2;
     public bool characterUnlocked2;
+    public bool characterInParty2;
+    public int character2PartyPosition;
+
 
     //npc 3
     public string characterName3;
@@ -302,5 +452,8 @@ public class ActorData
     public int characterEquipCap3;
     public ECharacterType characterType3;
     public bool characterUnlocked3;
+    public bool characterInParty3;
+    public int character3PartyPosition;
+
     #endregion
 }
