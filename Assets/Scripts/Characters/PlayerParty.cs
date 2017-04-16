@@ -72,24 +72,17 @@ public class PlayerParty : MonoBehaviour
         Vector3 oldPosition = transform.position;
 
         if (moveDirection.z > 0)
-        {
             movePosition.z += moveZAmount;
-        }
         else if (moveDirection.z < 0)
-        {
             movePosition.z -= moveZAmount;
-        }
         else if (moveDirection.x > 0)
-        {
             movePosition.x += moveXAmount;
-        }
         else if (moveDirection.x < 0)
-        {
             movePosition.x -= moveXAmount;
-        }
 
         Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
         Debug.Log(moveSquares.Length);
+
         if (moveSquares.Length == 0)
         {
             movePosition = oldPosition;
@@ -118,6 +111,8 @@ public class PlayerParty : MonoBehaviour
                 }
 
                 characters[partyPosition] = characterManager.allCharacters[i];
+                characterManager.allCharacters[i].IsPartyMember = true;
+                characterManager.allCharacters[i].PartyPosition = partyPosition + 1;
                 maxEquipmentLoad += characterManager.allCharacters[i].EquipmentCapacity;
                 return;
             }
@@ -134,6 +129,7 @@ public class PlayerParty : MonoBehaviour
             return;
 
         maxEquipmentLoad -= characters[partyPosition].EquipmentCapacity;
+        characters[partyPosition].IsPartyMember = false;
         characters[partyPosition] = null;
     }
 
