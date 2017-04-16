@@ -5,7 +5,8 @@ using UnityEngine;
 public class BaseCharacter : MonoBehaviour
 {
     //Serialized almost all stats for easy testing and balancing purposes
-    private bool dead;
+    private bool dead,
+                 isPartyMember;
 
     [SerializeField]
     private string characterName;
@@ -18,7 +19,8 @@ public class BaseCharacter : MonoBehaviour
                 dexterity,
                 intelect,
                 experience,
-                equipmentCapacity;
+                equipmentCapacity,
+                partyPosition;
 
     private float expMultiplier = 1;
     
@@ -159,6 +161,11 @@ public class BaseCharacter : MonoBehaviour
     }
 
     //Properties
+    public bool IsPartyMember
+    {
+        get { return isPartyMember; }
+        set { isPartyMember = value; }
+    }
     public int Level
     {
         get { return level; }
@@ -211,6 +218,11 @@ public class BaseCharacter : MonoBehaviour
     {
         get { return equipmentCapacity; }
         set { equipmentCapacity = value; }
+    }
+    public int PartyPosition
+    {
+        get { return partyPosition; }
+        set { partyPosition = value; }
     }
     public float ExpMultipier
     {

@@ -122,7 +122,7 @@ public class PlayerParty : MonoBehaviour
                 return;
             }
             else if (i == characterManager.allCharacters.Count - 1)
-                Debug.LogError("No character with that name exists.");
+                Debug.Log("No character with that name exists.");
         }
     }
     public void RemovePartyMember(int partyPosition)
