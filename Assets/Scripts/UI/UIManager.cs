@@ -19,8 +19,10 @@ public class UIManager : MonoBehaviour
     public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
     public CharacterStats characterStats;
+    public Inventory inventory;
     CanvasScaler canvasScaler;
     PlayerParty playerParty;
+
 
     void Start()
     {
@@ -31,12 +33,19 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
+        playerParty = FindObjectOfType<PlayerParty>();
+        Invoke("DelayedStart", 0.1f);
+        Canvas.ForceUpdateCanvases();
+    }
+
+    void DelayedStart()
+    {
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
         SetCurrencyScrap(0);
-        playerParty = FindObjectOfType<PlayerParty>();
-        Canvas.ForceUpdateCanvases();
+        inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
+        UpdateAllHeroStats();
     }
 
     public void ToggleMenu()
@@ -61,6 +70,7 @@ public class UIManager : MonoBehaviour
         menuToggleButtons[0].SetActive(false);
         menuToggleButtons[1].SetActive(true);
         SelectHero(selectedHero);
+        UpdateAllHeroStats();
         Canvas.ForceUpdateCanvases();
     }
 
@@ -106,9 +116,23 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void UpdateAllHeroStats()
+    {
+        if (playerParty != null)
+        {
+            for (int i = 0; i < playerParty.characters.Length; i++)
+            {
+                if (playerParty.characters[i] != null)
+                    UpdateHeroStats(i);
+            }
+        }
+    }
+
     public void DisplayStatsPanel()
     {
         HideAllContentPanels();
+        SelectHero(selectedHero);
+        UpdateHeroStats(selectedHero);
         contentPanels[0].SetActive(true);
     }
 

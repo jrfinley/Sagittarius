@@ -30,7 +30,7 @@ public class PlayerParty : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         characters = new BaseCharacter[maxPartySize];
         movePosition = transform.position;
-        characterManager = FindObjectOfType<CharacterManager>();
+        characterManager = FindObjectOfType<CharacterManager>(); 
     }
 
     /*
