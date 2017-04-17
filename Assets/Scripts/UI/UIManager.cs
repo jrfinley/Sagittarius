@@ -11,7 +11,6 @@ public class UIManager : MonoBehaviour
     bool isMenuOpen = false;
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
-    public Text[] currencyTexts; //0-Gold, 1-Food, 2-Scrap
     public List<HeroCard> heroCards = new List<HeroCard>();
     public Image[] heroIcons;
     int selectedHero = 0;
@@ -20,6 +19,7 @@ public class UIManager : MonoBehaviour
     public DialogueBox dialogueBox;
     public CharacterStats characterStats;
     public Inventory inventory;
+    public DrawCurrencies currencies;
     CanvasScaler canvasScaler;
     PlayerParty playerParty;
 
@@ -34,6 +34,9 @@ public class UIManager : MonoBehaviour
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
         playerParty = FindObjectOfType<PlayerParty>();
+        currencies.SetCurrencyGold(0);
+        currencies.SetCurrencyFood(0);
+        currencies.SetCurrencyScrap(0);
         Invoke("DelayedStart", 0.1f);
         Canvas.ForceUpdateCanvases();
     }
@@ -41,9 +44,6 @@ public class UIManager : MonoBehaviour
     void DelayedStart()
     {
         SelectHero(selectedHero);
-        SetCurrencyGold(0);
-        SetCurrencyFood(0);
-        SetCurrencyScrap(0);
         inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         UpdateAllHeroStats();
     }
@@ -183,18 +183,5 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    public void SetCurrencyGold(int value)
-    {
-        currencyTexts[0].text = value.ToString();
-    }
 
-    public void SetCurrencyFood(int value)
-    {
-        currencyTexts[1].text = value.ToString();
-    }
-
-    public void SetCurrencyScrap(int value)
-    {
-        currencyTexts[2].text = value.ToString();
-    }
 }
