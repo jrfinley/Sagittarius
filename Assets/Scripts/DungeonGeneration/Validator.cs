@@ -10,9 +10,15 @@ namespace Validator
         {
             if (Physics.CheckSphere(pointToCheck, 0.1f))
             {
-                Collider[] colliders = Physics.OverlapSphere(pointToCheck, 0.5f);
-                pathNode = colliders[0].gameObject;
-                return true;
+                Collider[] colliders = Physics.OverlapSphere(pointToCheck, 0.4f);
+                foreach (Collider collider in colliders)
+                {
+                    if (collider.gameObject.name.Contains("Node"))
+                    {
+                        pathNode = collider.gameObject;
+                        return true;
+                    }
+                }
             }
             pathNode = null;
             return false;
