@@ -12,13 +12,12 @@ public class AutoAddITems : MonoBehaviour
 {
     public List<InventoryItem> items = new List<InventoryItem>();
 
-    public InventoryDisplay inventoryDisplay;
+    private InventoryDisplay inventoryDisplay;
 
-    //private Actor actor;
 
     void Start()
     {
-        //actor = FindObjectOfType<Actor>();
+        inventoryDisplay = FindObjectOfType<InventoryDisplay>();
     }
 
     void OnTriggerEnter(Collider other)

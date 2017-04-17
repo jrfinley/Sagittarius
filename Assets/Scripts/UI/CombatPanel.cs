@@ -2,6 +2,7 @@
 //Controls the combat panel & entity information found inside it.
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,7 +35,8 @@ public class CombatPanel : MonoBehaviour
 
     public void EndCombat()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+        SceneManager.UnloadScene("Combat");
     }
 
     public void Debug_TestCombatRound()
