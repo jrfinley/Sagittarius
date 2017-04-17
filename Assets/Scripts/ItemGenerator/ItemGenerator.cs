@@ -15,15 +15,21 @@ public static class ItemGenerator {
     #endregion
 
     public static Item CreateItem(int id, EEquipmentType equipmentType) {
-        LookUpItem(equipmentType);
+        string outputName;
+        ItemStats outputStats;
+
+        item = LookUpItem(equipmentType);
         item.ID = id;
-        GetIconPath();
+        item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
-        GenerateItemRarity(id);
-        GenerateItemLevel(id);
-        GenerateItemModifyers(id);
+        item.Types.ItemRarity = GenerateItemRarity(id);
+        item.Level = GenerateItemLevel(id);
+        
+        GenerateItemModifyers(id, item.Types.ItemRarity, item.Name, item.Stats, out outputName, out outputStats);
+        item.Name = outputName;
+        item.Stats = outputStats;
 
-        CalculateItemStats();
+        item.Stats = CalculateItemStats();
         return new Item(item, true);
     }
     public static Item GenerateRandomItem() {
@@ -52,30 +58,30 @@ public static class ItemGenerator {
     private static EEquipmentType GenerateEquipmentType() {
         return itemTypeGenerator.GenereteRandomEquipmentType(itemTypeGenerator.GenerateRandomItemType());
     }
-    private static void LookUpItem(EEquipmentType itemToLookUp) {
-        item = new Item(itemLookUp.ItemLookUpTable[itemToLookUp]);
+    private static Item LookUpItem(EEquipmentType itemToLookUp) {
+        return new Item(itemLookUp.ItemLookUpTable[itemToLookUp]);
     }
-    private static void GetIconPath() {
-        item.IconPath = iconPathLookUp.GetPathName(item.Types.ItemType) + item.IconPath;
-    }
-
-    private static void GenerateItemRarity(int id) {
-        item.Types.ItemRarity = (EItemRarity)(id % 4);
-    }
-    private static void GenerateItemLevel(int id) {
-        item.Level = id % 100 + 1;
+    private static string GetIconPath(EItemType itemType, string itemPathBaseName) {
+        return iconPathLookUp.GetPathName(itemType) + itemPathBaseName;
     }
 
-    public static void GenerateItemModifyers(int id) {
-        string outputName = string.Empty;
-        ItemStats outputStats = new ItemStats();
-        itemModifyerGenerator.GenerateIM(id, item.Types.ItemRarity, item.Name, ref outputName, ref outputStats);
-        item.Name = outputName;
-        item.Stats.AddStats(outputStats);
+    private static EItemRarity GenerateItemRarity(int id) {
+        return (EItemRarity)(id % 4);
+    }
+    private static int GenerateItemLevel(int id) {
+        return id % 100 + 1;
+    }
+
+    public static void GenerateItemModifyers(int id, EItemRarity itemRarirty, string itemName, ItemStats itemStats, out string outputName, out ItemStats outputStats) {
+        outputName = string.Empty;
+        outputStats = new ItemStats();
+        itemModifyerGenerator.GenerateIM(id, itemRarirty, itemName, ref outputName, ref outputStats);
+
+        outputStats.AddStats(itemStats);
     }   
     
-    private static void CalculateItemStats() {
-        item.Stats = itemStatsCalculator.CalculateItemStats(item.Stats, item.Types.ItemRarity, item.Level);
+    private static ItemStats CalculateItemStats() {
+        return itemStatsCalculator.CalculateItemStats(item.Stats, item.Types.ItemRarity, item.Level);
     }
     
 }
