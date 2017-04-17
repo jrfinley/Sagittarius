@@ -113,7 +113,7 @@ public class PlayerParty : MonoBehaviour
             {
                 if (!characterManager.allCharacters[i].isUnlocked)
                 {
-                    Debug.LogError("That character is not unlocked yet");
+                    Debug.Log("That character is not unlocked yet");
                     return;
                 }
 
