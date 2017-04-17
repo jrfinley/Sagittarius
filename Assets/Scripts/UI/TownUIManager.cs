@@ -8,9 +8,16 @@ using System.Collections;
 public class TownUIManager : MonoBehaviour
 {
     public GameObject[] panels; //0 - Main Menu, 1 - Forge, 2 - Character Training, 3 - Adjust Party, 4 - Shop, 5 - Inventory, 6 - Options
+    private Actor actor;
+
+    private void Start()
+    {
+        actor = FindObjectOfType<Actor>();
+    }
 
     public void LoadScene(string sceneName)
     {
+        DontDestroyOnLoad(actor);
         SceneManager.LoadScene(sceneName);
     }
 
