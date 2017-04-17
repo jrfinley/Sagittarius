@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Actor : MonoBehaviour
 {
@@ -32,74 +33,98 @@ public class Actor : MonoBehaviour
 
     private GameController gameController;
 
+    private void Update()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        string sceneName = currentScene.name;
+        if (sceneName == "Town")
+        {
+            this.data.firstRun = 1;
+            if (this.data.firstRun == 1)
+            {
+                Actor[] _actors = FindObjectsOfType<Actor>();
+                foreach (Actor _actor in _actors)
+                {
+                    if (_actor.data.firstRun != 1)
+                    {
+                        Destroy(_actor.gameObject);
+                    }
+                }
+            }
+        }
+        if (sceneName == "Main")
+        {
+            if (this.data.firstRun == 1)
+            {
+                Actor[] _actors = FindObjectsOfType<Actor>();
+                foreach (Actor _actor in _actors)
+                {
+                    if (_actor.data.firstRun != 1)
+                    {
+                        Destroy(_actor.gameObject);
+                    }
+                    
+                }
+            }
+        }
+    }
+    public IEnumerator FakeUpdate()
+    {
+        yield return new WaitUntil(() => data.firstRun >= 1);
+        yield return new WaitForSeconds(1);
+        LoadMainData();
+        Debug.Log("loaded town");
+    }
+
     void Start()
     {
         gameController = FindObjectOfType<GameController>();
-        //town
+        //main
         if (Application.loadedLevel == 0)
         {
-            currencyManager = FindObjectOfType<CurrencyManager>();
-            characterManager = FindObjectOfType<CharacterManager>();
-            playerParty = FindObjectOfType<PlayerParty>();
-            data.playerParty = FindObjectOfType<PlayerParty>();
-            currencyUI = FindObjectOfType<CurrencyUI>();
-            if (this.gameObject.tag == "Loader")
-            {
-                Destroy(this.gameObject);
-            }
-        }
-
-        //main
-        if (Application.loadedLevel == 1)
-        {
-            characterManager = FindObjectOfType<CharacterManager>();
-            playerParty = FindObjectOfType<PlayerParty>();
-            data.playerParty = FindObjectOfType<PlayerParty>();
-            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
-            inventoryItem = FindObjectsOfType<InventoryItem>();
-            currencyManager = GetComponent<CurrencyManager>();
-            currencyUI = FindObjectOfType<CurrencyUI>();
-            fogOfWar = FindObjectOfType<FOW>();
-            Debug.Log("Gold: " + currencyManager.Gold.Value);
-            Debug.Log("Scrap: " + currencyManager.Scrap.Value);
-            Debug.Log("Food: " + currencyManager.Food.Value);
-
-            Actor[] _actors = GetComponents<Actor>();
-            foreach (Actor loader in _actors)
-            {
-                if (loader.tag == "OldLoader")
-                {
-                    StartCoroutine(GamecontrollerDelayLoad());
-                    float wait = 0 + Time.deltaTime;
-                    if (wait > .21)
-                    {
-                        Debug.Log("call loaded");
-                        gameController.Load();
-                        Destroy(loader.gameObject);
-                    }
-
-                }
-            }
+            StartCoroutine(AllowAutoAddParty());
 
             if (!this.gameObject.GetComponent<DestroyOnLoad>())
             {
                 DontDestroyOnLoad(this.gameObject);
             }
         }
+        StartCoroutine(FakeUpdate());
     }
 
-    IEnumerator GamecontrollerDelayLoad()
+    IEnumerator AllowAutoAddParty()
     {
         yield return new WaitForSeconds(2);
-        gameController.Load();
-        Debug.Log("Loaded");
+        characterManager = FindObjectOfType<CharacterManager>();
+        playerParty = FindObjectOfType<PlayerParty>();
+        data.playerParty = FindObjectOfType<PlayerParty>();
+        inventoryDisplay = FindObjectOfType<InventoryDisplay>();
+        inventoryItem = FindObjectsOfType<InventoryItem>();
+        currencyManager = GetComponent<CurrencyManager>();
+        currencyUI = FindObjectOfType<CurrencyUI>();
+        fogOfWar = FindObjectOfType<FOW>();
+        Debug.Log("Gold: " + currencyManager.Gold.Value);
+        Debug.Log("Scrap: " + currencyManager.Scrap.Value);
+        Debug.Log("Food: " + currencyManager.Food.Value);
+
+        Actor[] _actors = GetComponents<Actor>();
+        foreach (Actor loader in _actors)
+        {
+            if (loader.tag == "OldLoader")
+            {
+                Debug.Log("call loaded");
+                //gameController.Load();
+                //Destroy(loader.gameObject);
+            }
+        }
+        StopCoroutine(AllowAutoAddParty());
     }
 
 
     public void StoreData()
     {
         #region scene main
-        if(Application.loadedLevel == 1)
+        if(Application.loadedLevel == 0)
         {
             //saved currencies
             data.goldValue += currencyManager.Gold.Value;
@@ -110,20 +135,20 @@ public class Actor : MonoBehaviour
             if(inventoryDisplay != null)
             {
                 data.items = inventoryDisplay.items;
+                foreach (InventoryItem inventoryItem in inventoryDisplay.items)
+                {
+                    //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
+                    //data.targetTransform = targetTransform;
+                    //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
+                    //data.targetTransform = targetTransform;
+                    data.ids.Add(inventoryItem.id);
+                    data.itemTypes.Add(inventoryItem.itemType);
+                    Debug.Log("inventoryItemID = " + inventoryItem.id);
+                    Debug.Log("inventoryItemType = " + inventoryItem.itemType);
+                }
             }
 
-            foreach (InventoryItem inventoryItem in inventoryDisplay.items)
-            {
-                //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
-                //data.targetTransform = targetTransform;
-                //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
-                //data.targetTransform = targetTransform;
-                data.ids.Add(inventoryItem.id);
-                data.itemTypes.Add(inventoryItem.itemType);
-                Debug.Log("inventoryItemID = " + inventoryItem.id);
-                Debug.Log("inventoryItemType = " + inventoryItem.itemType);
-
-            }
+           
 
             //Saves Character info
             //0
@@ -137,7 +162,57 @@ public class Actor : MonoBehaviour
             data.characterEquipCap0 = characterManager.allCharacters[0].EquipmentCapacity;
             data.characterType0 = characterManager.allCharacters[0].CharacterType;
             data.characterUnlocked0 = characterManager.allCharacters[0].isUnlocked;
+            //1
+            data.characterName1 = characterManager.allCharacters[1].Name;
+            data.characterLevel1 = characterManager.allCharacters[1].Level;
+            data.characterHealth1 = characterManager.allCharacters[1].MaxHealth;
+            data.characterStrength1 = characterManager.allCharacters[1].Strength;
+            data.characterDexterity1 = characterManager.allCharacters[1].Dexterity;
+            data.characterIntellect1 = characterManager.allCharacters[1].Intelect;
+            data.characterExperience1 = characterManager.allCharacters[1].Experience;
+            data.characterEquipCap1 = characterManager.allCharacters[1].EquipmentCapacity;
+            data.characterType1 = characterManager.allCharacters[1].CharacterType;
+            data.characterUnlocked1 = characterManager.allCharacters[1].isUnlocked;
+            //2
+            data.characterName2 = characterManager.allCharacters[2].Name;
+            data.characterLevel2 = characterManager.allCharacters[2].Level;
+            data.characterHealth2 = characterManager.allCharacters[2].MaxHealth;
+            data.characterStrength2 = characterManager.allCharacters[2].Strength;
+            data.characterDexterity2 = characterManager.allCharacters[2].Dexterity;
+            data.characterIntellect2 = characterManager.allCharacters[2].Intelect;
+            data.characterExperience2 = characterManager.allCharacters[2].Experience;
+            data.characterEquipCap2 = characterManager.allCharacters[2].EquipmentCapacity;
+            data.characterType2 = characterManager.allCharacters[2].CharacterType;
+            data.characterUnlocked2 = characterManager.allCharacters[2].isUnlocked;
+            //3
+            data.characterName3 = characterManager.allCharacters[3].Name;
+            data.characterLevel3 = characterManager.allCharacters[3].Level;
+            data.characterHealth3 = characterManager.allCharacters[3].MaxHealth;
+            data.characterStrength3 = characterManager.allCharacters[3].Strength;
+            data.characterDexterity3 = characterManager.allCharacters[3].Dexterity;
+            data.characterIntellect3 = characterManager.allCharacters[3].Intelect;
+            data.characterExperience3 = characterManager.allCharacters[3].Experience;
+            data.characterEquipCap3 = characterManager.allCharacters[3].EquipmentCapacity;
+            data.characterType3 = characterManager.allCharacters[3].CharacterType;
+            data.characterUnlocked3 = characterManager.allCharacters[3].isUnlocked;
 
+
+            //safty net of adding player to party since theres bug where he one gets deleted
+            if (playerParty.characters[0] == null)
+            {
+                playerParty.characters[0] = characterManager.allCharacters[0];
+            }
+            if (playerParty.characters[1] == null)
+            {
+                playerParty.characters[1] = characterManager.allCharacters[1];
+            }
+            if (playerParty.characters[2] == null)
+            {
+                playerParty.characters[2] = characterManager.allCharacters[2];
+            }
+
+
+            //0
             if (data.characterName0 == playerParty.characters[0].Name)
             {
                 data.characterInParty0 = true;
@@ -158,19 +233,7 @@ public class Actor : MonoBehaviour
                 data.characterInParty0 = false;
                 data.character0PartyPosition = -5;
             }
-
             //1
-            data.characterName1 = characterManager.allCharacters[1].Name;
-            data.characterLevel1 = characterManager.allCharacters[1].Level;
-            data.characterHealth1 = characterManager.allCharacters[1].MaxHealth;
-            data.characterStrength1 = characterManager.allCharacters[1].Strength;
-            data.characterDexterity1 = characterManager.allCharacters[1].Dexterity;
-            data.characterIntellect1 = characterManager.allCharacters[1].Intelect;
-            data.characterExperience1 = characterManager.allCharacters[1].Experience;
-            data.characterEquipCap1 = characterManager.allCharacters[1].EquipmentCapacity;
-            data.characterType1 = characterManager.allCharacters[1].CharacterType;
-            data.characterUnlocked1 = characterManager.allCharacters[1].isUnlocked;
-
             if (data.characterName1 == playerParty.characters[0].Name)
             {
                 data.characterInParty1 = true;
@@ -190,20 +253,8 @@ public class Actor : MonoBehaviour
             {
                 data.characterInParty1 = false;
                 data.character1PartyPosition = -5;
-            }
-
+            }          
             //2
-            data.characterName2 = characterManager.allCharacters[2].Name;
-            data.characterLevel2 = characterManager.allCharacters[2].Level;
-            data.characterHealth2 = characterManager.allCharacters[2].MaxHealth;
-            data.characterStrength2 = characterManager.allCharacters[2].Strength;
-            data.characterDexterity2 = characterManager.allCharacters[2].Dexterity;
-            data.characterIntellect2 = characterManager.allCharacters[2].Intelect;
-            data.characterExperience2 = characterManager.allCharacters[2].Experience;
-            data.characterEquipCap2 = characterManager.allCharacters[2].EquipmentCapacity;
-            data.characterType2 = characterManager.allCharacters[2].CharacterType;
-            data.characterUnlocked2 = characterManager.allCharacters[2].isUnlocked;
-
             if (data.characterName2 == playerParty.characters[0].Name)
             {
                 data.characterInParty2 = true;
@@ -224,19 +275,7 @@ public class Actor : MonoBehaviour
                 data.characterInParty2 = false;
                 data.character2PartyPosition = -5;
             }
-
             //3
-            data.characterName3 = characterManager.allCharacters[3].Name;
-            data.characterLevel3 = characterManager.allCharacters[3].Level;
-            data.characterHealth3 = characterManager.allCharacters[3].MaxHealth;
-            data.characterStrength3 = characterManager.allCharacters[3].Strength;
-            data.characterDexterity3 = characterManager.allCharacters[3].Dexterity;
-            data.characterIntellect3 = characterManager.allCharacters[3].Intelect;
-            data.characterExperience3 = characterManager.allCharacters[3].Experience;
-            data.characterEquipCap3 = characterManager.allCharacters[3].EquipmentCapacity;
-            data.characterType3 = characterManager.allCharacters[3].CharacterType;
-            data.characterUnlocked3 = characterManager.allCharacters[3].isUnlocked;
-
             if (data.characterName3 == playerParty.characters[0].Name)
             {
                 data.characterInParty3 = true;
@@ -256,20 +295,22 @@ public class Actor : MonoBehaviour
             {
                 data.characterInParty3 = false;
                 data.character3PartyPosition = -5;
-            }
+            }          
         }
-        #endregion
-
-        #region scene town
-      
-        #endregion
-
+        #endregion        
     }
 
     void LoadData()
     {
-        if (Application.loadedLevel == 1)
+        LoadMainData();
+        LoadTownData();       
+    }
+
+    public void LoadMainData()
+    {
+        if (Application.loadedLevel == 0)
         {
+            Debug.Log("Load mian data Spam at?");
             //currencies loaded
             currencyManager = GetComponent<CurrencyManager>();
             currencyUI = FindObjectOfType<CurrencyUI>();
@@ -280,7 +321,6 @@ public class Actor : MonoBehaviour
             Debug.Log("scrap: " + currencyManager.Scrap.Value);
             Debug.Log("food: " + currencyManager.Food.Value);
 
-            data.playerParty = FindObjectOfType<PlayerParty>();
             playerParty = FindObjectOfType<PlayerParty>();
 
             //loads item/ inventory info
@@ -294,11 +334,13 @@ public class Actor : MonoBehaviour
                 //display.transform.SetParent(targetTransform, false);
                 //display.Prime(inventoryItem);
                 ids.Add(id);
+                ids.Clear();
                 Debug.Log("inventoryItemID = " + id.ToString());
             }
             foreach (EItemType itemType in data.itemTypes)
             {
                 itemTypes.Add(itemType);
+                itemTypes.Clear();
                 Debug.Log("InventoryItemType = " + itemType.ToString());
             }
 
@@ -315,7 +357,41 @@ public class Actor : MonoBehaviour
             characterManager.allCharacters[0].EquipmentCapacity = data.characterEquipCap0;
             characterManager.allCharacters[0].CharacterType = data.characterType0;
             characterManager.allCharacters[0].isUnlocked = data.characterUnlocked0;
+            //character 1
+            characterManager.allCharacters[1].Name = data.characterName1;
+            characterManager.allCharacters[1].Level = data.characterLevel1;
+            characterManager.allCharacters[1].MaxHealth = data.characterHealth1;
+            characterManager.allCharacters[1].Strength = data.characterStrength1;
+            characterManager.allCharacters[1].Dexterity = data.characterDexterity1;
+            characterManager.allCharacters[1].Intelect = data.characterIntellect1;
+            characterManager.allCharacters[1].Experience = data.characterExperience1;
+            characterManager.allCharacters[1].EquipmentCapacity = data.characterEquipCap1;
+            characterManager.allCharacters[1].CharacterType = data.characterType1;
+            characterManager.allCharacters[1].isUnlocked = data.characterUnlocked1;
+            //character 2
+            characterManager.allCharacters[2].Name = data.characterName2;
+            characterManager.allCharacters[2].Level = data.characterLevel2;
+            characterManager.allCharacters[2].MaxHealth = data.characterHealth2;
+            characterManager.allCharacters[2].Strength = data.characterStrength2;
+            characterManager.allCharacters[2].Dexterity = data.characterDexterity2;
+            characterManager.allCharacters[2].Intelect = data.characterIntellect2;
+            characterManager.allCharacters[2].Experience = data.characterExperience2;
+            characterManager.allCharacters[2].EquipmentCapacity = data.characterEquipCap2;
+            characterManager.allCharacters[2].CharacterType = data.characterType2;
+            characterManager.allCharacters[2].isUnlocked = data.characterUnlocked2;
+            //character 3
+            characterManager.allCharacters[3].Name = data.characterName3;
+            characterManager.allCharacters[3].Level = data.characterLevel3;
+            characterManager.allCharacters[3].MaxHealth = data.characterHealth3;
+            characterManager.allCharacters[3].Strength = data.characterStrength3;
+            characterManager.allCharacters[3].Dexterity = data.characterDexterity3;
+            characterManager.allCharacters[3].Intelect = data.characterIntellect3;
+            characterManager.allCharacters[3].Experience = data.characterExperience3;
+            characterManager.allCharacters[3].EquipmentCapacity = data.characterEquipCap3;
+            characterManager.allCharacters[3].CharacterType = data.characterType3;
+            characterManager.allCharacters[3].isUnlocked = data.characterUnlocked3;
 
+            //0
             characterManager.allCharacters[0].IsPartyMember = data.characterInParty0;
             if (characterManager.allCharacters[0].IsPartyMember == true)
             {
@@ -329,20 +405,7 @@ public class Actor : MonoBehaviour
             {
                 characterManager.allCharacters[0].PartyPosition = -1;
             }
-
-
-            //character 1
-            characterManager.allCharacters[1].Name = data.characterName1;
-            characterManager.allCharacters[1].Level = data.characterLevel1;
-            characterManager.allCharacters[1].MaxHealth = data.characterHealth1;
-            characterManager.allCharacters[1].Strength = data.characterStrength1;
-            characterManager.allCharacters[1].Dexterity = data.characterDexterity1;
-            characterManager.allCharacters[1].Intelect = data.characterIntellect1;
-            characterManager.allCharacters[1].Experience = data.characterExperience1;
-            characterManager.allCharacters[1].EquipmentCapacity = data.characterEquipCap1;
-            characterManager.allCharacters[1].CharacterType = data.characterType1;
-            characterManager.allCharacters[1].isUnlocked = data.characterUnlocked1;
-
+            //1
             characterManager.allCharacters[1].IsPartyMember = data.characterInParty1;
             if (characterManager.allCharacters[1].IsPartyMember == true)
             {
@@ -356,19 +419,7 @@ public class Actor : MonoBehaviour
             {
                 characterManager.allCharacters[1].PartyPosition = -1;
             }
-
-            //character 2
-            characterManager.allCharacters[2].Name = data.characterName2;
-            characterManager.allCharacters[2].Level = data.characterLevel2;
-            characterManager.allCharacters[2].MaxHealth = data.characterHealth2;
-            characterManager.allCharacters[2].Strength = data.characterStrength2;
-            characterManager.allCharacters[2].Dexterity = data.characterDexterity2;
-            characterManager.allCharacters[2].Intelect = data.characterIntellect2;
-            characterManager.allCharacters[2].Experience = data.characterExperience2;
-            characterManager.allCharacters[2].EquipmentCapacity = data.characterEquipCap2;
-            characterManager.allCharacters[2].CharacterType = data.characterType2;
-            characterManager.allCharacters[2].isUnlocked = data.characterUnlocked2;
-
+            //2
             characterManager.allCharacters[2].IsPartyMember = data.characterInParty2;
             if (characterManager.allCharacters[2].IsPartyMember == true)
             {
@@ -381,20 +432,8 @@ public class Actor : MonoBehaviour
             else
             {
                 characterManager.allCharacters[2].PartyPosition = -1;
-            }
-
-            //character 3
-            characterManager.allCharacters[3].Name = data.characterName3;
-            characterManager.allCharacters[3].Level = data.characterLevel3;
-            characterManager.allCharacters[3].MaxHealth = data.characterHealth3;
-            characterManager.allCharacters[3].Strength = data.characterStrength3;
-            characterManager.allCharacters[3].Dexterity = data.characterDexterity3;
-            characterManager.allCharacters[3].Intelect = data.characterIntellect3;
-            characterManager.allCharacters[3].Experience = data.characterExperience3;
-            characterManager.allCharacters[3].EquipmentCapacity = data.characterEquipCap3;
-            characterManager.allCharacters[3].CharacterType = data.characterType3;
-            characterManager.allCharacters[3].isUnlocked = data.characterUnlocked3;
-
+            }        
+            //3
             characterManager.allCharacters[3].IsPartyMember = data.characterInParty3;
             if (characterManager.allCharacters[3].IsPartyMember == true)
             {
@@ -408,10 +447,30 @@ public class Actor : MonoBehaviour
             {
                 characterManager.allCharacters[3].PartyPosition = -1;
             }
-        }
 
+
+            //safty net of adding player to party since theres bug where he one gets deleted
+            if (playerParty.characters[0] == null)
+            {
+                playerParty.characters[0] = characterManager.allCharacters[0];
+                Debug.Log("spot 0: " + playerParty.characters[0].Name);
+            }
+            if (playerParty.characters[1] == null)
+            {
+                playerParty.characters[1] = characterManager.allCharacters[1];
+                Debug.Log("spot 0: " + playerParty.characters[0].Name);
+            }
+            if (playerParty.characters[2] == null)
+            {
+                playerParty.characters[2] = characterManager.allCharacters[2];
+                Debug.Log("spot 0: " + playerParty.characters[0].Name);
+            }
+        }
+    }
+    public void LoadTownData()
+    {
         #region //town
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 1)
         {
             //currencies loaded
             currencyManager = GetComponent<CurrencyManager>();
@@ -556,9 +615,7 @@ public class Actor : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-                    
     }
-
 
     public void ApplyData()
     {
