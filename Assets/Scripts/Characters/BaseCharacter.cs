@@ -19,6 +19,7 @@ public class BaseCharacter : MonoBehaviour
                 dexterity,
                 intelect,
                 experience,
+                maxExperience,
                 equipmentCapacity,
                 partyPosition;
 
@@ -212,7 +213,18 @@ public class BaseCharacter : MonoBehaviour
     public int Experience
     {
         get { return experience; }
-        set { experience = (int)(value * expMultiplier); }
+        set
+        {
+            experience = (int)(value * expMultiplier);
+
+            if (experience >= maxExperience)
+                Level++;
+        }
+    }
+    public int MaxExperience
+    {
+        get { return MaxExperience; }
+        set { maxExperience = value; }
     }
     public int EquipmentCapacity
     {

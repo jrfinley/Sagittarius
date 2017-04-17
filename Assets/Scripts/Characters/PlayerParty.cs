@@ -174,7 +174,7 @@ public class PlayerParty : MonoBehaviour
         {
             Vector3 moveDir = (movePosition - transform.position);
 
-            if (moveDir.magnitude > 0.2f)
+            if (moveDir.magnitude > gameObject.transform.localScale.z * 0.05f)
             {
                 moveDir = moveDir.normalized * moveSpeed * Time.fixedDeltaTime;
                 rb.MovePosition(rb.position + moveDir);
