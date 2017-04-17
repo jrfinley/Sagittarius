@@ -5,9 +5,9 @@ public class TestCharacterFunctions : MonoBehaviour
 {
     public PlayerParty playerParty;
 
-    private void Start()
+    private void Awake()
     {
-        Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
+        //Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
     }
 
     void AutoAddPartyMembers()
