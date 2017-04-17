@@ -5,17 +5,26 @@ public class Intro : MonoBehaviour
 {
     // The intro will consist of camera animations for just the intro scene
 
+    public GameObject player;
+
     private Animator camAnim;
+
+    private MovementTutorial mT;
 
     private Camera introCam;
 
-    private float startSpeed = 1;
-
-    private float timer;
-
     private float characterFallTime;
 
-    private bool hasFallen = true;
+    private bool hasFallen = false;
+
+    private bool followFall = false;
+
+    void Awake()
+    {
+        GameObject g = FindObjectOfType<GameObject>();
+
+        g = player.gameObject;
+    }
 
     void Start()
     {
@@ -23,42 +32,74 @@ public class Intro : MonoBehaviour
 
         introCam = GetComponent<Camera>();
 
-        startSpeed = 0;
+        mT = FindObjectOfType<MovementTutorial>();
+
+        mT = GetComponent<MovementTutorial>();
 
         characterFallTime = 0;
 
         hasFallen = false;
 
-        timer = 0;
+        followFall = false;
     }
 
-    void TransitionIn()
+    void EnablePlayer()
     {
+        if(characterFallTime >= 3.5f)
+        {
+            hasFallen = true;
+
+            followFall = false;
+
+            StartCoroutine(SpawnPlayer());
+        }
+    }
+
+    IEnumerator TransitionIn()
+    {
+        yield return new WaitForSeconds(3.5f);
+
         characterFallTime += Time.deltaTime;
 
         if(characterFallTime >= 3.5f)
         {
-            startSpeed += 1;
-
-            timer += 1;
+            player.SetActive(true);
 
             hasFallen = true;
 
-            camAnim.SendMessage("HasFallen", true);
+            followFall = true;
+
+            camAnim.SendMessage("Camera Fall", true);
+
+            camAnim.SendMessage("Fall", true);
         }
-        else 
+        else if(!hasFallen && !followFall)
         {
-           if(timer <= 0)
+            player.SetActive(false);
+
+            camAnim.SendMessage("Camera Fall", false);
+
+            camAnim.SendMessage("Fall", true);
+
+            if(characterFallTime <= 0)
             {
                 characterFallTime = 0;
 
                 camAnim.Stop();
             }
         }
+
+        yield return null;
     }
 
-    void Update()
+    IEnumerator SpawnPlayer()
     {
-        TransitionIn();
+        player.gameObject.SetActive(true);
+
+        mT.enabled = true;
+
+        mT.GetMovementInput();
+
+        yield return null;
     }
 }
