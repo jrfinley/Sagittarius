@@ -14,8 +14,9 @@ public class TestCharacterFunctions : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
 
-        
-        if (actor.data.firstRun != 1)
+        Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
+
+        /*if (actor.data.firstRun != 1)
         {
             Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
         }
@@ -23,7 +24,7 @@ public class TestCharacterFunctions : MonoBehaviour
         {
             StartCoroutine(actor.FakeUpdate());
             Debug.Log("Even get here?");
-        }
+        }*/
     }
 
     void AutoAddPartyMembers()

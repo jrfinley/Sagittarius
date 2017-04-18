@@ -10,11 +10,13 @@ public class CurrencyUI : MonoBehaviour
 
     void Start ()
     {
-        UpdateUI();
+
+        StartCoroutine(UpdateUI());
     }
 	
-    void UpdateUI()
+    IEnumerator UpdateUI()
     {
+        yield return new WaitForSeconds(.3f);
         currencyManager = FindObjectOfType<CurrencyManager>();
         goldText.text = currencyManager.Gold.Value.ToString();
         scrapText.text = currencyManager.Scrap.Value.ToString();

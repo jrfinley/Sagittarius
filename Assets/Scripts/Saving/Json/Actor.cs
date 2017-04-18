@@ -86,7 +86,7 @@ public class Actor : MonoBehaviour
 
             if (!this.gameObject.GetComponent<DestroyOnLoad>())
             {
-                DontDestroyOnLoad(this.gameObject);
+                //DontDestroyOnLoad(this.gameObject);
             }
         }
         StartCoroutine(FakeUpdate());
@@ -323,8 +323,12 @@ public class Actor : MonoBehaviour
 
             playerParty = FindObjectOfType<PlayerParty>();
 
+            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
             //loads item/ inventory info
-            inventoryDisplay.items = data.items;
+            if(data.items != null)
+            {
+                inventoryDisplay.items = data.items;
+            }
 
             foreach (int id in data.ids)
             {
