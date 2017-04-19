@@ -25,6 +25,7 @@ public class CharacterManager : MonoBehaviour
     {
         allCharacters.Clear();
         allCharacters.AddRange(GetComponents<BaseCharacter>());
+        SortCharacters();
     }
 
     public void CreateCharacter(ECharacterType characterType, string name, int level)
@@ -58,6 +59,17 @@ public class CharacterManager : MonoBehaviour
         allCharacters.Add(newCharacter);
     }
 
+    void SortCharacters()
+    {
+        warriors.Clear();
+        warriors.AddRange(GetComponents<Warrior>());
+
+        rogues.Clear();
+        rogues.AddRange(GetComponents<Rogue>());
+
+        mages.Clear();
+        mages.AddRange(GetComponents<Mage>());
+    }
     void AddCharacter(Warrior newCharacter)
     {
         warriors.Add(newCharacter);
