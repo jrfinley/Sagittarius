@@ -14,16 +14,8 @@ public class TestCharacterFunctions : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
 
-        
-        if (actor.data.firstRun != 1)
-        {
-            Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
-        }
-        else if (sceneName == "Main" && actor.data.firstRun == 1)
-        {
-            StartCoroutine(actor.FakeUpdate());
-            Debug.Log("Even get here?");
-        }
+        Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
+
     }
 
     void AutoAddPartyMembers()
