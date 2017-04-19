@@ -17,16 +17,14 @@ public class MovementTutorial : MonoBehaviour
 
     void Awake()
     {
-        this.gameObject.SetActive(false);
+        InputManager iM = FindObjectOfType<InputManager>();
 
-        movementisActive = false;
-
-        state = State.CannotMove;
+        iM.enabled = true;
     }
 
     void Start()
     {
-        iM = GetComponent<InputManager>();
+        movementisActive = false;
     }
 
     public void GetMovementInput()
@@ -36,26 +34,11 @@ public class MovementTutorial : MonoBehaviour
         if(state == State.CanMove)
         {
             movementisActive = true;
-
-            if (movementisActive == true)
-            {
-                iM.gameObject.SetActive(true);
-
-                iM.GetComponent<InputManager>().enabled = true;
-            }
         }
 
-       else if(state == State.CannotMove)
+        else if(state == State.CannotMove)
         {
-            if(state == State.CannotMove)
-            {
-                movementisActive = false;
-
-                if(movementisActive == false)
-                {
-                    iM.GetComponent<InputManager>().enabled = false;
-                }
-            }
+            movementisActive = false;
         }
     }
 }

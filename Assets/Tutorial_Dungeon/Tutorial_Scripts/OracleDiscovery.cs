@@ -3,112 +3,78 @@ using System.Collections;
 
 public class OracleDiscovery : MonoBehaviour
 {
-    private GameObject oracle;
+    private ActivatePanels panels;
+
+    public MeshRenderer oracle;
 
     private Transform oraclePosition;
 
     private bool spawned = false;
 
-    private Vector3 spawnPosition = new Vector3(0,0, 13.52f);
+    private Vector3 spawnPosition = new Vector3(0,0,-2);
 
-    public float spawnTimer = 0;
+    public float spawnTimer;
 
     private Animator camAnim;
 
-    private UIManager uiManager;
-
-    public GameObject dialogueBox;
-
-    public GameObject UIManager;
-
-    private string myText;
-
     void Awake()
     {
-        uiManager = GetComponent<UIManager>();
+        spawnTimer = 4.0f;
 
-        UIManager.SetActive(false);
+        ActivatePanels p = FindObjectOfType<ActivatePanels>();
+
+        p = panels;
+
+        MeshRenderer r = FindObjectOfType<MeshRenderer>();
+
+        r = oracle;
     }
 
     void Start ()
     {
-        oracle = this.gameObject;
-
-        this.gameObject.SetActive(false);
-
-        spawnTimer = 0.0f;
+        oracle.GetComponent<MeshRenderer>().enabled = false;
 
         spawned = false;
 
-        spawnPosition = transform.position;
+        transform.position = spawnPosition.normalized;
 
         camAnim = GetComponentInChildren<Animator>();
 
-        EnableTimer();
+        spawnTimer -= Time.deltaTime;
+
+        StartCoroutine(SpawnOracle());
 	}
+
+    IEnumerator SpawnOracle()
+    {
+        yield return new WaitForSeconds(4.0f);
+
+        if (spawnTimer <= 4)
+        {
+            StartCoroutine(Spawn());
+        }
+    }
 
     void Update()
     {
-        spawnTimer *= Time.deltaTime;
-
-        spawnTimer++;
-    }
-
-    void EnableTimer()
-    {
-        spawnTimer += Time.time;
-
-        if(spawnTimer >= 6.0f)
-        {
-            spawnTimer = 6.0f;
-
-            StartCoroutine(Spawn());
-
-            // oracle.SetActive(true);
-
-            StartCoroutine(Oracle());
-        }
-    }
-
-    IEnumerator DisplayDialogue()
-    {
-        UIManager ui = FindObjectOfType<UIManager>();
-
-        ui = GetComponent<UIManager>();
-
-        ui.gameObject.SetActive(true);     
-
-        if(uiManager.dialogueBox.enabled)
-        {
-            uiManager.dialogueBox.textBox.text = myText;
-
-            myText = "Welcome to Sagittarius" + "," + "I will be your guide through this tutorial";
-
-            uiManager.CreateNewDialogueBox(myText);
-        }
-
-        yield return null;
+        StartCoroutine(SpawnOracle());
     }
 
     IEnumerator Spawn()
     {
-        EnableTimer();
+        spawned = true;
 
-        spawnTimer += Time.deltaTime;
+        oracle.GetComponent<MeshRenderer>().enabled = true;
 
-        if(spawnTimer >= 6.0f)
-        {
-            spawned = true;
+        yield return new WaitForSeconds(0.5f);
 
-            oracle.SetActive(true);
-
-            Instantiate(oracle, spawnPosition, Quaternion.identity);
-        }
+       // panels.welcomeZone.SetActive(true);
 
         yield return null;
     }
 
-    IEnumerator Oracle()
+    /*
+    IEnumerator OracleAnim()
     {
        // yield return new WaitForSeconds(6.0f);
 
@@ -125,4 +91,5 @@ public class OracleDiscovery : MonoBehaviour
 
         yield return null;
     }
+    */
 }
