@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Text))]
 public class DisplayText : MonoBehaviour
 {
+
+    private UIManager ui;
+
     public Text welcomeText;
 
     public Text movementText;
@@ -35,6 +39,9 @@ public class DisplayText : MonoBehaviour
 
     void Start()
     {
+
+        ui = FindObjectOfType<UIManager>();
+
         inWelcomeZone = false;
 
         inMovementZone = false;
@@ -74,7 +81,7 @@ public class DisplayText : MonoBehaviour
 
         welcomeText = GetComponent<Text>();
 
-        wText = welcomeText.text;
+        wText = "";
 
         int legnth = wText.Length;
 
@@ -98,11 +105,13 @@ public class DisplayText : MonoBehaviour
 
         if(inWelcomeZone == true)
         {
-            welcomeText.text = "Welcome to Sagittarius";
+            ui.CreateNewDialogueBox("Welcome to Sagittarius");
         }
       
         else
         {
+            inWelcomeZone = false;
+
             if(inWelcomeZone == false)
             {
                 welcomeText.text = "";
@@ -140,12 +149,14 @@ public class DisplayText : MonoBehaviour
 
         if (inMovementZone == true)
         {
-            movementText.text = "Are you ready to get started? " + "/n" + "to navigate around, you may use swipe input"+
-                "," + "Swipe Left" + "Swipe Right" + "Swipe Up" + "and" + "Swipe Down";
+            ui.CreateNewDialogueBox("Are you ready to get started? " + "\n" + "to navigate around, you may use swipe input"+
+                "\n," + "Swipe Left" + "Swipe Right" + ", " + "Swipe Up" + "and" + "Swipe Down");
         }
 
         else
         {
+            inMovementZone = false;
+
             if (inMovementZone == false)
             {
                 movementText.text = "";
@@ -185,13 +196,14 @@ public class DisplayText : MonoBehaviour
 
         if (inPickUpZone == true)
         {
-            pickUpText.text = "You have now discovered your first item to use and equip for all your needs";
-
-            // to be continued
+             ui.CreateNewDialogueBox("You have now discovered your first item" + "\n" +
+                "use and equip for all your needs");
         }
 
         else
         {
+            inPickUpZone = false;
+
             if (inPickUpZone == false)
             {
                 pickUpText.text = "";
@@ -231,16 +243,20 @@ public class DisplayText : MonoBehaviour
 
         if (inCombatZone == true)
         {
-            combatText.text = "You have now entered a combat zone" + "/n" + "You will be able to Attack, Heal, or Run ";
+            ui.CreateNewDialogueBox("You have now entered a combat zone" + "\n" + "You will be able to Attack, Heal, or Run ");
 
-            // open and close combat panel
+            yield return new WaitForSeconds(5.0f);
 
-            // or load the combat scene for now
+            SceneManager.LoadScene("Combat", LoadSceneMode.Additive);
+
+            SceneManager.UnloadScene(2);
         }
 
         else
         {
-            if (combatText == false)
+            inCombatZone = false;
+
+            if (inCombatZone == false)
             {
                 combatText.text = "";
             }
