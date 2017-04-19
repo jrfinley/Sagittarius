@@ -11,6 +11,7 @@ public class PlayerParty : MonoBehaviour
     public float moveSpeed;
     public float moveXAmount;
     public float moveZAmount;
+    public float posSnapDistance;
 
     public Vector3 movePosition;
 
@@ -174,7 +175,7 @@ public class PlayerParty : MonoBehaviour
         {
             Vector3 moveDir = (movePosition - transform.position);
 
-            if (moveDir.magnitude > gameObject.transform.localScale.z * 0.05f)
+            if (moveDir.magnitude > posSnapDistance)
             {
                 moveDir = moveDir.normalized * moveSpeed * Time.fixedDeltaTime;
                 rb.MovePosition(rb.position + moveDir);
