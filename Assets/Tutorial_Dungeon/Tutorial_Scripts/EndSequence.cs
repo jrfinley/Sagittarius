@@ -1,24 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.SceneManagement;
 public class EndSequence : MonoBehaviour
 {
-    private CombatPanel cP;
-
-    private BaseMonster monster;
-
-    void Start()
+   void OnCollisionEnter(Collision other)
     {
-        monster.GetHealth();
-
-        monster.SetHealth(100);
-    }
-
-    void OnCollisionEnter(Collision monster)
-    {
-        if(monster.gameObject.tag == "Acitvate")
+        if(other.gameObject.tag == "Player")
         {
-
+            SceneManager.LoadScene(2);
         }
     }
 }

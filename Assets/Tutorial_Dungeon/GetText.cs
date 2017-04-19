@@ -52,7 +52,7 @@ public class GetText : MonoBehaviour
         {
             d.inWelcomeZone = false;
 
-            if (!other)
+            if (!other.gameObject)
             {
                 d.welcomeText.text = "";
             }
@@ -62,7 +62,7 @@ public class GetText : MonoBehaviour
         {
             d.inMovementZone = false;
 
-            if (!other)
+            if (!other.gameObject)
             {
                 d.movementText.text = "";
             }
@@ -72,7 +72,7 @@ public class GetText : MonoBehaviour
         {
             d.inPickUpZone = false;
 
-            if (!other)
+            if (!other.gameObject)
             {
                 d.pickUpText.text = "";
             }
@@ -82,7 +82,7 @@ public class GetText : MonoBehaviour
         {
             d.inCombatZone = false;
 
-            if (!other)
+            if (!other.gameObject)
             {
                 d.welcomeText.text = "";
             }
