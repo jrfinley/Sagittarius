@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,9 @@ public class BaseMonster : MonoBehaviour
 
     [SerializeField]
     private Sprite icon;
+
+    public List<string> statusEffectNames = new List<string>();
+    public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
 
     void Start()
     {
@@ -107,5 +111,23 @@ public class BaseMonster : MonoBehaviour
     public void SetIcon(Sprite newIcon)
     {
         icon = newIcon;
+    }
+    public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
+    {
+        statusEffectNames.Add(statusEffect.statusName);
+        statusEffects.Add(statusEffect);
+        statusEffect.InitializeStatusEffect2(this);
+        print(statusEffectNames[0]);
+    }
+    public void RemoveStatusEffect(EBuffType buffType)
+    {
+        for (int i = 0; i < statusEffects.Count; i++)
+        {
+            if (statusEffects[i].buffType == buffType)
+            {
+                statusEffects[i].RemoveStatusEffect();
+                break;
+            }
+        }
     }
 }

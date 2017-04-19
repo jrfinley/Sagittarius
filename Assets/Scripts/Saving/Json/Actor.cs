@@ -5,21 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
+
+// paste this to libraries - 
+
 public class Actor : MonoBehaviour
 {
     public ActorData data = new ActorData();
-
-    //public InventoryItemDisplay inventoryItemDisplayPrefab;
 
     private InventoryItem[] inventoryItem;
     public static InventoryDisplay inventoryDisplay;
 
     public Vector3 pos;
 
-    public static Transform targetTransform;
-
     public List<int> ids = new List<int>();
-    public List<EItemType> itemTypes = new List<EItemType>();
+    public List<EEquipmentType> equipmentType = new List<EEquipmentType>();
 
     private PlayerParty playerParty;
 
@@ -33,48 +32,6 @@ public class Actor : MonoBehaviour
 
     private GameController gameController;
 
-    private void Update()
-    {
-        Scene currentScene = SceneManager.GetActiveScene();
-        string sceneName = currentScene.name;
-        if (sceneName == "Town")
-        {
-            this.data.firstRun = 1;
-            if (this.data.firstRun == 1)
-            {
-                Actor[] _actors = FindObjectsOfType<Actor>();
-                foreach (Actor _actor in _actors)
-                {
-                    if (_actor.data.firstRun != 1)
-                    {
-                        Destroy(_actor.gameObject);
-                    }
-                }
-            }
-        }
-        if (sceneName == "Main")
-        {
-            if (this.data.firstRun == 1)
-            {
-                Actor[] _actors = FindObjectsOfType<Actor>();
-                foreach (Actor _actor in _actors)
-                {
-                    if (_actor.data.firstRun != 1)
-                    {
-                        Destroy(_actor.gameObject);
-                    }
-                    
-                }
-            }
-        }
-    }
-    public IEnumerator FakeUpdate()
-    {
-        yield return new WaitUntil(() => data.firstRun >= 1);
-        yield return new WaitForSeconds(1);
-        LoadMainData();
-        Debug.Log("loaded town");
-    }
 
     void Start()
     {
@@ -82,19 +39,13 @@ public class Actor : MonoBehaviour
         //main
         if (Application.loadedLevel == 0)
         {
-            StartCoroutine(AllowAutoAddParty());
-
-            if (!this.gameObject.GetComponent<DestroyOnLoad>())
-            {
-                DontDestroyOnLoad(this.gameObject);
-            }
+            StartCoroutine(AllowAutoAddParty());        
         }
-        StartCoroutine(FakeUpdate());
     }
 
     IEnumerator AllowAutoAddParty()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(.31f);
         characterManager = FindObjectOfType<CharacterManager>();
         playerParty = FindObjectOfType<PlayerParty>();
         data.playerParty = FindObjectOfType<PlayerParty>();
@@ -103,28 +54,16 @@ public class Actor : MonoBehaviour
         currencyManager = GetComponent<CurrencyManager>();
         currencyUI = FindObjectOfType<CurrencyUI>();
         fogOfWar = FindObjectOfType<FOW>();
-        Debug.Log("Gold: " + currencyManager.Gold.Value);
-        Debug.Log("Scrap: " + currencyManager.Scrap.Value);
-        Debug.Log("Food: " + currencyManager.Food.Value);
-
-        Actor[] _actors = GetComponents<Actor>();
-        foreach (Actor loader in _actors)
-        {
-            if (loader.tag == "OldLoader")
-            {
-                Debug.Log("call loaded");
-                //gameController.Load();
-                //Destroy(loader.gameObject);
-            }
-        }
-        StopCoroutine(AllowAutoAddParty());
+        //Debug.Log("Gold: " + currencyManager.Gold.Value);
+       // Debug.Log("Scrap: " + currencyManager.Scrap.Value);
+        //Debug.Log("Food: " + currencyManager.Food.Value);
     }
 
 
     public void StoreData()
     {
         #region scene main
-        if(Application.loadedLevel == 0)
+        if (Application.loadedLevel == 0)
         {
             //saved currencies
             data.goldValue += currencyManager.Gold.Value;
@@ -137,14 +76,10 @@ public class Actor : MonoBehaviour
                 data.items = inventoryDisplay.items;
                 foreach (InventoryItem inventoryItem in inventoryDisplay.items)
                 {
-                    //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
-                    //data.targetTransform = targetTransform;
-                    //data.inventoryItemDisplayPrefab = inventoryItemDisplayPrefab;
-                    //data.targetTransform = targetTransform;
                     data.ids.Add(inventoryItem.id);
                     data.itemTypes.Add(inventoryItem.itemType);
-                    Debug.Log("inventoryItemID = " + inventoryItem.id);
-                    Debug.Log("inventoryItemType = " + inventoryItem.itemType);
+                    //Debug.Log("inventoryItemID = " + inventoryItem.id);
+                    //Debug.Log("inventoryItemType = " + inventoryItem.itemType);
                 }
             }
 
@@ -306,42 +241,89 @@ public class Actor : MonoBehaviour
         LoadTownData();       
     }
 
+    /*void ResetOnStore()
+    {
+        data.goldValue = 0;
+        data.scrapValue = 0;
+        data.foodValue = 0;
+        data.items.Clear();
+        data.ids.Clear();
+        data.itemTypes.Clear();
+
+        data.characterName0 = string.Empty;
+        data.characterLevel0 = 0;
+        data.characterHealth0 = 0;
+        data.characterStrength0 = 0;
+        data.characterDexterity0 = 0;
+        data.characterIntellect0 = 0;
+        data.characterExperience0 = 0;
+        data.characterEquipCap0 = 0;
+        //1
+        data.characterName1 = string.Empty;
+        data.characterLevel1 = 0;
+        data.characterHealth1 = 0;
+        data.characterStrength1 = 0;
+        data.characterDexterity1 = 0;
+        data.characterIntellect1 = 0;
+        data.characterExperience1 = 0;
+        data.characterEquipCap1 = 0;
+        //2
+        data.characterName2 = string.Empty;
+        data.characterLevel2 = 0;
+        data.characterHealth2 = 0;
+        data.characterStrength2 = 0;
+        data.characterDexterity2 = 0;
+        data.characterIntellect2 = 0;
+        data.characterExperience2 = 0;
+        data.characterEquipCap2 = 0;
+        //3
+        data.characterName3 = str;
+        data.characterLevel3 = characterManager.allCharacters[3].Level;
+        data.characterHealth3 = characterManager.allCharacters[3].MaxHealth;
+        data.characterStrength3 = characterManager.allCharacters[3].Strength;
+        data.characterDexterity3 = characterManager.allCharacters[3].Dexterity;
+        data.characterIntellect3 = characterManager.allCharacters[3].Intelect;
+        data.characterExperience3 = characterManager.allCharacters[3].Experience;
+        data.characterEquipCap3 = characterManager.allCharacters[3].EquipmentCapacity;
+        data.characterType3 = characterManager.allCharacters[3].CharacterType;
+        data.characterUnlocked3 = characterManager.allCharacters[3].isUnlocked;
+    }*/
+
     public void LoadMainData()
     {
         if (Application.loadedLevel == 0)
         {
-            Debug.Log("Load mian data Spam at?");
+            //Debug.Log("Load mian data Spam at?");
             //currencies loaded
             currencyManager = GetComponent<CurrencyManager>();
             currencyUI = FindObjectOfType<CurrencyUI>();
             currencyManager.Gold.Value = data.goldValue;
             currencyManager.Scrap.Value = data.scrapValue;
             currencyManager.Food.Value = data.foodValue;
-            Debug.Log("gold: " + currencyManager.Gold.Value);
-            Debug.Log("scrap: " + currencyManager.Scrap.Value);
-            Debug.Log("food: " + currencyManager.Food.Value);
+            //Debug.Log("gold: " + currencyManager.Gold.Value);
+            //Debug.Log("scrap: " + currencyManager.Scrap.Value);
+            //Debug.Log("food: " + currencyManager.Food.Value);
 
             playerParty = FindObjectOfType<PlayerParty>();
 
+            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
             //loads item/ inventory info
-            inventoryDisplay.items = data.items;
+            if(data.items != null)
+            {
+                inventoryDisplay.items = data.items;
+            }
 
             foreach (int id in data.ids)
             {
-                //inventoryItemDisplayPrefab = data.inventoryItemDisplayPrefab;
-                //InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(data.inventoryItemDisplayPrefab);
-                //targetTransform = data.targetTransform;
-                //display.transform.SetParent(targetTransform, false);
-                //display.Prime(inventoryItem);
                 ids.Add(id);
                 ids.Clear();
-                Debug.Log("inventoryItemID = " + id.ToString());
+                //Debug.Log("inventoryItemID = " + id.ToString());
             }
-            foreach (EItemType itemType in data.itemTypes)
+            foreach (EEquipmentType equip in data.itemTypes)
             {
-                itemTypes.Add(itemType);
-                itemTypes.Clear();
-                Debug.Log("InventoryItemType = " + itemType.ToString());
+                equipmentType.Add(equip);
+                equipmentType.Clear();
+                //Debug.Log("InventoryItemType = " + equip.ToString());
             }
 
 
@@ -453,17 +435,17 @@ public class Actor : MonoBehaviour
             if (playerParty.characters[0] == null)
             {
                 playerParty.characters[0] = characterManager.allCharacters[0];
-                Debug.Log("spot 0: " + playerParty.characters[0].Name);
+                //Debug.Log("spot 0: " + playerParty.characters[0].Name);
             }
             if (playerParty.characters[1] == null)
             {
                 playerParty.characters[1] = characterManager.allCharacters[1];
-                Debug.Log("spot 0: " + playerParty.characters[0].Name);
+                //Debug.Log("spot 0: " + playerParty.characters[0].Name);
             }
             if (playerParty.characters[2] == null)
             {
                 playerParty.characters[2] = characterManager.allCharacters[2];
-                Debug.Log("spot 0: " + playerParty.characters[0].Name);
+                //Debug.Log("spot 0: " + playerParty.characters[0].Name);
             }
         }
     }
@@ -478,15 +460,15 @@ public class Actor : MonoBehaviour
             currencyManager.Gold.Value = data.goldValue;
             currencyManager.Scrap.Value = data.scrapValue;
             currencyManager.Food.Value = data.foodValue;
-            Debug.Log("gold: " + currencyManager.Gold.Value);
-            Debug.Log("scrap: " + currencyManager.Scrap.Value);
-            Debug.Log("food: " + currencyManager.Food.Value);
+           // Debug.Log("gold: " + currencyManager.Gold.Value);
+           // Debug.Log("scrap: " + currencyManager.Scrap.Value);
+            //Debug.Log("food: " + currencyManager.Food.Value);
 
             data.playerParty = FindObjectOfType<PlayerParty>();
             playerParty = FindObjectOfType<PlayerParty>();
 
             //loads item/ inventory info
-            Debug.Log("loaded item info: " + data.items);
+            //Debug.Log("loaded item info: " + data.items);
 
             foreach (int id in data.ids)
             {
@@ -496,12 +478,12 @@ public class Actor : MonoBehaviour
                 //display.transform.SetParent(targetTransform, false);
                 //display.Prime(inventoryItem);
                 ids.Add(id);
-                Debug.Log("inventoryItemID = " + id.ToString());
+                //Debug.Log("inventoryItemID = " + id.ToString());
             }
-            foreach (EItemType itemType in data.itemTypes)
+            foreach (EEquipmentType type in data.itemTypes)
             {
-                itemTypes.Add(itemType);
-                Debug.Log("InventoryItemType = " + itemType.ToString());
+                equipmentType.Add(type);
+                //Debug.Log("InventoryItemType = " + equipmentType.ToString());
             }
 
             characterManager = FindObjectOfType<CharacterManager>();
@@ -610,11 +592,6 @@ public class Actor : MonoBehaviour
                 characterManager.allCharacters[3].PartyPosition = -1;
             }
         }
-
-        if (this.gameObject.GetComponent<DestroyOnLoad>())
-        {
-            Destroy(this.gameObject);
-        }
     }
 
     public void ApplyData()
@@ -626,13 +603,13 @@ public class Actor : MonoBehaviour
     {
         SaveData.OnLoaded += LoadData;
         SaveData.OnBeforeSave += StoreData;
-        SaveData.OnBeforeSave += ApplyData;
+        SaveData.OnBeforeSave -= ApplyData;
     }
     void OnDisable()
     {
         SaveData.OnLoaded -= LoadData;
         SaveData.OnBeforeSave -= StoreData;
-        SaveData.OnBeforeSave -= ApplyData;
+        SaveData.OnBeforeSave += ApplyData;
     }
 }
 
@@ -643,7 +620,7 @@ public class ActorData
 
     public List<int> ids = new List<int>();
     public List<InventoryItem> items = new List<InventoryItem>();
-    public List<EItemType> itemTypes = new List<EItemType>();
+    public List<EEquipmentType> itemTypes = new List<EEquipmentType>();
 
     public Vector3 pos;
 

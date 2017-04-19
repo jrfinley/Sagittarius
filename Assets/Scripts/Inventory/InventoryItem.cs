@@ -15,9 +15,10 @@ public class InventoryItem : MonoBehaviour
     public int dexterity;
     public int gold;
     public int scrap;
-    public EItemType itemType;
+    public EEquipmentType itemType;
 
     public int id;
+    public int health;
 
     private Item item;
 
@@ -32,7 +33,8 @@ public class InventoryItem : MonoBehaviour
         dexterity = (int)item.Stats.Dexterity;
         gold = (int)item.Stats.GoldValue;
         scrap = (int)item.Stats.ScrapValue;
-        itemType = item.Types.ItemType;
+        itemType = item.Types.EquipmentType;
+        health = (int)item.Stats.Health;
 
         id = item.ID;
     }
