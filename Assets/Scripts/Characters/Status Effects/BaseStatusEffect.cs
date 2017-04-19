@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class BaseStatusEffect : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class BaseStatusEffect : MonoBehaviour
 
     public BaseCharacter baseCharacter;
 
+    public BaseMonster baseMonster;                    
+
     public void InitializeStatusEffect(BaseCharacter _baseCharacter)
     {
         baseCharacter = _baseCharacter;
@@ -30,6 +33,13 @@ public class BaseStatusEffect : MonoBehaviour
         if (expirationType == EBuffExpiration.TIME_BASED)
             StartCoroutine(TimeExpire());
     }
+    public void InitializeStatusEffect2(BaseMonster _baseMonster)
+    {
+        baseMonster = _baseMonster;
+        baseMonster.statusEffects.Remove(this);
+        baseMonster.statusEffectNames.Remove(statusName);
+        Destroy(this);
+    }
     public void RemoveStatusEffect()
     {
         baseCharacter.Strength -= strengthChange;
@@ -40,6 +50,8 @@ public class BaseStatusEffect : MonoBehaviour
 
         baseCharacter.statusEffects.Remove(this);
         baseCharacter.statusEffectNames.Remove(statusName);
+        baseMonster.statusEffects.Remove(this);
+        baseMonster.statusEffectNames.Remove(statusName);
         Destroy(this);
     }
     public void CountDownExpiration()
@@ -56,4 +68,5 @@ public class BaseStatusEffect : MonoBehaviour
 
         RemoveStatusEffect();
     }
+
 }
