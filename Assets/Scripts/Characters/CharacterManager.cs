@@ -20,7 +20,7 @@ public class CharacterManager : MonoBehaviour
         FindAllCharacters();
     }
 
-    //Call this when loading all unlocked characters
+    //Call this when loading all characters
     public void FindAllCharacters()
     {
         allCharacters.Clear();
