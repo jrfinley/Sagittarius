@@ -105,9 +105,9 @@ public class PlayerParty : MonoBehaviour
         {
             if (characterManager.allCharacters[i].Name == name)
             {
-                if (!characterManager.allCharacters[i].isUnlocked)
+                if (!characterManager.allCharacters[i].isUnlocked || characterManager.allCharacters[i].IsTraining)
                 {
-                    Debug.Log("That character is not unlocked yet");
+                    Debug.Log("That character is not unlocked yet or is training");
                     return;
                 }
 

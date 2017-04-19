@@ -7,7 +7,7 @@ public class CharacterTrainer : MonoBehaviour
     //Temp for testing. This will be the amount gold the player wants to spend
     public int goldToSpendAmount;
 
-    public int expGain,
+    public int expGainPerTick,
                secondsPerGold;
 
     public float expGainRate;
@@ -24,14 +24,16 @@ public class CharacterTrainer : MonoBehaviour
     public void AddCharacter(BaseCharacter character, int goldToSpend)
     {
         for (int i = 0; i < charactersTraining.Count; i++)
-            if (charactersTraining[i] == character)
+            if (charactersTraining[i] == character || character.IsPartyMember)
                 return;
 
-        if (currencyManager.Gold.Value > goldToSpend)
+        if (currencyManager.Gold.Value >= goldToSpend)
         {
             float timeToTrain = goldToSpend * secondsPerGold;
 
             currencyManager.Gold.Value -= goldToSpend;
+            character.IsTraining = true;
+
             charactersTraining.Add(character);
             StartCoroutine(StartTraining(character, timeToTrain));
         }
@@ -45,8 +47,11 @@ public class CharacterTrainer : MonoBehaviour
         {
             yield return new WaitForSeconds(expGainRate);
 
-            character.Experience += expGain;
+            character.Experience += expGainPerTick;
             currentTime += expGainRate;
-        }  
+        }
+
+        character.IsTraining = false;
+        charactersTraining.Remove(character);
     }
 }
