@@ -1,0 +1,7 @@
+<Sheets>
+  <sheet name="Formulas">
+    <row name="? = mayby does not need a formula" />
+    <row name="Note: only the first line is used, and it is used to store formulas, but there will need to be someway to push input variables into the formulas" />
+    <row name="Note: there will be the need for rand float number from 0-1" />
+  </sheet>
+</Sheets>

@@ -1,0 +1,4 @@
+EItemType
+? = mayby does not need a formula
+"Note: only the first line is used, and it is used to store formulas, but there will need to be someway to push input variables into the formulas"
+Note: there will be the need for rand float number from 0-1
