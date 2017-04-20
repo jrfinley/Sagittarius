@@ -11,6 +11,7 @@ public class PlayerParty : MonoBehaviour
     public float moveSpeed;
     public float moveXAmount;
     public float moveZAmount;
+    public float posSnapDistance;
 
     public Vector3 movePosition;
 
@@ -30,7 +31,7 @@ public class PlayerParty : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         characters = new BaseCharacter[maxPartySize];
         movePosition = transform.position;
-        characterManager = FindObjectOfType<CharacterManager>();
+        characterManager = FindObjectOfType<CharacterManager>(); 
     }
 
     /*
@@ -72,24 +73,17 @@ public class PlayerParty : MonoBehaviour
         Vector3 oldPosition = transform.position;
 
         if (moveDirection.z > 0)
-        {
             movePosition.z += moveZAmount;
-        }
         else if (moveDirection.z < 0)
-        {
             movePosition.z -= moveZAmount;
-        }
         else if (moveDirection.x > 0)
-        {
             movePosition.x += moveXAmount;
-        }
         else if (moveDirection.x < 0)
-        {
             movePosition.x -= moveXAmount;
-        }
 
         Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
         Debug.Log(moveSquares.Length);
+
         if (moveSquares.Length == 0)
         {
             movePosition = oldPosition;
@@ -111,13 +105,15 @@ public class PlayerParty : MonoBehaviour
         {
             if (characterManager.allCharacters[i].Name == name)
             {
-                if (!characterManager.allCharacters[i].isUnlocked)
+                if (!characterManager.allCharacters[i].isUnlocked || characterManager.allCharacters[i].IsTraining)
                 {
-                    Debug.LogError("That character is not unlocked yet");
+                    Debug.Log("That character is not unlocked yet or is training");
                     return;
                 }
 
                 characters[partyPosition] = characterManager.allCharacters[i];
+                characterManager.allCharacters[i].IsPartyMember = true;
+                characterManager.allCharacters[i].PartyPosition = partyPosition + 1;
                 maxEquipmentLoad += characterManager.allCharacters[i].EquipmentCapacity;
                 return;
             }
@@ -134,6 +130,7 @@ public class PlayerParty : MonoBehaviour
             return;
 
         maxEquipmentLoad -= characters[partyPosition].EquipmentCapacity;
+        characters[partyPosition].IsPartyMember = false;
         characters[partyPosition] = null;
     }
 
@@ -178,7 +175,7 @@ public class PlayerParty : MonoBehaviour
         {
             Vector3 moveDir = (movePosition - transform.position);
 
-            if (moveDir.magnitude > 0.2f)
+            if (moveDir.magnitude > posSnapDistance)
             {
                 moveDir = moveDir.normalized * moveSpeed * Time.fixedDeltaTime;
                 rb.MovePosition(rb.position + moveDir);

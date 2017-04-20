@@ -7,6 +7,8 @@ public class MovementTutorial : MonoBehaviour
 
     private bool movementisActive = false;
 
+    State state = State.CannotMove;
+
     private enum State
     {
         CanMove, 
@@ -15,30 +17,28 @@ public class MovementTutorial : MonoBehaviour
 
     void Awake()
     {
-        this.gameObject.SetActive(false);
+        InputManager iM = FindObjectOfType<InputManager>();
 
-        movementisActive = false;
+        iM.enabled = true;
     }
 
     void Start()
     {
-        iM = GetComponent<InputManager>();
+        movementisActive = false;
     }
 
-    void GetMovementInput()
+    public void GetMovementInput()
     {
-        if(movementisActive)
-        {
-            iM.gameObject.SetActive(true);
+        state = State.CanMove;
 
-            iM.GetComponent<InputManager>().enabled = true;
-        }
-        else
+        if(state == State.CanMove)
         {
-            if(!movementisActive)
-            {
-                iM.GetComponent<InputManager>().enabled = false;
-            }
+            movementisActive = true;
+        }
+
+        else if(state == State.CannotMove)
+        {
+            movementisActive = false;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ public class BaseCharacter : MonoBehaviour
 {
     //Serialized almost all stats for easy testing and balancing purposes
     private bool dead,
-                 isPartyMember;
+                 isPartyMember,
+                 isTraining;
 
     [SerializeField]
     private string characterName;
@@ -19,6 +21,7 @@ public class BaseCharacter : MonoBehaviour
                 dexterity,
                 intelect,
                 experience,
+                maxExperience,
                 equipmentCapacity,
                 partyPosition;
 
@@ -49,6 +52,7 @@ public class BaseCharacter : MonoBehaviour
         dexterity = 10 * level;
         intelect = 10 * level;
         experience = level * 100 - 100;
+        maxExperience = maxExperience * level * 2;
         equipmentCapacity = strength * 2;
     }
 
@@ -166,6 +170,11 @@ public class BaseCharacter : MonoBehaviour
         get { return isPartyMember; }
         set { isPartyMember = value; }
     }
+    public bool IsTraining
+    {
+        get { return isTraining; }
+        set { isTraining = value; }
+    }
     public int Level
     {
         get { return level; }
@@ -212,7 +221,18 @@ public class BaseCharacter : MonoBehaviour
     public int Experience
     {
         get { return experience; }
-        set { experience = (int)(value * expMultiplier); }
+        set
+        {
+            experience = (int)(value * expMultiplier);
+
+            if (experience >= maxExperience)
+                Level++;
+        }
+    }
+    public int MaxExperience
+    {
+        get { return MaxExperience; }
+        set { maxExperience = value; }
     }
     public int EquipmentCapacity
     {

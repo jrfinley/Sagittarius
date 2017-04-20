@@ -4,18 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
     bool isMenuOpen = false;
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
+    public Text[] currencyTexts; //0-Gold, 1-Food, 2-Scrap
+    public List<HeroCard> heroCards = new List<HeroCard>();
     public Image[] heroIcons;
     int selectedHero = 0;
     public RectTransform MasterMenuBacking;
     public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
+    public CharacterStats characterStats;
+    public Inventory inventory;
     CanvasScaler canvasScaler;
+    PlayerParty playerParty;
+
+
     void Start()
     {
         canvasScaler = GetComponent<CanvasScaler>();
@@ -25,8 +33,19 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
-        SelectHero(selectedHero);
+        playerParty = FindObjectOfType<PlayerParty>();
+        Invoke("DelayedStart", 0.1f);
         Canvas.ForceUpdateCanvases();
+    }
+
+    void DelayedStart()
+    {
+        SelectHero(selectedHero);
+        SetCurrencyGold(0);
+        SetCurrencyFood(0);
+        SetCurrencyScrap(0);
+        inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
+        UpdateAllHeroStats();
     }
 
     public void ToggleMenu()
@@ -50,6 +69,8 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.one;
         menuToggleButtons[0].SetActive(false);
         menuToggleButtons[1].SetActive(true);
+        SelectHero(selectedHero);
+        UpdateAllHeroStats();
         Canvas.ForceUpdateCanvases();
     }
 
@@ -65,6 +86,11 @@ public class UIManager : MonoBehaviour
 
     public void SelectHero(int hero)
     {
+        if(playerParty == null)
+        {
+            Debug.LogError("No PlayerParty found!");
+            return;
+        }
         if(hero == selectedHero)
         {
             Toggle t = heroIcons[hero].GetComponent<Toggle>();
@@ -76,11 +102,37 @@ public class UIManager : MonoBehaviour
         selectedHero = hero;
         toggle = heroIcons[selectedHero].GetComponent<Toggle>();
         heroIcons[hero].GetComponent<Image>().color = toggle.colors.pressedColor;
+        UpdateHeroStats(hero);
+    }
+
+    public void UpdateHeroStats(int hero)
+    {
+        if (playerParty.characters.Length < 1 || playerParty.characters[hero] == null)
+            Debug.LogWarning("Player party is empty or hero index is out of range! No stats updated.");
+        else
+        {
+            characterStats.DrawCharacterStatistics(playerParty.characters[hero]);
+            heroCards[hero].SetHealthBar(playerParty.characters[hero].Health, playerParty.characters[hero].MaxHealth); //Not robust. May want to have this as part of the character class.
+        }
+    }
+
+    public void UpdateAllHeroStats()
+    {
+        if (playerParty != null)
+        {
+            for (int i = 0; i < playerParty.characters.Length; i++)
+            {
+                if (playerParty.characters[i] != null)
+                    UpdateHeroStats(i);
+            }
+        }
     }
 
     public void DisplayStatsPanel()
     {
         HideAllContentPanels();
+        SelectHero(selectedHero);
+        UpdateHeroStats(selectedHero);
         contentPanels[0].SetActive(true);
     }
 
@@ -104,8 +156,9 @@ public class UIManager : MonoBehaviour
 
     public void DisplayCombatPanel() //Eventually pass in an array of enemy-classes and display their stats dynamically.
     {
-        CreateNewDialogueBox("You are under attack!");
-        combatPanel.gameObject.SetActive(true);
+        //CreateNewDialogueBox("You are under attack!");
+        //combatPanel.gameObject.SetActive(true);
+        SceneManager.LoadScene("Combat", LoadSceneMode.Additive);
         CloseMenu();
         //combatPanel.CreateCombatPanel();
     }
@@ -128,5 +181,20 @@ public class UIManager : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void SetCurrencyGold(int value)
+    {
+        currencyTexts[0].text = value.ToString();
+    }
+
+    public void SetCurrencyFood(int value)
+    {
+        currencyTexts[1].text = value.ToString();
+    }
+
+    public void SetCurrencyScrap(int value)
+    {
+        currencyTexts[2].text = value.ToString();
     }
 }
