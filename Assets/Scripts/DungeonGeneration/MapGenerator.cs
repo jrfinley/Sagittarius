@@ -83,8 +83,6 @@ public class MapGenerator : MonoBehaviour
 
     private void _GenerateRooms(GameObject forcedRoomObject = null, Room forcedRoom = null)
     {
-        GameObject parent = new GameObject();
-        parent.name = "DungeonContainer";
         foreach (List<PathNode> nodeList in _allPaths)
         {
             foreach (PathNode node in nodeList)
@@ -93,13 +91,6 @@ public class MapGenerator : MonoBehaviour
                 if (node.uniqueRoom == null)
                 {
                     GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
-
-                    float y = temp.transform.position.z - 0.01f;
-                    Debug.Log("y: " + y + " new y: " + (y * 0.01f));
-                    Vector3 pos = new Vector3(temp.transform.position.x, (y * 0.01f), temp.transform.position.z);
-                    temp.transform.position = pos;
-
-                    temp.transform.parent = parent.transform;
                     Room tempRoom = temp.GetComponent<Room>();
 
                     _UpdateConnections(tempRoom, node);
@@ -120,7 +111,6 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(tempObject);
         }
-        parent.transform.rotation = Quaternion.Euler(0f, -45f, 0f);
     }
 
     private void _GenerateBranches()
