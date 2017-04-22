@@ -15,16 +15,25 @@ public class TestCharacterFunctions : MonoBehaviour
 
     private Actor actor;
 
-
-    private void Awake()
+    private void Start()
     {
-        actor = FindObjectOfType<Actor>();
-        Scene currentScene = SceneManager.GetActiveScene();
-        string sceneName = currentScene.name;
-        currencyManager.Gold.Value = trainingGold;
+        characterManager = FindObjectOfType<CharacterManager>();
 
         Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
-
+        StartCoroutine(ReturnFindObjects());
+    }
+    IEnumerator ReturnFindObjects()
+    {
+        yield return new WaitForSeconds(2f);
+        currencyManager = FindObjectOfType<CurrencyManager>();
+        actor = FindObjectOfType<Actor>();
+        characterTrainer = FindObjectOfType<CharacterTrainer>();
+        Scene currentScene = SceneManager.GetActiveScene();
+        string sceneName = currentScene.name;
+        if(actor != null)
+        {
+            currencyManager.Gold.Value = trainingGold;
+        }
     }
 
     void AutoAddPartyMembers()
