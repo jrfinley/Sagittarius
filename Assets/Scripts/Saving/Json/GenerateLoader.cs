@@ -9,7 +9,6 @@ public class GenerateLoader : MonoBehaviour
 	void Start ()
     {
         gameController = FindObjectOfType<GameController>();
-        Destroy(gameObject, .22f);
 
         StartCoroutine(CallLoaderSpawn());
     }
@@ -17,19 +16,21 @@ public class GenerateLoader : MonoBehaviour
     IEnumerator CallLoaderSpawn()
     {
         yield return new WaitForSeconds(.21f);
-        gameController.Load();
-        Destroy(gameObject, 1f);
-        /*
-            if (count < 1)
+        if(count < 1)
+        {
+            gameController.Load();
+            Debug.Log("Created Loader" + count + " Times");
+            count++;
+            Actor loadedActor = FindObjectOfType<Actor>();
+            if(loadedActor != null)
             {
-                count++;
-                Debug.Log("Created Loader" + count + " Times");
-            }
-            else
-            {
+                Destroy(gameObject);
             }
         }
-        */
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
 }

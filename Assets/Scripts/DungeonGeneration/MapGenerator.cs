@@ -8,6 +8,7 @@ using Debug = UnityEngine.Debug;
 public class MapGenerator : MonoBehaviour
 {
     private int _seed = 0;
+
     private string _levelToLoad = "TestDungeon";
 
     public int trasureRooms = 2;
@@ -196,7 +197,7 @@ public class MapGenerator : MonoBehaviour
         _uniqueRooms = Resources.LoadAll("Dungeons/" + _levelToLoad + "/UniqueRooms", typeof(GameObject)).Cast<GameObject>().ToList();
     }
 
-    private void _SetSeed(int seed = 0)
+    public void _SetSeed(int seed = 0)
     {
         _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
         Random.seed = _seed;
