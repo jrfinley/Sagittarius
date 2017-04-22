@@ -1,15 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseCharacter : MonoBehaviour
 {
     //Serialized almost all stats for easy testing and balancing purposes
-    public delegate void BasicFunction();
-    public event BasicFunction OnPartyMove;
-    public event BasicFunction OnBattleStart;
-
-    private bool dead;
+    private bool dead,
+                 isPartyMember,
+                 isTraining;
 
     [SerializeField]
     private string characterName;
@@ -22,7 +21,9 @@ public class BaseCharacter : MonoBehaviour
                 dexterity,
                 intelect,
                 experience,
-                equipmentCapacity;
+                maxExperience,
+                equipmentCapacity,
+                partyPosition;
 
     private float expMultiplier = 1;
     
@@ -31,7 +32,9 @@ public class BaseCharacter : MonoBehaviour
 
     [SerializeField]
     private Sprite icon;
-        
+
+    public bool isUnlocked = true;
+
     public Item armor;
     public Item leftHand;
     public Item rightHand;
@@ -49,6 +52,7 @@ public class BaseCharacter : MonoBehaviour
         dexterity = 10 * level;
         intelect = 10 * level;
         experience = level * 100 - 100;
+        maxExperience = maxExperience * level * 2;
         equipmentCapacity = strength * 2;
     }
 
@@ -62,7 +66,7 @@ public class BaseCharacter : MonoBehaviour
         switch (itemSlot)
         {
             case 1:
-                if (item.ItemTypes.ItemType != EItemType.ARMOR)
+                if (item.Types.ItemType != EItemType.ARMOR)
                     break;
 
                 if (armor != null)
@@ -72,7 +76,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 2:
-                if (item.ItemTypes.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.WEAPON)
                     break;
 
                 if (leftHand != null)
@@ -82,7 +86,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 3:
-                if (item.ItemTypes.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.WEAPON)
                     break;
 
                 if (rightHand != null)
@@ -92,7 +96,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             default:
-                if (item.ItemTypes.ItemType != EItemType.AMULET)
+                if (item.Types.ItemType != EItemType.AMULET)
                     break;
 
                 if (amulet != null)
@@ -102,11 +106,11 @@ public class BaseCharacter : MonoBehaviour
                 break;
         }
 
-        MaxHealth += (int)item.ItemStats.Health;
-        Health += (int)item.ItemStats.Health;
-        Strength += (int)item.ItemStats.Strength;
-        Dexterity += (int)item.ItemStats.Dexterity;
-        Intelect += (int)item.ItemStats.Intelect;
+        MaxHealth += (int)item.Stats.Health;
+        Health += (int)item.Stats.Health;
+        Strength += (int)item.Stats.Strength;
+        Dexterity += (int)item.Stats.Dexterity;
+        Intelect += (int)item.Stats.Intelect;
     }
     public void RemoveItem(int itemPosition)
     {
@@ -135,11 +139,11 @@ public class BaseCharacter : MonoBehaviour
                 break;
         }
 
-        MaxHealth -= (int)item.ItemStats.Health;
-        Health -= (int)item.ItemStats.Health;
-        Strength -= (int)item.ItemStats.Strength;
-        Dexterity -= (int)item.ItemStats.Dexterity;
-        Intelect -= (int)item.ItemStats.Intelect;
+        MaxHealth -= (int)item.Stats.Health;
+        Health -= (int)item.Stats.Health;
+        Strength -= (int)item.Stats.Strength;
+        Dexterity -= (int)item.Stats.Dexterity;
+        Intelect -= (int)item.Stats.Intelect;
     }
     public void AddStatusEffect<T>(T statusEffect) where T: BaseStatusEffect
     {
@@ -161,6 +165,16 @@ public class BaseCharacter : MonoBehaviour
     }
 
     //Properties
+    public bool IsPartyMember
+    {
+        get { return isPartyMember; }
+        set { isPartyMember = value; }
+    }
+    public bool IsTraining
+    {
+        get { return isTraining; }
+        set { isTraining = value; }
+    }
     public int Level
     {
         get { return level; }
@@ -207,12 +221,28 @@ public class BaseCharacter : MonoBehaviour
     public int Experience
     {
         get { return experience; }
-        set { experience = (int)(value * expMultiplier); }
+        set
+        {
+            experience = (int)(value * expMultiplier);
+
+            if (experience >= maxExperience)
+                Level++;
+        }
+    }
+    public int MaxExperience
+    {
+        get { return MaxExperience; }
+        set { maxExperience = value; }
     }
     public int EquipmentCapacity
     {
         get { return equipmentCapacity; }
         set { equipmentCapacity = value; }
+    }
+    public int PartyPosition
+    {
+        get { return partyPosition; }
+        set { partyPosition = value; }
     }
     public float ExpMultipier
     {

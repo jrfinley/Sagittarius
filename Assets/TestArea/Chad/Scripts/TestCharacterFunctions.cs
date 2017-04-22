@@ -1,9 +1,47 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class TestCharacterFunctions : MonoBehaviour
 {
+    public int trainingGold,
+               goldToUse;
+
     public PlayerParty playerParty;
+    public CharacterManager characterManager;
+    public CharacterTrainer characterTrainer;
+    public CurrencyManager currencyManager;
+
+
+    private Actor actor;
+
+    private void Start()
+    {
+        characterManager = FindObjectOfType<CharacterManager>();
+
+        Invoke("AutoAddPartyMembers", 0.2f); //Delay auto-add slightly due to race condition
+        StartCoroutine(ReturnFindObjects());
+    }
+    IEnumerator ReturnFindObjects()
+    {
+        yield return new WaitForSeconds(2f);
+        currencyManager = FindObjectOfType<CurrencyManager>();
+        actor = FindObjectOfType<Actor>();
+        characterTrainer = FindObjectOfType<CharacterTrainer>();
+        Scene currentScene = SceneManager.GetActiveScene();
+        string sceneName = currentScene.name;
+        if(actor != null)
+        {
+            currencyManager.Gold.Value = trainingGold;
+        }
+    }
+
+    void AutoAddPartyMembers()
+    {
+        playerParty.AddPartyMember(1, "Chad");
+        playerParty.AddPartyMember(2, "John");
+        playerParty.AddPartyMember(3, "Jane");
+    }
 
     private void Update()
     {
@@ -14,11 +52,11 @@ public class TestCharacterFunctions : MonoBehaviour
     {
         //Add and remove party members
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            playerParty.AddPartyMember(1, "Chad", (ECharacterType)Random.Range(0, 3), 100);
+            playerParty.AddPartyMember(1, "Chad");
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            playerParty.AddPartyMember(2, "John", (ECharacterType)Random.Range(0, 3), 100);
+            playerParty.AddPartyMember(2, "John");
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-            playerParty.AddPartyMember(3, "Jane", (ECharacterType)Random.Range(0, 3), 100);
+            playerParty.AddPartyMember(3, "Jane");
 
         else if (Input.GetKeyDown(KeyCode.Q))
             playerParty.RemovePartyMember(1);
@@ -42,6 +80,10 @@ public class TestCharacterFunctions : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.S))
         {
             playerParty.RemoveStatusEffect(EBuffType.POISONED);
-        }    
+        }
+
+        //Add character to training area
+        if (Input.GetKeyDown(KeyCode.O))
+            characterTrainer.AddCharacter(characterManager.allCharacters[0], goldToUse);
     }
 }

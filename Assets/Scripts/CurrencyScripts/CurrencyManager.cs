@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class CurrencyManager {
+public class CurrencyManager : MonoBehaviour{
     #region Variables
     private Currency gold;
     private Currency scrap;
@@ -43,15 +43,15 @@ public class CurrencyManager {
         gold = new Currency(ECurrencyType.GOLD, "Gold");
     }
     private void InitializeScrap() {
-        gold = new Currency(ECurrencyType.SCRAP, "Scrap");
+        scrap = new Currency(ECurrencyType.SCRAP, "Scrap");
     }
     private void InitializeFood() {
-        gold = new Currency(ECurrencyType.FOOD, "Food");
+        food = new Currency(ECurrencyType.FOOD, "Food");
     }
 
     public void SetCurrencyStartingValues(float goldStartValue = 0, float scrapStartValue = 0, float foodStartValue = 0) {
-        Gold.Value = goldStartValue;
         Scrap.Value = scrapStartValue;
+        Gold.Value = goldStartValue;
         Food.Value = foodStartValue;
     }
     #endregion

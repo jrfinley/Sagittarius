@@ -8,7 +8,7 @@ public class TestItem : MonoBehaviour {
     private Image image;
 
     void Start() {
-        item = ItemGenerator.GenerateItem();
+        item = ItemGenerator.GenerateRandomItem();
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)
@@ -21,7 +21,7 @@ public class TestItem : MonoBehaviour {
     }
 
     private void GenerateNewItem() {
-        item = ItemGenerator.GenerateItem();
+        item = ItemGenerator.GenerateRandomItem();
         item.DebugLog();
         image = GetComponent<Image>();
         if(image != null)

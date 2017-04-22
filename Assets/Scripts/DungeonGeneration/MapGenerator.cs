@@ -1,128 +1,223 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] private Material[] _roomMaterials;
     private int _seed = 0;
-    private int _offset = 15;
-    private int _maxTileDistance = 100;
-    private LayoutData _layoutData = new LayoutData();
+    public int Seed { get { return _seed; } }
+
+    private string _levelToLoad = "TestDungeon";
+
+    public int trasureRooms = 2;
+    public int monsterRooms = 5;
+    public int statChecks = 3;
+
+    private PathGenerator _pathGenerator = null;
+
+    private List<GameObject> _normalRooms = new List<GameObject>();
+    private List<GameObject> _uniqueRooms = new List<GameObject>();
+
+    private Dictionary<GameObject, List<Transform>> _connectionRoomDict = new Dictionary<GameObject, List<Transform>>();
+
+    private List<PathNode> _pathLine = new List<PathNode>();
+    private List<List<PathNode>> _allPaths = new List<List<PathNode>>();
 
     private List<GameObject> _rooms = new List<GameObject>();
-    private HashSet<Vector3> _takenPositions = new HashSet<Vector3>();
+    private List<List<GameObject>> _allRooms = new List<List<GameObject>>();
 
     void Start()
     {
+        _pathGenerator = new PathGenerator(this);
+
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         GenerateMap();
+
+        sw.Stop();
+        Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
     }
 
-    public void GenerateMap()
+    public void GenerateMap(int seed = 0)
     {
-        _seed = (int)System.DateTime.Now.Ticks;
-        Debug.Log(_seed);
-        _GenerateMap();
-    }
-
-    public void GenerateMap(int seed)
-    {
-        _seed = seed;
+        _SetSeed(seed);
+        _LoadRooms();
         _GenerateMap();
     }
 
     private void _GenerateMap()
     {
-        Random.seed = _seed;
-        GameObject start = _GenerateStartingTile();
-        GameObject end =  _GenerateFinalTile();
-        _GetPathToFinalRoom(start, end);
+        GameObject finalRoom = _GetUniqueRoom("Final");
+        Room finalRoomData = finalRoom.GetComponent<Room>();
+
+        _GenerateMainBranch(finalRoom, finalRoomData);
+
+        _GenerateBranches();
+        _GenerateRooms(finalRoom, finalRoomData);
+        _GenerateMonsters();
+        _GenerateTreasure();
+        _GenerateStatChecks();
     }
 
-    private void _GetPathToFinalRoom(GameObject start, GameObject end)
+    private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
     {
-        Vector3 directionToFinalTile = end.transform.position - start.transform.position;
-        Vector3 oldPos = end.transform.position;
+        GameObject spawnRoom = _GetUniqueRoom("Spawn");
+        Room spawnRoomData = spawnRoom.GetComponent<Room>();
+        List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
+        List<Transform> finalRoomConnections = finalRoomData.Connections.AllConnections();
 
-        int xNumberOfTilesToTile = Mathf.Abs((int)directionToFinalTile.x / 15);
-        int zNumberOfTilesToTile = Mathf.Abs((int)directionToFinalTile.z / 15);
+        Transform startingConnection = _GetRandomConnection(spawnRoomConnections);
+        Transform finalConnection = _GetRandomConnection(finalRoomConnections);
+        spawnRoomData.JoinConnection(startingConnection.position);
 
-        int maxTiles = xNumberOfTilesToTile + zNumberOfTilesToTile;
+        _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15, finalConnection.position, finalRoom);
+        _allPaths.Add(_pathLine);
 
-        for (int i = 0; i < maxTiles - 1; i++)
+        spawnRoomConnections = spawnRoomData.Connections.AllConnections();
+        _connectionRoomDict.Add(spawnRoom, spawnRoomConnections);
+    }
+
+    private void _GenerateRooms(GameObject forcedRoomObject = null, Room forcedRoom = null)
+    {
+        GameObject parent = new GameObject();
+        parent.name = "DungeonContainer";
+        foreach (List<PathNode> nodeList in _allPaths)
         {
-            int xDirection = (int)Random.Range(0, 2);
-            if (xDirection == 0 && xNumberOfTilesToTile != 0)
+            foreach (PathNode node in nodeList)
             {
+                //GameObject temp = Instantiate(_normalRooms[node.indexOfRoom], node.position, Quaternion.identity) as GameObject;
+                if (node.uniqueRoom == null)
+                {
+                    GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
 
-                GameObject tile = (directionToFinalTile.x > 0)? tile = _GenerateTile(oldPos - (Vector3.right * 15)) 
-                                                              : tile = _GenerateTile(oldPos + (Vector3.right * 15));
-                
-                oldPos = tile.transform.position;
-                xNumberOfTilesToTile--;
+                    float y = temp.transform.position.z - 0.01f;
+                    Debug.Log("y: " + y + " new y: " + (y * 0.01f));
+                    Vector3 pos = new Vector3(temp.transform.position.x, (y * 0.01f), temp.transform.position.z);
+                    temp.transform.position = pos;
+
+                    temp.transform.parent = parent.transform;
+                    Room tempRoom = temp.GetComponent<Room>();
+
+                    _UpdateConnections(tempRoom, node);
+
+                    tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
+
+                    _rooms.Add(temp);
+                }
+                else
+                {
+                    forcedRoomObject.transform.position = node.position;
+                    forcedRoom.JoinConnection(node.enterConnection * -1);
+                }
             }
-            else if (zNumberOfTilesToTile != 0)
-            {
-                GameObject tile = (directionToFinalTile.z > 0) ? tile = _GenerateTile(oldPos - (Vector3.forward * 15))
-                                                               : tile = _GenerateTile(oldPos + (Vector3.forward * 15));
-                oldPos = tile.transform.position;
-                zNumberOfTilesToTile--;
-            }
-            else if (xNumberOfTilesToTile != 0)
-            {
+            _allRooms.Add(_rooms);
+        }
+        foreach (GameObject tempObject in _pathGenerator.tempObjects)
+        {
+            Destroy(tempObject);
+        }
+        parent.transform.rotation = Quaternion.Euler(0f, -45f, 0f);
+    }
 
-                GameObject tile = (directionToFinalTile.x > 0) ? tile = _GenerateTile(oldPos - (Vector3.right * 15))
-                                                               : tile = _GenerateTile(oldPos + (Vector3.right * 15));
-
-                oldPos = tile.transform.position;
-                xNumberOfTilesToTile--;
+    private void _GenerateBranches()
+    {
+        foreach (KeyValuePair<GameObject, List<Transform>> entry in _connectionRoomDict)
+        {
+            GameObject startingRoom = entry.Key;
+            List<Transform> connectionList = entry.Value;
+            foreach (Transform connection in connectionList)
+            {
+                startingRoom.GetComponent<Room>().JoinConnection(connection.position);
+                _pathLine = _pathGenerator.GeneratePath(startingRoom.transform.position, connection.position, 15);
             }
         }
     }
 
-    private GameObject _GenerateTile(Vector3 position)
+    private void _GenerateMonsters()
     {
-        GameObject tile = Instantiate(Resources.Load("DungeonPrefabs/DungeonTile") as GameObject, position, Quaternion.identity) as GameObject;
-        _takenPositions.Add(tile.transform.position);
-        return tile;
+        for (int i = 0; i < monsterRooms; i++)
+        {
+            int monsterIndex = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[monsterIndex];
+            int roomIndex = Random.Range(0, rooms.Count);
+            rooms[roomIndex].GetComponent<Room>().BecomeMonsterRoom();
+            rooms.RemoveAt(roomIndex);
+        }
     }
 
-    private GameObject _GenerateFinalTile()
+    private void _GenerateTreasure()
     {
-        int x, z;
-        do
-            x = _FindRandomTilePosition();
-        while (x < 30 && x > -30);
-
-        do
-            z = _FindRandomTilePosition();
-        while (z < 30 && z > -30);
-        
-        Vector3 pos = new Vector3(x, 0, z);
-        GameObject tile = Instantiate(Resources.Load("DungeonPrefabs/DungeonTile") as GameObject, pos, Quaternion.identity) as GameObject;
-        tile.GetComponent<MeshRenderer>().material = _roomMaterials[1];
-
-        _takenPositions.Add(tile.transform.position);
-
-        return tile;
+        for (int i = 0; i < trasureRooms; i++)
+        {
+            int index = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[index];
+            int roomIndex = Random.Range(0, rooms.Count);
+            rooms[roomIndex].GetComponent<Room>().BecomeTreasureRoom();
+            rooms.RemoveAt(roomIndex);
+        }
     }
 
-    private GameObject _GenerateStartingTile()
+    private void _GenerateStatChecks()
     {
-        GameObject tile = Instantiate(Resources.Load("DungeonPrefabs/DungeonTile") as GameObject, Vector3.zero, Quaternion.identity) as GameObject;
-        tile.GetComponent<MeshRenderer>().material = _roomMaterials[0];
-
-        _takenPositions.Add(tile.transform.position);
-
-        return tile;
+        for (int i = 0; i < statChecks; i++)
+        {
+            int index = Random.Range(0, _allRooms.Count);
+            List<GameObject> rooms = _allRooms[index];
+            int roomIndex = Random.Range(0, rooms.Count);
+            rooms[roomIndex].GetComponent<Room>().BecomeStatCheck();
+            rooms.RemoveAt(roomIndex);
+        }
     }
 
-    private int _FindRandomTilePosition()
+    private void _UpdateConnections(Room tempRoom, PathNode node)
     {
-        int posRand = Random.Range(-_maxTileDistance, _maxTileDistance);
-        int pos = posRand + (_offset / 2);
-        pos -= pos % _offset;
+        tempRoom.JoinConnection(node.enterConnection);
+        tempRoom.JoinConnection(node.exitConnection);
+        node.branchConnections.ForEach(connection => tempRoom.BranchConnection(connection));
+        node.mergedConnections.ForEach(connection => tempRoom.JoinConnection(connection));
+    }
 
-        return pos;
+    private GameObject _GetUniqueRoom(string roomName = "", Vector3 position = default(Vector3))
+    {
+        foreach (GameObject room in _uniqueRooms)
+        {
+            if (room.name.Contains(roomName))
+            {
+                GameObject tempRoom = Instantiate(room, position, Quaternion.identity) as GameObject;
+                return tempRoom;
+            }
+        }
+        Debug.LogError("Couldn't find a room with name: " + roomName);
+        return null;
+    }
+
+    private Transform _GetRandomConnection(List<Transform> connections)
+    {
+        int index = Random.Range(0, connections.Count);
+        Transform connection = connections[index];
+        return connection;
+    }
+
+    private void _LoadRooms()
+    {
+        _normalRooms = Resources.LoadAll("Dungeons/" + _levelToLoad + "/Rooms", typeof(GameObject)).Cast<GameObject>().ToList();
+        _uniqueRooms = Resources.LoadAll("Dungeons/" + _levelToLoad + "/UniqueRooms", typeof(GameObject)).Cast<GameObject>().ToList();
+    }
+
+    public void _SetSeed(int seed = 0)
+    {
+        _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
+        Random.seed = _seed;
+        //Debug.Log("Dungeon seed: " + _seed);
+    }
+
+    public GameObject GetRandomRoom(out int index)
+    {
+        index = Random.Range(0, _normalRooms.Count);
+        return _normalRooms[1];
     }
 }

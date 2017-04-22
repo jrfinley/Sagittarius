@@ -3,62 +3,89 @@ using System.Collections;
 
 public class Intro : MonoBehaviour
 {
-    // The intro will consist of camera animations for just the intro scene
+    public MeshRenderer player;
+
+    public Rigidbody rB;
+
+    public GameObject fallObj;
 
     private Animator camAnim;
 
-    private Camera introCam;
+    public Animation anim;
 
-    private float startSpeed = 1;
+    private MovementTutorial mT;
+
+    private bool hasFallen = false;
+
+    private bool fallPoint = false;
 
     private float timer;
 
-    private float characterFallTime;
+    void Awake()
+    {
+        Rigidbody r = FindObjectOfType<Rigidbody>();
 
-    private bool hasFallen = true;
+        r = GetComponent<Rigidbody>();
+
+        GameObject f = FindObjectOfType<GameObject>();
+
+        f = fallObj.gameObject;
+
+        MeshRenderer m = FindObjectOfType<MeshRenderer>();
+
+        m = player;
+
+        timer = 6;
+    }
 
     void Start()
     {
+        rB.isKinematic = true;
+
+        anim = FindObjectOfType<Animation>();
+
         camAnim = GetComponent<Animator>();
-
-        introCam = GetComponent<Camera>();
-
-        startSpeed = 0;
-
-        characterFallTime = 0;
 
         hasFallen = false;
 
-        timer = 0;
+        fallPoint = true;
+
+        fallObj.SetActive(true);
+
+        timer -= Time.deltaTime;
     }
 
-    void TransitionIn()
+    IEnumerator EndAnimation()
     {
-        characterFallTime += Time.deltaTime;
+        anim.IsPlaying("Fall");
 
-        if(characterFallTime >= 3.5f)
+        if (timer <= 0)
         {
-            startSpeed += 1;
+            fallPoint = false;
 
-            timer += 1;
-
-            hasFallen = true;
-
-            camAnim.SendMessage("HasFallen", true);
+            anim.Stop();
         }
-        else 
-        {
-           if(timer <= 0)
-            {
-                characterFallTime = 0;
 
-                camAnim.Stop();
-            }
-        }
+        yield return new WaitForSeconds(6.0f);
+
+        fallObj.SetActive(false);
+
+        anim.Stop();
+
+        StartCoroutine(SpawnPlayer());
     }
 
     void Update()
     {
-        TransitionIn();
+        StartCoroutine(EndAnimation());
+    }
+
+    IEnumerator SpawnPlayer()
+    {
+        player.GetComponent<MeshRenderer>().enabled = true;
+
+        yield return new WaitForSeconds(3.5f);
+
+        rB.isKinematic = true;
     }
 }

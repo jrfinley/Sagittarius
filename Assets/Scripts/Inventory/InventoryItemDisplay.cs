@@ -16,6 +16,7 @@ public class InventoryItemDisplay : MonoBehaviour
     public Text dexterity;
     public Text gold;
     public Text scrap;
+    public Text health;
 
 
     void Awake()
@@ -37,5 +38,6 @@ public class InventoryItemDisplay : MonoBehaviour
         intellect.text = "INT:  " + item.intellect.ToString();
         gold.text = "value:  " + item.gold.ToString();
         scrap.text = "scrap:  " + item.scrap.ToString();
+        health.text = "Health: " + item.health.ToString();
     }
 }
