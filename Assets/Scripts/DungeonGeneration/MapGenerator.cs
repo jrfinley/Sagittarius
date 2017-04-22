@@ -8,6 +8,7 @@ using Debug = UnityEngine.Debug;
 public class MapGenerator : MonoBehaviour
 {
     private int _seed = 0;
+    public int Seed { get { return _seed; } }
 
     private string _levelToLoad = "TestDungeon";
 
