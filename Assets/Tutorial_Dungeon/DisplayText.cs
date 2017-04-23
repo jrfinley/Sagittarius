@@ -3,19 +3,17 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(Text))]
 public class DisplayText : MonoBehaviour
 {
-
     private UIManager ui;
 
-    public Text welcomeText;
+    private  Text welcomeText;
 
-    public Text movementText;
+    private Text movementText;
 
-    public Text pickUpText;
+    private Text pickUpText;
 
-    public Text combatText;
+    private Text combatText;
 
     public bool inWelcomeZone = false;
 
@@ -150,7 +148,7 @@ public class DisplayText : MonoBehaviour
         if (inMovementZone == true)
         {
             ui.CreateNewDialogueBox("Are you ready to get started? " + "\n" + "to navigate around, you may use swipe input"+
-                "\n," + "Swipe Left" + "Swipe Right" + ", " + "Swipe Up" + "and" + "Swipe Down");
+                "\n," + "Swipe Left" + "Swipe Right" + "Swipe Up" + "Swipe Down");
         }
 
         else

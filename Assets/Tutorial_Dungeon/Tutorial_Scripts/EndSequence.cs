@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+
 public class EndSequence : MonoBehaviour
 {
-   void OnCollisionEnter(Collision other)
+   void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")
         {
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene("Town", LoadSceneMode.Single);
+
+            SceneManager.LoadScene(1);
         }
     }
 }

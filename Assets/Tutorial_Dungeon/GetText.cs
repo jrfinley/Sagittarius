@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
+[RequireComponent(typeof(Text))]
 public class GetText : MonoBehaviour
 {
     private DisplayText d;
@@ -17,13 +19,15 @@ public class GetText : MonoBehaviour
         mT.enabled = false;
 
         d = FindObjectOfType<DisplayText>();
+
+
     }
 
     void OnTriggerEnter(Collider other)
     {
        if(other.gameObject.tag == "Welcome")
         {
-            mT.enabled = true; // activate movement input, then display movement dialogue
+            mT.enabled = true; 
 
             StartCoroutine(d.DisplayOracleIntroText(d.dialogue[0]));
         }
@@ -48,43 +52,45 @@ public class GetText : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        d.inWelcomeZone =!d.inWelcomeZone;
+
         if(d.inWelcomeZone == false)
         {
             d.inWelcomeZone = false;
 
             if (!other.gameObject)
             {
-                d.welcomeText.text = "";
+                d.inWelcomeZone = true;
             }
         }
 
-        if (d.inMovementZone == false)
+        else if (d.inMovementZone == false)
         {
             d.inMovementZone = false;
 
             if (!other.gameObject)
             {
-                d.movementText.text = "";
+                d.inMovementZone = true;
             }
         }
 
-        if (d.inPickUpZone == false)
+        else if (d.inPickUpZone == false)
         {
             d.inPickUpZone = false;
 
             if (!other.gameObject)
             {
-                d.pickUpText.text = "";
+                d.inPickUpZone = true;
             }
         }
 
-        if (d.inCombatZone == false)
+        else if (d.inCombatZone == false)
         {
             d.inCombatZone = false;
 
             if (!other.gameObject)
             {
-                d.welcomeText.text = "";
+                d.inCombatZone = true;
             }
         }
     }

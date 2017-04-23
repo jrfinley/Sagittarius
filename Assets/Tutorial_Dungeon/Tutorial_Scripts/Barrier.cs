@@ -37,36 +37,32 @@ public class Barrier : MonoBehaviour
     {
         count = 5;
 
-        if(Input.GetTouch(count).tapCount > count)
+        if(Input.GetTouch(count).tapCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            ClearBarrier(health:0);
+            barrierHealth--;
+
+            if(count >= 5 && barrierHealth <= 0)
+            {
+                ClearBarrier(health: 0);
+            }    
         }
     }
 
-    void OnCollisionEnter(Collision other)
-    {
-        barrierHealth--;
-
-        if(other.gameObject.tag == "Player")
-        {
-           Destroy(barrier);
-        }
-
-        /*
-        if(barrierHealth <= 0)
-        {
-            ClearBarrier(health: 0);
-        }
-        */
-    }
-
-    void OnCollisionExit(Collision other)
+    // Test, Works when triggered with Player
+    /*
+    void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")
         {
-            DestroyObject(this);
+            barrierHealth--;
+
+            if (barrierHealth <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
+    */
 
     private void ClearBarrier(int health)
     {
@@ -74,7 +70,7 @@ public class Barrier : MonoBehaviour
 
         if(health <= 0)
         {
-            Destroy(this.barrier);
+            Destroy(gameObject);
         }
     }
 
