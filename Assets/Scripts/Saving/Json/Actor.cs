@@ -38,7 +38,6 @@ public class Actor : MonoBehaviour
     void Start()
     {
         gameController = FindObjectOfType<GameController>();
-        mapGen = FindObjectOfType<MapGenerator>();
         //main
         if (Application.loadedLevel == 0)
         {
@@ -74,7 +73,7 @@ public class Actor : MonoBehaviour
             data.scrapValue += currencyManager.Scrap.Value;
             data.foodValue += currencyManager.Food.Value;
 
-           
+            data.seed = mapGen.Seed;
 
             //stores item/ inventory info
             if(inventoryDisplay != null)
@@ -260,8 +259,12 @@ public class Actor : MonoBehaviour
 
             playerParty = FindObjectOfType<PlayerParty>();
 
-            mapGen = FindObjectOfType<MapGenerator>();
-            mapGen._SetSeed(data.seed);
+            if(data.seed != 0)
+            {
+                mapGen = FindObjectOfType<MapGenerator>();
+                mapGen.GenerateMap(data.seed);
+            }
+            
 
             inventoryDisplay = FindObjectOfType<InventoryDisplay>();
             //loads item/ inventory info
