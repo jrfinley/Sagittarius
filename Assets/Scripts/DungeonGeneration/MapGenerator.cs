@@ -8,6 +8,7 @@ using Debug = UnityEngine.Debug;
 public class MapGenerator : MonoBehaviour
 {
     private int _seed = 0;
+    public int Seed { get { return _seed; } }
 
     private string _levelToLoad = "TestDungeon";
 
@@ -28,14 +29,25 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> _rooms = new List<GameObject>();
     private List<List<GameObject>> _allRooms = new List<List<GameObject>>();
 
+    private Actor actor;
+
     void Start()
     {
         _pathGenerator = new PathGenerator(this);
+        StartCoroutine(GenerateDelay());  
+    }
 
+    IEnumerator GenerateDelay()
+    {
+        yield return new WaitForSeconds(.7f);
+        actor = FindObjectOfType<Actor>();
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        GenerateMap();
+        if(actor.data.seed == 0)
+        {
+            GenerateMap();
+        }
 
         sw.Stop();
         Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
