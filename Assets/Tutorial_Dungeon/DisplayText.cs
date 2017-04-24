@@ -7,6 +7,10 @@ public class DisplayText : MonoBehaviour
 {
     private UIManager ui;
 
+    private PlayerParty party;
+
+    private CharacterManager cM;
+
     private  Text welcomeText;
 
     private Text movementText;
@@ -37,6 +41,9 @@ public class DisplayText : MonoBehaviour
 
     void Start()
     {
+        party = FindObjectOfType<PlayerParty>();
+
+        cM = FindObjectOfType<CharacterManager>();
 
         ui = FindObjectOfType<UIManager>();
 
@@ -104,6 +111,8 @@ public class DisplayText : MonoBehaviour
         if(inWelcomeZone == true)
         {
             ui.CreateNewDialogueBox("Welcome to Sagittarius");
+
+            ui.dialogueBox.continueMarker.enabled = true;
         }
       
         else
@@ -149,6 +158,8 @@ public class DisplayText : MonoBehaviour
         {
             ui.CreateNewDialogueBox("Are you ready to get started? " + "\n" + "to navigate around, you may use swipe input"+
                 "\n," + "Swipe Left" + "Swipe Right" + "Swipe Up" + "Swipe Down");
+
+            ui.dialogueBox.continueMarker.enabled = true;
         }
 
         else
@@ -196,6 +207,10 @@ public class DisplayText : MonoBehaviour
         {
              ui.CreateNewDialogueBox("You have now discovered your first item" + "\n" +
                 "use and equip for all your needs");
+
+            party.equipmentLoad += cM.allCharacters.Count;
+
+            ui.DisplayGearPanel();
         }
 
         else
@@ -243,7 +258,7 @@ public class DisplayText : MonoBehaviour
         {
             ui.CreateNewDialogueBox("You have now entered a combat zone" + "\n" + "You will be able to Attack, Heal, or Run ");
 
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(3.0f);
 
             SceneManager.LoadScene("Combat", LoadSceneMode.Additive);
 

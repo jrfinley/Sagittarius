@@ -36,11 +36,6 @@ public class GetText : MonoBehaviour
         {
             StartCoroutine(d.Movement(d.dialogue[1]));
         }
-
-        if (other.gameObject.tag == "PickUp")
-        {
-            StartCoroutine(d.PickUp(d.dialogue[2]));
-        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -48,6 +43,11 @@ public class GetText : MonoBehaviour
         if (other.gameObject.tag == "Combat")
         {
             StartCoroutine(d.Combat(d.dialogue[3]));
+        }
+
+        if (other.gameObject.tag == "PickUp")
+        {
+            StartCoroutine(d.PickUp(d.dialogue[2]));
         }
     }
 
