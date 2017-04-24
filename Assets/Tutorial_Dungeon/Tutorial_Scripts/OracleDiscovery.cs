@@ -95,13 +95,15 @@ public class OracleDiscovery : MonoBehaviour
         yield return null;
     }
 
-    void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Welcome")
         {
             dT.inWelcomeZone = true;
 
-            ui.CreateNewDialogueBox("Hello");
+            ui.CreateNewDialogueBox(dT.dialogue[0]);
+
+           // dT.DisplayOracleIntroText(dT.dialogue[0]);
         }
     }
 
