@@ -12,8 +12,10 @@ public static class ItemGenerator {
     private static ItemModifyerGenerator itemModifyerGenerator = new ItemModifyerGenerator();
 
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
-    #endregion
 
+    private static string id = string.Empty; 
+    #endregion
+    
     public static Item CreateItem(int id, EEquipmentType equipmentType) {
         LookUpItem(equipmentType);
         item.ID = id;
@@ -29,9 +31,7 @@ public static class ItemGenerator {
     public static Item GenerateRandomItem() {
         return CreateItem(GenerateRandomID(), GenerateEquipmentType());
     }
-    private static Item GenerateItemDrop(int monsterLevel, int dungeonLevel) {
-        return CreateItem(GenerateRandomID(monsterLevel, dungeonLevel), GenerateEquipmentType());
-    }
+    /*
     public static Item ReforgeItem(Item itemToReforge, float successChance)
     { 
         item = new Item(itemToReforge, false);
@@ -41,7 +41,7 @@ public static class ItemGenerator {
         Debug.LogWarning("Reforging creates a non reproducable item.");
         return new Item(item);
     }
-
+    */
     private static int GenerateRandomID() { 
         return Random.Range(1, int.MaxValue);
     }
