@@ -42,12 +42,10 @@ public class CombatCard : MonoBehaviour
         }
         healthText.text = health.ToString() + "/" + maxHealth.ToString();
         healthBar.fillAmount = (float)health / (float)maxHealth;
-    }
-
-    /*
-    public void CreateCombatCard(BaseEnemy enemy) //Enemies
+    }  
+    public void CreateCombatCard(BaseMonster monster) //Enemies
     {
 
     }
-    */
+   
 }
