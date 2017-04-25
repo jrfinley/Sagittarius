@@ -73,6 +73,8 @@ public class Actor : MonoBehaviour
             data.scrapValue += currencyManager.Scrap.Value;
             data.foodValue += currencyManager.Food.Value;
 
+            mapGen = FindObjectOfType<MapGenerator>();
+
             data.seed = mapGen.Seed;
 
             //stores item/ inventory info
