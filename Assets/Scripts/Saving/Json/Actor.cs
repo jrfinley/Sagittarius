@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
-
+using GameSparks.Core;
+using GameSparks.Api.Requests;
 
 // paste this to libraries - 
 
@@ -43,6 +44,12 @@ public class Actor : MonoBehaviour
         {
             StartCoroutine(AllowAutoAddParty());        
         }
+
+        GSRequestData jsonDataToSend = new GSRequestData();
+        jsonDataToSend.Add("actors.json", data);
+        jsonDataToSend.Add("health", data.characterHealth0);
+
+        new LogEventRequest().SetEventKey("setPlayerDataJSON").SetEventAttribute("JSONData", jsonDataToSend).Send((ActorData) => { });
         
     }
 
