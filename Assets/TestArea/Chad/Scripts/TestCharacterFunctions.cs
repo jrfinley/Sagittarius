@@ -83,7 +83,7 @@ public class TestCharacterFunctions : MonoBehaviour
         }
 
         //Add character to training area
-        if (Input.GetKeyDown(KeyCode.O))
-            characterTrainer.AddCharacter(characterManager.allCharacters[0], goldToUse);
+        //if (Input.GetKeyDown(KeyCode.O))
+            //characterTrainer.AddCharacter(characterManager.allCharacters[0], goldToUse);
     }
 }

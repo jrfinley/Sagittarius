@@ -8,9 +8,13 @@ public class CharacterTrainer : MonoBehaviour
     public int goldToSpendAmount;
 
     public int expGainPerTick,
-               secondsPerGold;
+               healthGainPerTick,
+               dexterityGainPerTick,
+               strengthGainPerTick,
+               intelectGainPerTick;
 
-    public float expGainTick;
+    public float expGainTick,
+                 statTrainTick;
 
     public List<BaseCharacter> charactersTraining;
 
@@ -21,7 +25,8 @@ public class CharacterTrainer : MonoBehaviour
         currencyManager = FindObjectOfType<CurrencyManager>();
     }
 
-    public void AddCharacter(BaseCharacter character, int goldToSpend)
+    public void AddCharacter(BaseCharacter character, int timeToTrain, int goldToSpend, bool trainHealth,
+                             bool trainDexterity, bool trainStrength, bool trainIntelect)
     {
         for (int i = 0; i < charactersTraining.Count; i++)
             if (charactersTraining[i] == character || character.IsPartyMember)
@@ -29,17 +34,18 @@ public class CharacterTrainer : MonoBehaviour
 
         if (currencyManager.Gold.Value >= goldToSpend)
         {
-            float timeToTrain = goldToSpend * secondsPerGold;
+            timeToTrain = timeToTrain * 60;
 
             currencyManager.Gold.Value -= goldToSpend;
             character.IsTraining = true;
 
             charactersTraining.Add(character);
-            StartCoroutine(StartTraining(character, timeToTrain));
+            StartCoroutine(StartStatTraining(character, timeToTrain, trainHealth, trainDexterity, trainStrength, trainIntelect));
+            StartCoroutine(StartExpTraining(character, timeToTrain));
         }
     }
 
-    IEnumerator StartTraining(BaseCharacter character, float timeToTrain)
+    IEnumerator StartExpTraining(BaseCharacter character, int timeToTrain)
     {
         float currentTime = 0;
 
@@ -53,5 +59,26 @@ public class CharacterTrainer : MonoBehaviour
 
         character.IsTraining = false;
         charactersTraining.Remove(character);
+    }
+    IEnumerator StartStatTraining(BaseCharacter character, int timeToTrain, bool trainHealth,
+                                  bool trainDexterity, bool trainStrength, bool trainIntelect)
+    {
+        float currentTime = 0;
+
+        while (currentTime < timeToTrain)
+        {
+            yield return new WaitForSeconds(statTrainTick);
+
+            if (trainHealth)
+                character.MaxHealth += healthGainPerTick;
+            if (trainDexterity)
+                character.Dexterity += dexterityGainPerTick;
+            if (trainStrength)
+                character.Strength += strengthGainPerTick;
+            if (trainIntelect)
+                character.Intelect += intelectGainPerTick;
+
+            currentTime += statTrainTick;
+        }
     }
 }
