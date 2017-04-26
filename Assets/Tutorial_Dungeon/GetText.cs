@@ -19,34 +19,35 @@ public class GetText : MonoBehaviour
         mT.enabled = false;
 
         d = FindObjectOfType<DisplayText>();
-
-
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
-       if(other.gameObject.tag == "Welcome")
+        if (other.gameObject.tag == "Welcome")
         {
-            mT.enabled = true; 
+            mT.enabled = true;
 
             StartCoroutine(d.DisplayOracleIntroText(d.dialogue[0]));
         }
 
         mT.GetMovementInput();
 
-        if(other.gameObject.tag == "Movement")
+        if (other.gameObject.tag == "Movement")
         {
             StartCoroutine(d.Movement(d.dialogue[1]));
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Combat")
+        {
+            StartCoroutine(d.Combat(d.dialogue[3]));
         }
 
         if (other.gameObject.tag == "PickUp")
         {
             StartCoroutine(d.PickUp(d.dialogue[2]));
-        }
-
-        if (other.gameObject.tag == "Combat")
-        {
-            StartCoroutine(d.Combat(d.dialogue[3]));
         }
     }
 

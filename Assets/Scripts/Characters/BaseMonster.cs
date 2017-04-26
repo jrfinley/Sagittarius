@@ -28,10 +28,7 @@ public class BaseMonster : MonoBehaviour
     }
 
     void InitializeMonster()
-    {
-        //Put Functionality to add a script coresponding with the 
-        //selected monsters type.
-
+    {       
         SetStats();
     }
     void SetStats()
@@ -130,4 +127,7 @@ public class BaseMonster : MonoBehaviour
             }
         }
     }
+
+    //ItemGenerator has functions usefull for loot table
+    
 }

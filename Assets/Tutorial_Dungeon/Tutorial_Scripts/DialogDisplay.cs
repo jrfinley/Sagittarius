@@ -1,31 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class DialogDisplay : MonoBehaviour
 {
-    // Dialog display will handle message board text events, where the player will
-    // be responsible for following the tutorial phase and listening to what the oracle has to say in order
-    // to have a successful learning method of approach to the game... 
+    private Text spawnDialogue;
 
-    private DialogueBox dialogBox;
-
-    void ShowDialogueBox()
+    void Start()
     {
-        dialogBox.enabled = true;
+
     }
 
-    void DoNoShowDialogBox()
+    void Dialogue()
     {
-        dialogBox.enabled = false;
-    }
 
-    void TextForOracle()
-    {
-        dialogBox.textBox.enabled = true;
-    }
-
-    private void TextDisplay(string text)
-    {
-        text.ToString();
     }
 }

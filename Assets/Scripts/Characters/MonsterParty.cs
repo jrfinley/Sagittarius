@@ -59,4 +59,7 @@ public class MonsterParty : MonoBehaviour
 
         monsters[partySlot].RemoveStatusEffect(typeToRemove);
     }
+
+    //Monsters spawn via Dungeon Gen
+    //Monsters move toward player after fail in barrier checks, movement possible the same as player party
 }

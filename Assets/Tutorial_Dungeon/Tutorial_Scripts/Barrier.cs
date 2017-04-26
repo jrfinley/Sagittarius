@@ -3,20 +3,12 @@ using System.Collections;
 
 public class Barrier : MonoBehaviour
 {
-    public Sprite item;
-
     private int barrierHealth = 0;
 
     public GameObject barrier;
 
-    public Sprite sword;
-
     void Awake()
     {
-        Sprite i = FindObjectOfType<Sprite>();
-
-        i = item;
-
         GameObject g = FindObjectOfType<GameObject>();
 
         g = barrier.gameObject;
@@ -24,10 +16,6 @@ public class Barrier : MonoBehaviour
 
     void Start()
     {
-        sword = GetComponent<Sprite>();
-
-        item = GetComponent<Sprite>();
-
         barrier = GetComponent<GameObject>();
 
         barrierHealth = 0;
@@ -71,24 +59,6 @@ public class Barrier : MonoBehaviour
         if(health <= 0)
         {
             Destroy(gameObject);
-        }
-    }
-
-    void GetPickup(string item)
-    {
-        if(item.Contains("Sword"))
-        {
-            item = sword.name;
-        }
-    }
-
-    void EquipItem(bool equip)
-    {
-        equip = true;
-
-        if(equip && item == sword)
-        {
-            GetPickup(item:"Sword");
         }
     }
 }
