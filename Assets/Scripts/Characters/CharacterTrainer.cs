@@ -10,7 +10,7 @@ public class CharacterTrainer : MonoBehaviour
     public int expGainPerTick,
                secondsPerGold;
 
-    public float expGainRate;
+    public float expGainTick;
 
     public List<BaseCharacter> charactersTraining;
 
@@ -45,10 +45,10 @@ public class CharacterTrainer : MonoBehaviour
 
         while (currentTime < timeToTrain)
         {
-            yield return new WaitForSeconds(expGainRate);
+            yield return new WaitForSeconds(expGainTick);
 
             character.Experience += expGainPerTick;
-            currentTime += expGainRate;
+            currentTime += expGainTick;
         }
 
         character.IsTraining = false;
