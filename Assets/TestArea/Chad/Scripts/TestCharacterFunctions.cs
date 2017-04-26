@@ -7,6 +7,9 @@ public class TestCharacterFunctions : MonoBehaviour
     public int trainingGold,
                goldToUse;
 
+    [Header("Time to train in hours")]
+    public float timeToTrain;
+
     public PlayerParty playerParty;
     public CharacterManager characterManager;
     public CharacterTrainer characterTrainer;
@@ -32,8 +35,9 @@ public class TestCharacterFunctions : MonoBehaviour
         string sceneName = currentScene.name;
         if(actor != null)
         {
-            currencyManager.Gold.Value = trainingGold;
+            
         }
+        currencyManager.Gold.Value = trainingGold;
     }
 
     void AutoAddPartyMembers()
@@ -83,7 +87,7 @@ public class TestCharacterFunctions : MonoBehaviour
         }
 
         //Add character to training area
-        //if (Input.GetKeyDown(KeyCode.O))
-            //characterTrainer.AddCharacter(characterManager.allCharacters[0], goldToUse);
+        if (Input.GetKeyDown(KeyCode.O))
+            characterTrainer.AddCharacter(characterManager.allCharacters[0], timeToTrain, goldToUse, true, true, false, false);
     }
 }
