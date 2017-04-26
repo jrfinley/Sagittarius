@@ -24,28 +24,43 @@ public class ItemModifyerGenerator {
     #endregion
 
     #region Methods
-    public void GenerateIM(int id, EItemRarity itemRarity, string inputName, ref string outputName, ref ItemStats outputStats) {
-        outputName = inputName;
+    public void GenerateIM(EItemRarity rarity, ref EItemModifyer prefixIM, ref EItemModifyer suffixIM) {
+        prefixIM = EItemModifyer.NONE;
+        suffixIM = EItemModifyer.NONE;
 
-        imToGen = Mathf.Clamp((int)itemRarity - 1, 0, 2);
+        imToGen = Mathf.Clamp((int)rarity - 1, 0, 2);
 
-        if(imToGen <= 0)
-            return;
+        if(imToGen <= 0)            
+            return;            
 
         getSuffix = true;
         if(Random.Range((int)0, 2) == 0)
             getSuffix = false;
-        itemModifyer = (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+
         for(int i = 0; i < imToGen; i++) {
-            
+            itemModifyer = (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
             if(getSuffix)
-                outputName = outputName + " " + itemModifyers[itemModifyer].GetSuffix();
+                suffixIM = itemModifyer;
             else
-                outputName = itemModifyers[itemModifyer].GetPrefix() + " " + outputName;
-            getSuffix = !getSuffix;
-            outputStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
+                prefixIM = itemModifyer;
+                getSuffix = !getSuffix;
         }
     }
+    public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputName = itemModifyers[prefixIM].GetPrefix() + " " + inputName;
+        else if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(); 
+        return inputName;
+    }
+    public ItemStats GetIMStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputStats.AddStats(itemModifyers[prefixIM].StatModifyer);
+        else if(suffixIM != EItemModifyer.NONE)
+            inputStats.AddStats(itemModifyers[suffixIM].StatModifyer);
+        return inputStats;
+    }
+
     private string GetIMPrefix(EItemModifyer modifyer) {
         return GetIM(modifyer).GetPrefix();
     }

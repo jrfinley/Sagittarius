@@ -10,8 +10,8 @@ public class ItemTypes {
     private EWeaponDamageType damageType = EWeaponDamageType.NONE;
     private EWeaponRange weaponRange = EWeaponRange.NONE;
     private EItemRarity itemRarity = EItemRarity.COMMON;
-
-
+    private EItemModifyer prefixItemModifyer = EItemModifyer.NONE;
+    private EItemModifyer suffixItemModifyer = EItemModifyer.NONE;
     #endregion
 
     #region Properties
@@ -71,7 +71,22 @@ public class ItemTypes {
             itemRarity = value;
         }
     }
-
+    public EItemModifyer PrefixItemModifyer {
+        get {
+            return prefixItemModifyer;
+        }
+        set {
+            prefixItemModifyer = value;
+        }
+    }
+    public EItemModifyer SuffixItemModifyer {
+        get {
+            return suffixItemModifyer;
+        }
+        set {
+            suffixItemModifyer = value;
+        }
+    }
     #endregion
 
     #region Contructors
