@@ -16,9 +16,9 @@ public class MonsterParty : MonoBehaviour
     private Sprite icon;
 
     void Start ()
-    {
+    {        
         rb = GetComponent<Rigidbody>();
-        monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];
+        monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];   
     }
 
     public Sprite Icon
@@ -62,4 +62,5 @@ public class MonsterParty : MonoBehaviour
 
     //Monsters spawn via Dungeon Gen
     //Monsters move toward player after fail in barrier checks, movement possible the same as player party
+
 }

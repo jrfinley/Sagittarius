@@ -109,6 +109,26 @@ public class BaseMonster : MonoBehaviour
     {
         icon = newIcon;
     }
+    public int Health
+    {
+        get { return level; }
+        set
+        {
+            health = value;
+            health = Mathf.Clamp(health, 0, maxHealth);
+
+            if (health == 0)            
+                dead = true;
+
+            if(dead == true)
+            {
+                InventoryItem sc = gameObject.AddComponent<InventoryItem>() as InventoryItem;
+            }
+
+            else
+                dead = false;
+        }
+    }
     public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
     {
         statusEffectNames.Add(statusEffect.statusName);
@@ -128,6 +148,4 @@ public class BaseMonster : MonoBehaviour
         }
     }
 
-    //ItemGenerator has functions usefull for loot table
-    
 }
