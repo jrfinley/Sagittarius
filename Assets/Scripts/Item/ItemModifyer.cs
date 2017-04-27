@@ -35,4 +35,10 @@ public class ItemModifyer {
         i = r;
         return suffixes[r];
     }
+    public string GetPrefix(int i) {
+        return prefixes[i];
+    }
+    public string GetSuffix(int i) { 
+        return suffixes[i];
+    }
 }

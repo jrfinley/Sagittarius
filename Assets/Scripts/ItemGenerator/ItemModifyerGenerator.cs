@@ -57,6 +57,13 @@ public class ItemModifyerGenerator {
             suffixIndex = 0;
         return inputName;
     }
+    public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, int prefixIndex, int suffixIndex) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputName = itemModifyers[prefixIM].GetPrefix(prefixIndex) + " " + inputName;
+        if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(suffixIndex);
+        return inputName;
+    }
     public ItemStats GetIMStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
         if(prefixIM != EItemModifyer.NONE)
             inputStats.AddStats(itemModifyers[prefixIM].StatModifyer);

@@ -7,13 +7,14 @@ public static class ItemGenerator {
 
     private static ItemLookUp itemLookUp = new ItemLookUp();
     private static IconPathLookUp iconPathLookUp = new IconPathLookUp();
-
     private static ItemTypeGenerator itemTypeGenerator = new ItemTypeGenerator();
     private static ItemModifyerGenerator itemModifyerGenerator = new ItemModifyerGenerator();
-
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
+
+    private static int idVersion = 0;
+    private static char seperationChar = '|';
     #endregion
-    
+
     public static Item GenerateRandomItem() {
         int prefixIndex = 0;
         int suffixIndex = 0;
@@ -31,6 +32,31 @@ public static class ItemGenerator {
         CalculateItemStats();
         item.ID = GenerateID(item, prefixIndex, suffixIndex);
         return new Item(item, true);
+    }
+    public static Item IDToItem(string id) {
+        string[] splits = id.Split(seperationChar);
+        int[] values = new int[15];
+        if(splits.Length != 16)
+            Debug.LogError("Split failed!");
+        //hard coded length because it needs to be that value
+
+        for(int i = 1; i < 16; i++) {
+            try {
+                values[i - 1] = int.Parse(splits[i]);
+            }
+            catch(System.FormatException e) {
+                Debug.LogException(e);
+            }
+        }
+
+        item = LookUpItem((EEquipmentType)values[0]);
+        item.Level = values[1];
+        item.Types.ItemRarity = (EItemRarity)values[2];
+        item.Types.PrefixItemModifyer = (EItemModifyer)values[3];
+        item.Types.SuffixItemModifyer = (EItemModifyer)values[4];
+        item.Name = itemModifyerGenerator.GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer, values[5], values[6]);
+        item.Stats = new ItemStats(item.Stats.Weight, values[7], values[8], values[9], values[10], values[11], item.Stats.EquipLoad, values[12], values[13], values[14]);
+        return new Item(item);
     }
     /*
     public static Item ReforgeItem(Item itemToReforge, float successChance)
@@ -86,23 +112,26 @@ public static class ItemGenerator {
     private static ItemStats CalculateItemStats() {
         return itemStatsCalculator.CalculateItemStats(item.Stats, item.Types.ItemRarity, item.Level);
     }
+
     private static string GenerateID(Item item, int prefixIndex, int suffixIndex) {
         return (
-            ((int)item.Types.EquipmentType).ToString("D3") +
-            item.Level.ToString("D5") +
-            ((int)item.Types.ItemRarity).ToString("D1") +
-            ((int)item.Types.PrefixItemModifyer).ToString("D3") +
-            ((int)item.Types.SuffixItemModifyer).ToString("D3") +
-            prefixIndex.ToString("D3") +
-            suffixIndex.ToString("D3") +
-            Mathf.FloorToInt(item.Stats.Health).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.Attack).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.Strength).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.Intelect).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.Dexterity).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.Durability).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.GoldValue).ToString("D4") +
-            Mathf.FloorToInt(item.Stats.ScrapValue).ToString("D4")
+            idVersion.ToString("D3") + seperationChar +
+            ((int)item.Types.EquipmentType).ToString("D3") + seperationChar + //0
+            item.Level.ToString("D5") + seperationChar + //1
+            ((int)item.Types.ItemRarity).ToString("D1") + seperationChar + //2
+            ((int)item.Types.PrefixItemModifyer).ToString("D3") + seperationChar + //3
+            ((int)item.Types.SuffixItemModifyer).ToString("D3") + seperationChar + //4
+            prefixIndex.ToString("D3") + seperationChar + //5
+            suffixIndex.ToString("D3") + seperationChar + //6
+            Mathf.FloorToInt(item.Stats.Health).ToString("D4") + seperationChar + //7
+            Mathf.FloorToInt(item.Stats.Attack).ToString("D4") + seperationChar + //8
+            Mathf.FloorToInt(item.Stats.Strength).ToString("D4") + seperationChar + //9
+            Mathf.FloorToInt(item.Stats.Intelect).ToString("D4") + seperationChar + //10
+            Mathf.FloorToInt(item.Stats.Dexterity).ToString("D4") + seperationChar + //11
+            Mathf.FloorToInt(item.Stats.Durability).ToString("D4") + seperationChar + //12
+            Mathf.FloorToInt(item.Stats.GoldValue).ToString("D4") + seperationChar + //13
+            Mathf.FloorToInt(item.Stats.ScrapValue).ToString("D4") //14
         );
     }
+    
 }
