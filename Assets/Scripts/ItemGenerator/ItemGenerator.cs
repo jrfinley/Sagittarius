@@ -14,19 +14,22 @@ public static class ItemGenerator {
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
     #endregion
     
-    //todo: impre and imsuf values in id
     public static Item GenerateRandomItem() {
+        int prefixIndex = 0;
+        int suffixIndex = 0;
+
         item = LookUpItem(GenerateEquipmentType());
         item.Level = GenerateItemLevel();
         item.Types.ItemRarity = GenerateItemRarity();
         GenerateIM();
 
-        item.Name = GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer);
+        item.Name = GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer, out prefixIndex, out suffixIndex);
+
         item.Stats = GetIMStats(item.Stats, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer);
         item.IconPath = GetIconPath();
 
         CalculateItemStats();
-        item.ID = GenerateID(item);
+        item.ID = GenerateID(item, prefixIndex, suffixIndex);
         return new Item(item, true);
     }
     /*
@@ -73,8 +76,8 @@ public static class ItemGenerator {
         item.Types.PrefixItemModifyer = prefixIM;
         item.Types.SuffixItemModifyer = suffixIM;
     }
-    public static string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM) {
-        return itemModifyerGenerator.GetIMName(inputName, prefixIM, suffixIM);
+    public static string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, out int prefixIndex, out int suffixIndex) {
+        return itemModifyerGenerator.GetIMName(inputName, prefixIM, suffixIM, out prefixIndex, out suffixIndex);
     }
     public static ItemStats GetIMStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
         return itemModifyerGenerator.GetIMStats(inputStats, prefixIM, suffixIM);
@@ -83,21 +86,23 @@ public static class ItemGenerator {
     private static ItemStats CalculateItemStats() {
         return itemStatsCalculator.CalculateItemStats(item.Stats, item.Types.ItemRarity, item.Level);
     }
-    private static string GenerateID(Item item) {
+    private static string GenerateID(Item item, int prefixIndex, int suffixIndex) {
         return (
             ((int)item.Types.EquipmentType).ToString("D3") +
             item.Level.ToString("D5") +
             ((int)item.Types.ItemRarity).ToString("D1") +
             ((int)item.Types.PrefixItemModifyer).ToString("D3") +
-            ((int)item.Types.SuffixItemModifyer).ToString("D3") + 
-            item.Stats.Health.ToString("D4") +
-            item.Stats.Attack.ToString("D4") +
-            item.Stats.Strength.ToString("D4") +
-            item.Stats.Intelect.ToString("D4") +
-            item.Stats.Dexterity.ToString("D4") +
-            item.Stats.Durability.ToString("D4") +
-            item.Stats.GoldValue.ToString("D4") +
-            item.Stats.ScrapValue.ToString("D4")
+            ((int)item.Types.SuffixItemModifyer).ToString("D3") +
+            prefixIndex.ToString("D3") +
+            suffixIndex.ToString("D3") +
+            Mathf.FloorToInt(item.Stats.Health).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.Attack).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.Strength).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.Intelect).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.Dexterity).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.Durability).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.GoldValue).ToString("D4") +
+            Mathf.FloorToInt(item.Stats.ScrapValue).ToString("D4")
         );
     }
 }

@@ -25,10 +25,14 @@ public class ItemModifyer {
         }
     }
 
-    public string GetPrefix() {
-        return prefixes[Random.Range(0, prefixes.Count)];
+    public string GetPrefix(out int i) {
+        int r = Random.Range(0, prefixes.Count);
+        i = r;
+        return prefixes[r];
     }
-    public string GetSuffix() {
-        return suffixes[Random.Range(0, suffixes.Count)];
+    public string GetSuffix(out int i) {
+        int r = Random.Range(0, suffixes.Count);
+        i = r;
+        return suffixes[r];
     }
 }

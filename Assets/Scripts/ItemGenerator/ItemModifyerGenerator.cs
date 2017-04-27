@@ -38,7 +38,7 @@ public class ItemModifyerGenerator {
             getSuffix = false;
 
         for(int i = 0; i < imToGen; i++) {
-            itemModifyer = (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+            itemModifyer = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
             if(getSuffix)
                 suffixIM = itemModifyer;
             else
@@ -46,11 +46,15 @@ public class ItemModifyerGenerator {
                 getSuffix = !getSuffix;
         }
     }
-    public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM) {
+    public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, out int prefixIndex, out int suffixIndex) {
         if(prefixIM != EItemModifyer.NONE)
-            inputName = itemModifyers[prefixIM].GetPrefix() + " " + inputName;
-        else if(suffixIM != EItemModifyer.NONE)
-            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(); 
+            inputName = itemModifyers[prefixIM].GetPrefix(out prefixIndex) + " " + inputName;
+        else
+            prefixIndex = 0;
+        if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(out suffixIndex);
+        else
+            suffixIndex = 0;
         return inputName;
     }
     public ItemStats GetIMStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
@@ -61,12 +65,6 @@ public class ItemModifyerGenerator {
         return inputStats;
     }
 
-    private string GetIMPrefix(EItemModifyer modifyer) {
-        return GetIM(modifyer).GetPrefix();
-    }
-    private string GetIMSuffix(EItemModifyer modifyer) {
-        return GetIM(modifyer).GetSuffix();
-    }
     private ItemModifyer GetIM(EItemModifyer modifyer) {
         return itemModifyers[modifyer];
     }
