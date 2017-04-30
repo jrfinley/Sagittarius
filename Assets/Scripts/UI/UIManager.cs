@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
+    public bool hideMenuToggle = false; //Prevents the player from opening the menu, but still allows for menu functions like chat boxes.
     bool isMenuOpen = false;
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
@@ -33,19 +34,28 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
-        playerParty = FindObjectOfType<PlayerParty>();
-        Invoke("DelayedStart", 0.1f);
-        Canvas.ForceUpdateCanvases();
-    }
-
-    void DelayedStart()
-    {
+        playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
         SetCurrencyScrap(0);
         inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         UpdateAllHeroStats();
+        Canvas.ForceUpdateCanvases();
+    }
+
+    void Update()
+    {
+        if(hideMenuToggle)
+        {
+            CloseMenu();
+            foreach (GameObject m in menuToggleButtons)
+                m.SetActive(false);
+        }
+        else
+        {
+            menuToggleButtons[0].SetActive(true);
+        }
     }
 
     public void ToggleMenu()
