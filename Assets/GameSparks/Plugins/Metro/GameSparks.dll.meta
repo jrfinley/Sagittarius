@@ -60,9 +60,8 @@ PluginImporter:
       settings:
         CPU: AnyCPU
         DontProcess: False
-        PlaceholderPath: 
+        PlaceholderPath: Assets/Plugins/GameSparks.dll
         SDK: AnySDK
-        ScriptingBackend: DotNet
     iOS:
       enabled: 0
       settings:

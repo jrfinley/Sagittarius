@@ -6,6 +6,9 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using GameSparks.Core;
 using GameSparks.Api.Requests;
+using System.Text;
+using UnityEngine.Experimental.Networking;
+using UnityEngine.Networking.Match;
 
 // paste this to libraries - 
 
@@ -34,7 +37,9 @@ public class Actor : MonoBehaviour
     private GameController gameController;
 
     private MapGenerator mapGen;
+    //private readonly object fileDownloadedCallback;
 
+    //private GameSparksUnity gsUnity;
 
     void Start()
     {
@@ -44,14 +49,83 @@ public class Actor : MonoBehaviour
         {
             StartCoroutine(AllowAutoAddParty());        
         }
-
-        GSRequestData jsonDataToSend = new GSRequestData();
-        jsonDataToSend.Add("actors.json", data);
-        jsonDataToSend.Add("health", data.characterHealth0);
-
-        new LogEventRequest().SetEventKey("setPlayerDataJSON").SetEventAttribute("JSONData", jsonDataToSend).Send((ActorData) => { });
         
+        #region
+/*
+gsUnity = GetComponent<GameSparksUnity>();
+
+GSRequestData jsonDataToSend = new GSRequestData(data.ToString());
+LogEventRequest eventRequest = new GameSparks.Api.Requests.LogEventRequest().SetEventKey("JsonData").SetEventAttribute("JsonData", data.ToString()).SetMaxResponseTimeInSeconds(30);
+
+eventRequest.Send((response) =>
+{
+    if (!response.HasErrors)
+    {
+        Debug.LogWarning("Player Saved to Gamesparks..");
     }
+    else
+    {
+        Debug.LogError("Error Saving Player Data: " + response.Errors.JSON);
+    }
+});
+
+new GetUploadUrlRequest().Send((response) => 
+{
+    StartCoroutine(UploadAFile(response.Url, "actor.json"));
+});
+
+new GetUploadedRequest().SetUploadId("").Send((response) =>
+{
+    StartCoroutine(DownloadFile(response.Url));
+});
+
+//jsonDataToSend.Add("actors.json", data);
+//jsonDataToSend.Add("health", data.characterHealth0);
+//new LogEventRequest().SetEventKey("setPlayerDataJSON").SetEventAttribute("JSONData", jsonDataToSend).Send((ActorData) => { });
+*/
+        #endregion
+    }
+    #region
+    /*
+    private IEnumerator UploadAFile(string uploadUrl, string encrytpedData)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(encrytpedData);
+
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("json", bytes, "JsonData", "text/json");
+
+        UnityWebRequest request = UnityWebRequest.Post(uploadUrl, form);
+        yield return request.Send();
+
+        if(request.error == null)
+        {
+            Debug.Log("[GS] Save file uploaded successfully");
+        }
+        else
+        {
+            Debug.LogError("[GS] Error uploading save file: " + request.error);
+        }
+
+        request.Dispose();
+        request = null;
+    }
+    private IEnumerator DownloadFile(string url)
+    {
+        var fileRequest = new UnityWebRequest(url);
+        if(fileRequest == null)
+        {
+            yield break;
+        }
+        fileRequest.downloadHandler = new DownloadHandlerBuffer();
+        yield return fileRequest.Send();
+
+        if(fileDownloadedCallback != null)
+        {
+            //
+        }
+    }*/
+    #endregion
+
 
     IEnumerator AllowAutoAddParty()
     {
