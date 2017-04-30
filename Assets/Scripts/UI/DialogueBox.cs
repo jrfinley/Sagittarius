@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class DialogueBox : MonoBehaviour
 {
     public int maxCharactersBeforeBreak = 100; //How many characters should appear on the screen before breaking to the next page?
@@ -16,9 +17,26 @@ public class DialogueBox : MonoBehaviour
     bool isWaitingForInput = false;
     List<string> dialogueQueue = new List<string>();
     string cachedDialogue = string.Empty;
+    System.Action storedCallback = null;
+
     public bool ShowDialogueBox(string dialogue) //Call this function to display the dialogue box. You can cache multiple lines by calling the function again while a box is active.
     {
         dialogueQueue.Add(dialogue);
+        if (isBoxActive)
+        {
+            return false;
+        }
+        dialogueBoxBacking.enabled = true;
+        textBox.enabled = true;
+        isBoxActive = true;
+        StartCoroutine(WriteToBox());
+        return true;
+    }
+
+    public bool ShowDialogueBox(string dialogue, System.Action callbackMethod) //Call this function to display the dialogue box that will call back once completed. Pass in method name.
+    {
+        dialogueQueue.Add(dialogue);
+        storedCallback = callbackMethod;
         if (isBoxActive)
         {
             return false;
@@ -27,7 +45,6 @@ public class DialogueBox : MonoBehaviour
         dialogueBoxBacking.enabled = true;
         textBox.enabled = true;
         isBoxActive = true;
-        //cachedDialogue = dialogue;
         StartCoroutine(WriteToBox());
         return true;
     }
@@ -73,6 +90,9 @@ public class DialogueBox : MonoBehaviour
         dialogueBoxBacking.enabled = false;
         cachedDialogue = string.Empty;
         isBoxActive = false;
+        if (storedCallback != null)
+            storedCallback();
+        storedCallback = null;
         yield return null;
 
     }

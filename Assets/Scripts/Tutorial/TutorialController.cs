@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class OpeningCameraController : MonoBehaviour
+public class TutorialController : MonoBehaviour
 {
     Transition transition;
     public Animator oracleAnimator;
@@ -27,12 +28,17 @@ public class OpeningCameraController : MonoBehaviour
         oracleAnimator.SetTrigger("oracle_intro_1");
     }
 
+    public void Test()
+    {
+        Debug.Log("CONTINUE");
+    }
+
     public void OracleSpeakIntro_01()
     {
         ui.CreateNewDialogueBox(oracleDialogueSetIntro01[0]);
         ui.CreateNewDialogueBox(oracleDialogueSetIntro01[1]);
         ui.CreateNewDialogueBox(oracleDialogueSetIntro01[2]);
-        ui.CreateNewDialogueBox(oracleDialogueSetIntro01[3]);
+        ui.CreateNewDialogueBox(oracleDialogueSetIntro01[3], Test);
     }
 
 
