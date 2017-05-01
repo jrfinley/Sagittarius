@@ -21,7 +21,7 @@ public class Actor : MonoBehaviour
 
     public Vector3 pos;
 
-    public List<int> ids = new List<int>();
+    public List<string> ids = new List<string>();
     public List<EEquipmentType> equipmentType = new List<EEquipmentType>();
 
     private PlayerParty playerParty;
@@ -360,7 +360,7 @@ new GetUploadedRequest().SetUploadId("").Send((response) =>
                 }*/
             }
 
-            foreach (int id in data.ids)
+            foreach (string id in data.ids)
             {
                 ids.Add(id);
                 ids.Clear();
@@ -507,7 +507,7 @@ new GetUploadedRequest().SetUploadId("").Send((response) =>
 
             //loads item/ inventory info
 
-            foreach (int id in data.ids)
+            foreach (string id in data.ids)
             {
           
                 ids.Add(id);
@@ -647,7 +647,7 @@ new GetUploadedRequest().SetUploadId("").Send((response) =>
 [Serializable]
 public class ActorData
 {
-    public List<int> ids = new List<int>();
+    public List<string> ids = new List<string>();
     public List<InventoryItem> items = new List<InventoryItem>();
     public List<EEquipmentType> itemTypes = new List<EEquipmentType>();
 
