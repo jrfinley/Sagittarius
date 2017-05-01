@@ -9,8 +9,8 @@ public class MonsterParty : MonoBehaviour
 
     public Vector3 movePosition;
 
-    private int minPartySize,
-                maxPartySize;
+    public int minPartySize = 1,
+               maxPartySize = 6;
 
     [SerializeField]
     private Sprite icon;
@@ -43,7 +43,6 @@ public class MonsterParty : MonoBehaviour
         monsters[partySlot].AddStatusEffect(statusEffect);
     }
 
-    //Change buff stuff to poison
     public void RemoveStatusEffect(EBuffType typeToRemove)
     {
         for (int i = 0; i < monsters.Length; i++)
@@ -61,6 +60,6 @@ public class MonsterParty : MonoBehaviour
     }
 
     //Monsters spawn via Dungeon Gen
-    //Monsters move toward player after fail in barrier checks, movement possible the same as player party
+    //Monsters move toward player after fail in barrier checks, movement possible the same as player party or use room passing
 
 }
