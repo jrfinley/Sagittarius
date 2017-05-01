@@ -24,34 +24,58 @@ public class ItemModifyerGenerator {
     #endregion
 
     #region Methods
-    public void GenerateIM(int id, EItemRarity itemRarity, string inputName, ref string outputName, ref ItemStats outputStats) {
-        outputName = inputName;
+    public void GenerateIM(EItemRarity rarity, out EItemModifyer prefixIM, out EItemModifyer suffixIM) {
+        imToGen = Mathf.Clamp((int)rarity - 1, 0, 2);
 
-        imToGen = Mathf.Clamp((int)itemRarity - 1, 0, 2);
-
-        if(imToGen <= 0)
-            return;
-
-        getSuffix = true;
-        if(Random.Range((int)0, 2) == 0)
-            getSuffix = false;
-        itemModifyer = (EItemModifyer)Random.Range(0, System.Enum.GetValues(typeof(EItemModifyer)).Length);
-        for(int i = 0; i < imToGen; i++) {
-            
-            if(getSuffix)
-                outputName = outputName + " " + itemModifyers[itemModifyer].GetSuffix();
-            else
-                outputName = itemModifyers[itemModifyer].GetPrefix() + " " + outputName;
-            getSuffix = !getSuffix;
-            outputStats.AddStats(itemModifyers[itemModifyer].StatModifyer);
+        if(imToGen <= 0) {
+            prefixIM = EItemModifyer.NONE;
+            suffixIM = EItemModifyer.NONE;
         }
+        else {
+            getSuffix = (Random.Range((int)0, 2) == 0);
+
+            if(imToGen == 1) {
+                if(getSuffix) {
+                    prefixIM = EItemModifyer.NONE;
+                    suffixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                }
+                else {
+                    suffixIM = EItemModifyer.NONE;
+                    prefixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                }
+            }
+            else {
+                suffixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                prefixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+            }
+        }     
     }
-    private string GetIMPrefix(EItemModifyer modifyer) {
-        return GetIM(modifyer).GetPrefix();
+    public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, out int prefixIndex, out int suffixIndex) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputName = itemModifyers[prefixIM].GetPrefix(out prefixIndex) + " " + inputName;
+        else
+            prefixIndex = 0;
+        if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(out suffixIndex);
+        else
+            suffixIndex = 0;
+        return inputName;
     }
-    private string GetIMSuffix(EItemModifyer modifyer) {
-        return GetIM(modifyer).GetSuffix();
+    public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, int prefixIndex, int suffixIndex) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputName = itemModifyers[prefixIM].GetPrefix(prefixIndex) + " " + inputName;
+        if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(suffixIndex);
+        return inputName;
     }
+    public ItemStats GetIMStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputStats.AddStats(itemModifyers[prefixIM].StatModifyer);
+        else if(suffixIM != EItemModifyer.NONE)
+            inputStats.AddStats(itemModifyers[suffixIM].StatModifyer);
+        return inputStats;
+    }
+
     private ItemModifyer GetIM(EItemModifyer modifyer) {
         return itemModifyers[modifyer];
     }
