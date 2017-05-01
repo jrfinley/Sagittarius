@@ -14,7 +14,7 @@ public class ItemReturnManager : MonoBehaviour
 
     public List<InventoryItem> items = new List<InventoryItem>();
 
-    private List<int> ids = new List<int>();
+    private List<string> ids = new List<string>();
     private List<EEquipmentType> types = new List<EEquipmentType>();
 
     void Start ()
@@ -44,7 +44,7 @@ public class ItemReturnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(.3f);
 
-        foreach(int id in actor.data.ids)
+        foreach(string id in actor.data.ids)
         {
             ids.Add(id);
         }
@@ -55,7 +55,7 @@ public class ItemReturnManager : MonoBehaviour
 
         for(int i = 0; i < ids.Count; i++)
         {
-            Item item = ItemGenerator.CreateItem(ids[i], types[i]);
+            Item item = ItemGenerator.IDToItem(ids[i]);
             InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(inventoryItemDisplayPrefab);
             display.transform.SetParent(targetTransform, false);
             Debug.Log("Item " + i + " Name " + item.Name + " id " + item.ID + " level " + item.Level + "stats" + item.Stats);

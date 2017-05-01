@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Item {
     #region Variables
-    private int id = 0;
+    private string id = string.Empty;
     private string name = string.Empty;
     private string flavorText = string.Empty;
     private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
@@ -14,7 +14,7 @@ public class Item {
     #endregion
 
     #region Properties
-    public int ID {
+    public string ID {
         get {
             return id;
         }

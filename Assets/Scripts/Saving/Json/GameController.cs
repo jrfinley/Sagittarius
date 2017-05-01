@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+
 public class GameController : MonoBehaviour
 {
     public Button saveButton;
@@ -11,6 +12,8 @@ public class GameController : MonoBehaviour
     public const string playerPath = "Prefabs/Loader";
 
     private static string dataPath = string.Empty;
+
+    public object JsonConvert { get; private set; }
 
     void Awake()
     {

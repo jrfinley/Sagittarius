@@ -1,4 +1,5 @@
 ﻿public enum EItemModifyer {
+    NONE,
     HEALTH,
     STRENGTH,
     INTELECT,

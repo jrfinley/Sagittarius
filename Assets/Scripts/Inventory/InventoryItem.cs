@@ -17,7 +17,7 @@ public class InventoryItem : MonoBehaviour
     public int scrap;
     public EEquipmentType itemType;
 
-    public int id;
+    public string id;
     public int health;
 
     private Item item;
