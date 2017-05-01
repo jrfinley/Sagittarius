@@ -28,7 +28,7 @@ public static class ItemGenerator {
         item.Name = GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer, out prefixIndex, out suffixIndex);
 
         item.Stats = GetIMStats(item.Stats, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer);
-        item.IconPath = GetIconPath();
+        item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
         CalculateItemStats();
         item.ID = GenerateID(item, prefixIndex, suffixIndex);
@@ -57,6 +57,9 @@ public static class ItemGenerator {
         item.Types.SuffixItemModifyer = (EItemModifyer)values[4];
         item.Name = itemModifyerGenerator.GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer, values[5], values[6]);
         item.Stats = new ItemStats(item.Stats.Weight, values[7], values[8], values[9], values[10], values[11], item.Stats.EquipLoad, values[12], values[13], values[14]);
+
+        item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
+        item.ID = id;
         return new Item(item);
     }
     /*
@@ -76,8 +79,8 @@ public static class ItemGenerator {
     private static Item LookUpItem(EEquipmentType itemToLookUp) {
         return new Item(itemLookUp.ItemLookUpTable[itemToLookUp]);
     }
-    private static string GetIconPath() {
-        return iconPathLookUp.GetPathName(item.Types.ItemType) + item.IconPath;
+    private static string GetIconPath(EItemType itemType, string baseIconPath) {
+        return iconPathLookUp.GetPathName(itemType) + baseIconPath;
     }
 
     private static EItemRarity GenerateItemRarity() {
