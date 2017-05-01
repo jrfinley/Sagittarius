@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using ItemGeneratorHelpers;
 
 public static class ItemGenerator {
     #region Variables
@@ -68,14 +69,6 @@ public static class ItemGenerator {
         Debug.LogWarning("Reforging creates a non reproducable item.");
         return new Item(item);
     }
-    
-    private static int GenerateRandomID() { 
-        return Random.Range(1, int.MaxValue);
-    }
-    private static int GenerateRandomID(int monsterLevel, int dungeonLevel) {
-        int id = Random.Range(1, int.MaxValue);
-        return (id - id % 100 + Mathf.Clamp(Random.Range((int)dungeonLevel, monsterLevel + dungeonLevel), 0, 99));
-    }
     */
     private static EEquipmentType GenerateEquipmentType() {
         return itemTypeGenerator.GenereteRandomEquipmentType(itemTypeGenerator.GenerateRandomItemType());
@@ -97,7 +90,7 @@ public static class ItemGenerator {
         EItemModifyer prefixIM = EItemModifyer.NONE;
         EItemModifyer suffixIM = EItemModifyer.NONE;
 
-        itemModifyerGenerator.GenerateIM(item.Types.ItemRarity, ref prefixIM, ref suffixIM);
+        itemModifyerGenerator.GenerateIM(item.Types.ItemRarity, out prefixIM, out suffixIM);
 
         item.Types.PrefixItemModifyer = prefixIM;
         item.Types.SuffixItemModifyer = suffixIM;

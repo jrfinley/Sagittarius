@@ -24,27 +24,31 @@ public class ItemModifyerGenerator {
     #endregion
 
     #region Methods
-    public void GenerateIM(EItemRarity rarity, ref EItemModifyer prefixIM, ref EItemModifyer suffixIM) {
-        prefixIM = EItemModifyer.NONE;
-        suffixIM = EItemModifyer.NONE;
-
+    public void GenerateIM(EItemRarity rarity, out EItemModifyer prefixIM, out EItemModifyer suffixIM) {
         imToGen = Mathf.Clamp((int)rarity - 1, 0, 2);
 
-        if(imToGen <= 0)            
-            return;            
-
-        getSuffix = true;
-        if(Random.Range((int)0, 2) == 0)
-            getSuffix = false;
-
-        for(int i = 0; i < imToGen; i++) {
-            itemModifyer = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
-            if(getSuffix)
-                suffixIM = itemModifyer;
-            else
-                prefixIM = itemModifyer;
-                getSuffix = !getSuffix;
+        if(imToGen <= 0) {
+            prefixIM = EItemModifyer.NONE;
+            suffixIM = EItemModifyer.NONE;
         }
+        else {
+            getSuffix = (Random.Range((int)0, 2) == 0);
+
+            if(imToGen == 1) {
+                if(getSuffix) {
+                    prefixIM = EItemModifyer.NONE;
+                    suffixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                }
+                else {
+                    suffixIM = EItemModifyer.NONE;
+                    prefixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                }
+            }
+            else {
+                suffixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                prefixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+            }
+        }     
     }
     public string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, out int prefixIndex, out int suffixIndex) {
         if(prefixIM != EItemModifyer.NONE)
