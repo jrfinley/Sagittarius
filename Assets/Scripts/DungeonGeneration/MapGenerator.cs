@@ -7,51 +7,55 @@ using Debug = UnityEngine.Debug;
 
 public class MapGenerator : MonoBehaviour
 {
+    private enum DungeonStyle { Circle, HorizontalBox, VerticleBox, Square };
+    private float _radius = 20f;
+    private float _width = 0f;
+    private float _height = 0f;
+
     private int _seed = 0;
     public int Seed { get { return _seed; } }
 
     private string _levelToLoad = "TestDungeon";
 
-    public int trasureRooms = 2;
-    public int monsterRooms = 5;
-    public int statChecks = 3;
+    //public int trasureRooms = 2;
+    //public int monsterRooms = 5;
+    //public int statChecks = 3;
 
-    private PathGenerator _pathGenerator = null;
+    //private PathGenerator _pathGenerator = null;
 
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
 
-    private Dictionary<GameObject, List<Transform>> _connectionRoomDict = new Dictionary<GameObject, List<Transform>>();
-
-    private List<PathNode> _pathLine = new List<PathNode>();
-    private List<List<PathNode>> _allPaths = new List<List<PathNode>>();
-
-    private List<GameObject> _rooms = new List<GameObject>();
-    private List<List<GameObject>> _allRooms = new List<List<GameObject>>();
-
-    private Actor actor;
+    private List<Transform> _openConnections = new List<Transform>();
 
     void Start()
     {
-        _pathGenerator = new PathGenerator(this);
-        StartCoroutine(GenerateDelay());  
-    }
-
-    IEnumerator GenerateDelay()
-    {
-        yield return new WaitForSeconds(.7f);
-        actor = FindObjectOfType<Actor>();
+        //_pathGenerator = new PathGenerator(this);
+        //StartCoroutine(GenerateDelay());  
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        if(actor.data.seed == 0)
-        {
-            GenerateMap();
-        }
+        GenerateMap();
 
         sw.Stop();
         Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
     }
+
+    //IEnumerator GenerateDelay()
+    //{
+    //    yield return new WaitForSeconds(.7f);
+    //    actor = FindObjectOfType<Actor>();
+    //    Stopwatch sw = new Stopwatch();
+    //    sw.Start();
+
+    //    if(actor.data.seed == 0)
+    //    {
+    //        GenerateMap();
+    //    }
+
+    //    sw.Stop();
+    //    Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
+    //}
 
     public void GenerateMap(int seed = 0)
     {
@@ -62,125 +66,139 @@ public class MapGenerator : MonoBehaviour
 
     private void _GenerateMap()
     {
-        GameObject finalRoom = _GetUniqueRoom("Final");
-        Room finalRoomData = finalRoom.GetComponent<Room>();
+        Room spawnRoom = _GenerateSpawnRoom();
 
-        _GenerateMainBranch(finalRoom, finalRoomData);
+        
 
-        _GenerateBranches();
-        _GenerateRooms(finalRoom, finalRoomData);
-        _GenerateMonsters();
-        _GenerateTreasure();
-        _GenerateStatChecks();
+
+
+        //GameObject finalRoom = _GetUniqueRoom("Final");
+        //Room finalRoomData = finalRoom.GetComponent<Room>();
+
+        //_GenerateMainBranch(finalRoom, finalRoomData);
+
+        //_GenerateBranches();
+        //_GenerateRooms(finalRoom, finalRoomData);
+        //_GenerateMonsters();
+        //_GenerateTreasure();
+        //_GenerateStatChecks();
     }
 
-    private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
+    private Room _GenerateSpawnRoom()
     {
         GameObject spawnRoom = _GetUniqueRoom("Spawn");
         Room spawnRoomData = spawnRoom.GetComponent<Room>();
-        List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
-        List<Transform> finalRoomConnections = finalRoomData.Connections.AllConnections();
-
-        Transform startingConnection = _GetRandomConnection(spawnRoomConnections);
-        Transform finalConnection = _GetRandomConnection(finalRoomConnections);
-        spawnRoomData.JoinConnection(startingConnection.position);
-
-        _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15, finalConnection.position, finalRoom);
-        _allPaths.Add(_pathLine);
-
-        spawnRoomConnections = spawnRoomData.Connections.AllConnections();
-        _connectionRoomDict.Add(spawnRoom, spawnRoomConnections);
+        _openConnections = spawnRoomData.Connections.AllConnections();
+        return spawnRoomData;
     }
 
-    private void _GenerateRooms(GameObject forcedRoomObject = null, Room forcedRoom = null)
-    {
-        foreach (List<PathNode> nodeList in _allPaths)
-        {
-            foreach (PathNode node in nodeList)
-            {
-                //GameObject temp = Instantiate(_normalRooms[node.indexOfRoom], node.position, Quaternion.identity) as GameObject;
-                if (node.uniqueRoom == null)
-                {
-                    GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
-                    Room tempRoom = temp.GetComponent<Room>();
+    //private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
+    //{
+    //    GameObject spawnRoom = _GetUniqueRoom("Spawn");
+    //    Room spawnRoomData = spawnRoom.GetComponent<Room>();
+    //    List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
+    //    List<Transform> finalRoomConnections = finalRoomData.Connections.AllConnections();
 
-                    _UpdateConnections(tempRoom, node);
+    //    Transform startingConnection = _GetRandomConnection(spawnRoomConnections);
+    //    Transform finalConnection = _GetRandomConnection(finalRoomConnections);
+    //    spawnRoomData.JoinConnection(startingConnection.position);
 
-                    tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
+    //    _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15, finalConnection.position, finalRoom);
+    //    _allPaths.Add(_pathLine);
 
-                    _rooms.Add(temp);
-                }
-                else
-                {
-                    forcedRoomObject.transform.position = node.position;
-                    forcedRoom.JoinConnection(node.enterConnection * -1);
-                }
-            }
-            _allRooms.Add(_rooms);
-        }
-        foreach (GameObject tempObject in _pathGenerator.tempObjects)
-        {
-            Destroy(tempObject);
-        }
-    }
+    //    spawnRoomConnections = spawnRoomData.Connections.AllConnections();
+    //    _connectionRoomDict.Add(spawnRoom, spawnRoomConnections);
+    //}
 
-    private void _GenerateBranches()
-    {
-        foreach (KeyValuePair<GameObject, List<Transform>> entry in _connectionRoomDict)
-        {
-            GameObject startingRoom = entry.Key;
-            List<Transform> connectionList = entry.Value;
-            foreach (Transform connection in connectionList)
-            {
-                startingRoom.GetComponent<Room>().JoinConnection(connection.position);
-                _pathLine = _pathGenerator.GeneratePath(startingRoom.transform.position, connection.position, 15);
-            }
-        }
-    }
+    //private void _GenerateRooms(GameObject forcedRoomObject = null, Room forcedRoom = null)
+    //{
+    //    foreach (List<PathNode> nodeList in _allPaths)
+    //    {
+    //        foreach (PathNode node in nodeList)
+    //        {
+    //            //GameObject temp = Instantiate(_normalRooms[node.indexOfRoom], node.position, Quaternion.identity) as GameObject;
+    //            if (node.uniqueRoom == null)
+    //            {
+    //                GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
+    //                Room tempRoom = temp.GetComponent<Room>();
 
-    private void _GenerateMonsters()
-    {
-        for (int i = 0; i < monsterRooms; i++)
-        {
-            int monsterIndex = Random.Range(0, _allRooms.Count);
-            List<GameObject> rooms = _allRooms[monsterIndex];
-            int roomIndex = Random.Range(0, rooms.Count);
-            rooms[roomIndex].GetComponent<Room>().BecomeMonsterRoom();
-            rooms.RemoveAt(roomIndex);
-        }
-    }
+    //                _UpdateConnections(tempRoom, node);
 
-    private void _GenerateTreasure()
-    {
-        for (int i = 0; i < trasureRooms; i++)
-        {
-            int index = Random.Range(0, _allRooms.Count);
-            List<GameObject> rooms = _allRooms[index];
-            int roomIndex = Random.Range(0, rooms.Count);
-            rooms[roomIndex].GetComponent<Room>().BecomeTreasureRoom();
-            rooms.RemoveAt(roomIndex);
-        }
-    }
+    //                tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
 
-    private void _GenerateStatChecks()
-    {
-        for (int i = 0; i < statChecks; i++)
-        {
-            int index = Random.Range(0, _allRooms.Count);
-            List<GameObject> rooms = _allRooms[index];
-            int roomIndex = Random.Range(0, rooms.Count);
-            rooms[roomIndex].GetComponent<Room>().BecomeStatCheck();
-            rooms.RemoveAt(roomIndex);
-        }
-    }
+    //                _rooms.Add(temp);
+    //            }
+    //            else
+    //            {
+    //                forcedRoomObject.transform.position = node.position;
+    //                forcedRoom.JoinConnection(node.enterConnection * -1);
+    //            }
+    //        }
+    //        _allRooms.Add(_rooms);
+    //    }
+    //    foreach (GameObject tempObject in _pathGenerator.tempObjects)
+    //    {
+    //        Destroy(tempObject);
+    //    }
+    //}
 
-    private void _UpdateConnections(Room tempRoom, PathNode node)
-    {
-        tempRoom.JoinConnection(node.enterConnection);
-        tempRoom.JoinConnection(node.exitConnection);
-        node.branchConnections.ForEach(connection => tempRoom.BranchConnection(connection));
-        node.mergedConnections.ForEach(connection => tempRoom.JoinConnection(connection));
-    }
+    //private void _GenerateBranches()
+    //{
+    //    foreach (KeyValuePair<GameObject, List<Transform>> entry in _connectionRoomDict)
+    //    {
+    //        GameObject startingRoom = entry.Key;
+    //        List<Transform> connectionList = entry.Value;
+    //        foreach (Transform connection in connectionList)
+    //        {
+    //            startingRoom.GetComponent<Room>().JoinConnection(connection.position);
+    //            _pathLine = _pathGenerator.GeneratePath(startingRoom.transform.position, connection.position, 15);
+    //        }
+    //    }
+    //}
+
+    //private void _GenerateMonsters()
+    //{
+    //    for (int i = 0; i < monsterRooms; i++)
+    //    {
+    //        int monsterIndex = Random.Range(0, _allRooms.Count);
+    //        List<GameObject> rooms = _allRooms[monsterIndex];
+    //        int roomIndex = Random.Range(0, rooms.Count);
+    //        rooms[roomIndex].GetComponent<Room>().BecomeMonsterRoom();
+    //        rooms.RemoveAt(roomIndex);
+    //    }
+    //}
+
+    //private void _GenerateTreasure()
+    //{
+    //    for (int i = 0; i < trasureRooms; i++)
+    //    {
+    //        int index = Random.Range(0, _allRooms.Count);
+    //        List<GameObject> rooms = _allRooms[index];
+    //        int roomIndex = Random.Range(0, rooms.Count);
+    //        rooms[roomIndex].GetComponent<Room>().BecomeTreasureRoom();
+    //        rooms.RemoveAt(roomIndex);
+    //    }
+    //}
+
+    //private void _GenerateStatChecks()
+    //{
+    //    for (int i = 0; i < statChecks; i++)
+    //    {
+    //        int index = Random.Range(0, _allRooms.Count);
+    //        List<GameObject> rooms = _allRooms[index];
+    //        int roomIndex = Random.Range(0, rooms.Count);
+    //        rooms[roomIndex].GetComponent<Room>().BecomeStatCheck();
+    //        rooms.RemoveAt(roomIndex);
+    //    }
+    //}
+
+    //private void _UpdateConnections(Room tempRoom, PathNode node)
+    //{
+    //    tempRoom.JoinConnection(node.enterConnection);
+    //    tempRoom.JoinConnection(node.exitConnection);
+    //    node.branchConnections.ForEach(connection => tempRoom.BranchConnection(connection));
+    //    node.mergedConnections.ForEach(connection => tempRoom.JoinConnection(connection));
+    //}
 
     private GameObject _GetUniqueRoom(string roomName = "", Vector3 position = default(Vector3))
     {
@@ -196,12 +214,12 @@ public class MapGenerator : MonoBehaviour
         return null;
     }
 
-    private Transform _GetRandomConnection(List<Transform> connections)
-    {
-        int index = Random.Range(0, connections.Count);
-        Transform connection = connections[index];
-        return connection;
-    }
+    //private Transform _GetRandomConnection(List<Transform> connections)
+    //{
+    //    int index = Random.Range(0, connections.Count);
+    //    Transform connection = connections[index];
+    //    return connection;
+    //}
 
     private void _LoadRooms()
     {
@@ -220,5 +238,11 @@ public class MapGenerator : MonoBehaviour
     {
         index = Random.Range(0, _normalRooms.Count);
         return _normalRooms[1];
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(Vector3.zero, _radius);
     }
 }
