@@ -3,6 +3,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class DialogueBox : MonoBehaviour
 {
@@ -13,15 +15,36 @@ public class DialogueBox : MonoBehaviour
     public Image continueMarker;
     bool isBoxActive = false;
     bool isWaitingForInput = false;
+    List<string> dialogueQueue = new List<string>();
     string cachedDialogue = string.Empty;
-    public bool ShowDialogueBox(string dialogue) //Call this function to display the dialogue box. Can only be called once at a time.
+    System.Action storedCallback = null;
+
+    public bool ShowDialogueBox(string dialogue) //Call this function to display the dialogue box. You can cache multiple lines by calling the function again while a box is active.
     {
+        dialogueQueue.Add(dialogue);
         if (isBoxActive)
+        {
             return false;
+        }
         dialogueBoxBacking.enabled = true;
         textBox.enabled = true;
         isBoxActive = true;
-        cachedDialogue = dialogue;
+        StartCoroutine(WriteToBox());
+        return true;
+    }
+
+    public bool ShowDialogueBox(string dialogue, System.Action callbackMethod) //Call this function to display the dialogue box that will call back once completed. Pass in method name.
+    {
+        dialogueQueue.Add(dialogue);
+        storedCallback = callbackMethod;
+        if (isBoxActive)
+        {
+            return false;
+        }
+
+        dialogueBoxBacking.enabled = true;
+        textBox.enabled = true;
+        isBoxActive = true;
         StartCoroutine(WriteToBox());
         return true;
     }
@@ -36,34 +59,42 @@ public class DialogueBox : MonoBehaviour
     IEnumerator WriteToBox() //write to the text box one character at a time and break when the text becomes too large. 
     {
         textBox.enabled = true;
-        textBox.text = string.Empty;
-        string dialogueFeed = string.Empty;
-        int lastIndex = 0;
-        int i = 0;
-        while(i < cachedDialogue.Length)
+        for(int j = 0; j < dialogueQueue.Count; j++)
         {
-            if(i == maxCharactersBeforeBreak+lastIndex)
+            cachedDialogue = dialogueQueue[j];
+            textBox.text = string.Empty;
+            string dialogueFeed = string.Empty;
+            int lastIndex = 0;
+            int i = 0;
+            while (i < cachedDialogue.Length)
             {
-                textBox.text += "...";
-                lastIndex = i;
-                StartCoroutine(WaitForInput());
-                while (isWaitingForInput)
-                    yield return null;
+                if (i == maxCharactersBeforeBreak + lastIndex)
+                {
+                    textBox.text += "...";
+                    lastIndex = i;
+                    StartCoroutine(WaitForInput());
+                    while (isWaitingForInput)
+                        yield return null;
 
-                textBox.text = string.Empty;
+                    textBox.text = string.Empty;
+                }
+                textBox.text += cachedDialogue[i++];
+                yield return new WaitForSeconds(characterSpeed);
             }
-            textBox.text += cachedDialogue[i++];
-            yield return new WaitForSeconds(characterSpeed);
+            StartCoroutine(WaitForInput());
+            while (isWaitingForInput)
+                yield return null;
         }
-        StartCoroutine(WaitForInput());
-        while (isWaitingForInput)
-            yield return null;
-
+        dialogueQueue.Clear();
         textBox.text = string.Empty;
         dialogueBoxBacking.enabled = false;
         cachedDialogue = string.Empty;
         isBoxActive = false;
+        if (storedCallback != null)
+            storedCallback();
+        storedCallback = null;
         yield return null;
+
     }
 
     IEnumerator WaitForInput() //Wait for inputs before continuing.

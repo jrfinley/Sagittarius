@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
+    public bool hideMenuToggle = false; //Prevents the player from opening the menu, but still allows for menu functions like chat boxes.
     bool isMenuOpen = false;
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
@@ -33,19 +34,28 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
-        playerParty = FindObjectOfType<PlayerParty>();
-        Invoke("DelayedStart", 0.1f);
-        Canvas.ForceUpdateCanvases();
-    }
-
-    void DelayedStart()
-    {
+        playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
         SetCurrencyScrap(0);
         inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         UpdateAllHeroStats();
+        Canvas.ForceUpdateCanvases();
+    }
+
+    void Update()
+    {
+        if(hideMenuToggle)
+        {
+            CloseMenu();
+            foreach (GameObject m in menuToggleButtons)
+                m.SetActive(false);
+        }
+        else
+        {
+            menuToggleButtons[0].SetActive(true);
+        }
     }
 
     public void ToggleMenu()
@@ -165,10 +175,15 @@ public class UIManager : MonoBehaviour
 
     public void TestButton1() //Found on the Misc tab for now. Just for testing.
     {
-        CreateNewDialogueBox("Nam mollis metus ut felis consectetur ornare. Nunc in quam et sem congue ultrices. Praesent erat risus, sollicitudin sit amet mattis non, porta eu dolor. Vivamus scelerisque enim ut cursus ullamcorper. Aenean ut pulvinar velit, quis sagittis lectus. Donec ac turpis convallis, accumsan dolor facilisis, vestibulum ipsum. Cras sit amet luctus est. Nullam vitae iaculis elit. Curabitur aliquam libero dolor, quis vehicula nunc euismod eu. Integer maximus convallis nisl, vitae rutrum nunc mattis sagittis. Quisque nunc nibh, tincidunt a rutrum non, feugiat ut risus. Sed sed efficitur neque, et venenatis est. Aenean pulvinar sit amet magna sit amet sollicitudin. Aliquam commodo enim vitae quam pulvinar, ut ultricies dui iaculis. Aenean volutpat eros sit amet odio bibendum, nec efficitur purus mollis."); //Giant test sentance.
+        CreateNewDialogueBox("Nam mollis metus ut felis consectetur ornare. Nunc in quam et sem congue vestibulum ipsumorut risus."); //Giant test sentance.
     }
 
-    public bool CreateNewDialogueBox(string dialogue) //Use this function to create a new dialogue box. Returns true if OK, false if a box is already up.
+    public bool CreateNewDialogueBox(string dialogue, System.Action callBack) //Use this function to create a new dialogue box with a callback. 
+    {
+        return dialogueBox.ShowDialogueBox(dialogue, callBack);
+    }
+
+    public bool CreateNewDialogueBox(string dialogue) //Use this function to create a new dialogue box. 
     {
         return dialogueBox.ShowDialogueBox(dialogue);
     }
