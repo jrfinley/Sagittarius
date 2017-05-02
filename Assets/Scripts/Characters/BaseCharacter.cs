@@ -39,9 +39,6 @@ public class BaseCharacter : MonoBehaviour
     public Item leftHand;
     public Item rightHand;
     public Item amulet;
-
-    public List<string> statusEffectNames = new List<string>();
-    public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
     
     void SetStats()
     {
@@ -144,24 +141,6 @@ public class BaseCharacter : MonoBehaviour
         Strength -= (int)item.Stats.Strength;
         Dexterity -= (int)item.Stats.Dexterity;
         Intelect -= (int)item.Stats.Intelect;
-    }
-    public void AddStatusEffect<T>(T statusEffect) where T: BaseStatusEffect
-    {
-        statusEffectNames.Add(statusEffect.statusName);
-        statusEffects.Add(statusEffect);
-        statusEffect.InitializeStatusEffect(this);
-        print(statusEffectNames[0]);
-    }
-    public void RemoveStatusEffect(EBuffType buffType)
-    {
-        for (int i = 0; i < statusEffects.Count; i++)
-        {
-            if (statusEffects[i].buffType == buffType)
-            {
-                statusEffects[i].RemoveStatusEffect();
-                break;
-            }
-        }
     }
 
     //Properties

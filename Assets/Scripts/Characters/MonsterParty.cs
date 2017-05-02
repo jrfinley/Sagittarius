@@ -27,38 +27,38 @@ public class MonsterParty : MonoBehaviour
         set { icon = value; }
     }
 
-    public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
-    {
-        for (int i = 0; i < monsters.Length; i++)
-        {
-            if (monsters[i] != null)
-                monsters[i].AddStatusEffect(statusEffect);
-        }
-    }
-    public void AddStatusEffect<T>(T statusEffect, int partySlot) where T : BaseStatusEffect
-    {
-        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
-        partySlot -= 1;
+    //public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
+    //{
+    //    for (int i = 0; i < monsters.Length; i++)
+    //    {
+    //        if (monsters[i] != null)
+    //            monsters[i].AddStatusEffect(statusEffect);
+    //    }
+    //}
+    //public void AddStatusEffect<T>(T statusEffect, int partySlot) where T : BaseStatusEffect
+    //{
+    //    partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
+    //    partySlot -= 1;
 
-        monsters[partySlot].AddStatusEffect(statusEffect);
-    }
+    //    monsters[partySlot].AddStatusEffect(statusEffect);
+    //}
 
-    //Change buff stuff to poison
-    public void RemoveStatusEffect(EBuffType typeToRemove)
-    {
-        for (int i = 0; i < monsters.Length; i++)
-        {
-            if (monsters[i] != null)
-                monsters[i].RemoveStatusEffect(typeToRemove);
-        }
-    }
-    public void RemoveStatusEffect(EBuffType typeToRemove, int partySlot)
-    {
-        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
-        partySlot -= 1;
+    ////Change buff stuff to poison
+    //public void RemoveStatusEffect(EBuffType typeToRemove)
+    //{
+    //    for (int i = 0; i < monsters.Length; i++)
+    //    {
+    //        if (monsters[i] != null)
+    //            monsters[i].RemoveStatusEffect(typeToRemove);
+    //    }
+    //}
+    //public void RemoveStatusEffect(EBuffType typeToRemove, int partySlot)
+    //{
+    //    partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
+    //    partySlot -= 1;
 
-        monsters[partySlot].RemoveStatusEffect(typeToRemove);
-    }
+    //    monsters[partySlot].RemoveStatusEffect(typeToRemove);
+    //}
 
     //Monsters spawn via Dungeon Gen
     //Monsters move toward player after fail in barrier checks, movement possible the same as player party
