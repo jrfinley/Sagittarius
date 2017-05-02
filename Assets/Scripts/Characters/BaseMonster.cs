@@ -16,7 +16,7 @@ public class BaseMonster : MonoBehaviour
                 attack,
                 defense;
 
-    public GameObject itemEx;
+    public GameObject loot;
 
     [SerializeField]
     private Sprite icon;
@@ -30,7 +30,6 @@ public class BaseMonster : MonoBehaviour
     void InitializeMonster()
     {       
         SetStats();
-        Kill();
     }
     void SetStats()
     {
@@ -52,6 +51,12 @@ public class BaseMonster : MonoBehaviour
             case 2:
                 maxHealth = level * 10;
                 attack = level * 10;
+                defense = level * 12;
+                break;
+
+            case 3:
+                maxHealth = level * 12;
+                attack = level * 12;
                 defense = level * 12;
                 break;
         }
@@ -119,30 +124,39 @@ public class BaseMonster : MonoBehaviour
             health = value;
             health = Mathf.Clamp(health, 0, maxHealth);
 
-            if (health == 0)            
+            if (health <= 0)
                 dead = true;
 
-            if(dead == true)
-            LootDrop();
-           
             else
-                dead = false;
+                dead = false;         
         }
-    }
-
-    public void LootDrop()
-    {
-        //InventoryItem sc = gameObject.AddComponent<InventoryItem>() as InventoryItem;
-        if (dead == true)
-        Instantiate(itemEx, transform.position, transform.rotation);
-        Debug.Log("Dropped Loot");
     }
 
     //For testing
     public void Kill()
     {
         if (Input.GetKeyDown("space"))
+        {
             health = 0;
+            dead = true;
+            Destroy(gameObject);
+        }
+           
+    }
+
+    public void Update()
+    {
+        Kill();
+        LootDrop();
+
+    }
+
+    public void LootDrop()
+    {
+        if (dead == true)
+        {
+            Instantiate(loot, transform.position, Quaternion.Euler(90, 0, 0));          
+        }
     }
 
 }

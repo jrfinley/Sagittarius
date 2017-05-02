@@ -28,6 +28,6 @@ public class MonsterParty : MonoBehaviour
     }
 
     //Monsters spawn via Dungeon Gen
-    //Monsters move toward player after fail in barrier checks, movement possible the same as player party or use room passing
+    //Monsters move toward player after fail in barrier checks, movement possibly the same as player party or use room passing
 
 }
