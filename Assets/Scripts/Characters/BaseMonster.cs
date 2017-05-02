@@ -11,28 +11,33 @@ public class BaseMonster : MonoBehaviour
 
     private bool dead;
 
-    private int maxHealth,
+    public int maxHealth,
                 health,
                 attack,
                 defense;
 
+    public GameObject itemEx;
+
     [SerializeField]
     private Sprite icon;
 
-    //public List<string> statusEffectNames = new List<string>();
-    //public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
+    public List<string> statusEffectNames = new List<string>();
+    public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
 
     void Start()
     {
         InitializeMonster();
+        
     }
 
     void InitializeMonster()
     {       
         SetStats();
+        Kill();
     }
     void SetStats()
     {
+        
         switch ((int)monsterType)
         {
             case 0:
@@ -121,30 +126,45 @@ public class BaseMonster : MonoBehaviour
                 dead = true;
 
             if(dead == true)
-            {
-                InventoryItem sc = gameObject.AddComponent<InventoryItem>() as InventoryItem;
-            }
-
+            LootDrop();
+           
             else
                 dead = false;
         }
     }
-    //public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
-    //{
-    //    statusEffectNames.Add(statusEffect.statusName);
-    //    statusEffects.Add(statusEffect);
-    //    statusEffect.InitializeStatusEffect2(this);
-    //    print(statusEffectNames[0]);
-    //}
-    //public void RemoveStatusEffect(EBuffType buffType)
-    //{
-    //    for (int i = 0; i < statusEffects.Count; i++)
-    //    {
-    //        if (statusEffects[i].buffType == buffType)
-    //        {
-    //            statusEffects[i].RemoveStatusEffect();
-    //            break;
-    //        }
-    //    }
-    //}
+
+    public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
+    {
+        statusEffectNames.Add(statusEffect.statusName);
+        statusEffects.Add(statusEffect);
+        statusEffect.InitializeStatusEffect2(this);
+        print(statusEffectNames[0]);
+    }
+    public void RemoveStatusEffect(EBuffType buffType)
+    {
+        for (int i = 0; i < statusEffects.Count; i++)
+        {
+            if (statusEffects[i].buffType == buffType)
+            {
+                statusEffects[i].RemoveStatusEffect();
+                break;
+            }
+        }
+    }
+
+    public void LootDrop()
+    {
+        //InventoryItem sc = gameObject.AddComponent<InventoryItem>() as InventoryItem;
+        if (dead == true)
+        Instantiate(itemEx, transform.position, transform.rotation);
+        Debug.Log("Dropped Loot");
+    }
+
+    //For testing
+    public void Kill()
+    {
+        if (Input.GetKeyDown("space"))
+            health = 0;
+    }
+
 }

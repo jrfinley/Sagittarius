@@ -3,6 +3,8 @@ using System.Collections;
 using ItemGeneratorHelpers;
 
 public static class ItemGenerator {
+    //Todo: add 4 char seed for rand
+
     #region Variables
     private static Item item = new Item(false);
 
@@ -26,12 +28,16 @@ public static class ItemGenerator {
         GenerateIM();
 
         item.Name = GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer, out prefixIndex, out suffixIndex);
+        item.PrefixIndex = prefixIndex;
+        item.SuffixIndex = suffixIndex;
 
         item.Stats = GetIMStats(item.Stats, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer);
-        item.IconPath = GetIconPath();
+        item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
-        CalculateItemStats();
-        item.ID = GenerateID(item, prefixIndex, suffixIndex);
+        item.ID = GenerateID(item);
+
+        item.Stats = CalculateItemStats(item);
+        
         return new Item(item, true);
     }
     public static Item IDToItem(string id) {
@@ -55,29 +61,35 @@ public static class ItemGenerator {
         item.Types.ItemRarity = (EItemRarity)values[2];
         item.Types.PrefixItemModifyer = (EItemModifyer)values[3];
         item.Types.SuffixItemModifyer = (EItemModifyer)values[4];
+        item.PrefixIndex = values[5];
+        item.SuffixIndex = values[6];
         item.Name = itemModifyerGenerator.GetIMName(item.Name, item.Types.PrefixItemModifyer, item.Types.SuffixItemModifyer, values[5], values[6]);
         item.Stats = new ItemStats(item.Stats.Weight, values[7], values[8], values[9], values[10], values[11], item.Stats.EquipLoad, values[12], values[13], values[14]);
-        return new Item(item);
+        item.Stats = CalculateItemStats(item);
+
+        item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
+        item.ID = id;
+        return new Item(item, true);
     }
-    /*
-    public static Item ReforgeItem(Item itemToReforge, float successChance)
-    { 
-        item = new Item(itemToReforge, false);
-        GenerateRandomID();
+    public static Item ReforgeItem(string id, float successChance)
+    {
+        item = IDToItem(id);
+        item.DebugLog();
         item.Types.ItemRarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.Types.ItemRarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
-        CalculateItemStats();
-        Debug.LogWarning("Reforging creates a non reproducable item.");
-        return new Item(item);
+        item.DebugLog();
+        item.ID = GenerateID(item);
+        item.Stats = CalculateItemStats(item);
+
+        return new Item(item, true);
     }
-    */
     private static EEquipmentType GenerateEquipmentType() {
         return itemTypeGenerator.GenereteRandomEquipmentType(itemTypeGenerator.GenerateRandomItemType());
     }
     private static Item LookUpItem(EEquipmentType itemToLookUp) {
         return new Item(itemLookUp.ItemLookUpTable[itemToLookUp]);
     }
-    private static string GetIconPath() {
-        return iconPathLookUp.GetPathName(item.Types.ItemType) + item.IconPath;
+    private static string GetIconPath(EItemType itemType, string baseIconPath) {
+        return iconPathLookUp.GetPathName(itemType) + baseIconPath;
     }
 
     private static EItemRarity GenerateItemRarity() {
@@ -102,11 +114,11 @@ public static class ItemGenerator {
         return itemModifyerGenerator.GetIMStats(inputStats, prefixIM, suffixIM);
     }
     
-    private static ItemStats CalculateItemStats() {
+    private static ItemStats CalculateItemStats(Item item) {
         return itemStatsCalculator.CalculateItemStats(item.Stats, item.Types.ItemRarity, item.Level);
     }
 
-    private static string GenerateID(Item item, int prefixIndex, int suffixIndex) {
+    private static string GenerateID(Item item) {
         return (
             idVersion.ToString("D3") + seperationChar +
             ((int)item.Types.EquipmentType).ToString("D3") + seperationChar + //0
@@ -114,8 +126,8 @@ public static class ItemGenerator {
             ((int)item.Types.ItemRarity).ToString("D1") + seperationChar + //2
             ((int)item.Types.PrefixItemModifyer).ToString("D3") + seperationChar + //3
             ((int)item.Types.SuffixItemModifyer).ToString("D3") + seperationChar + //4
-            prefixIndex.ToString("D3") + seperationChar + //5
-            suffixIndex.ToString("D3") + seperationChar + //6
+            item.PrefixIndex.ToString("D3") + seperationChar + //5
+            item.SuffixIndex.ToString("D3") + seperationChar + //6
             Mathf.FloorToInt(item.Stats.Health).ToString("D4") + seperationChar + //7
             Mathf.FloorToInt(item.Stats.Attack).ToString("D4") + seperationChar + //8
             Mathf.FloorToInt(item.Stats.Strength).ToString("D4") + seperationChar + //9
