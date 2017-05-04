@@ -9,6 +9,7 @@ using GameSparks.Api.Requests;
 using System.Text;
 using UnityEngine.Experimental.Networking;
 using UnityEngine.Networking.Match;
+using System.IO;
 
 // paste this to libraries - 
 
@@ -37,6 +38,10 @@ public class Actor : MonoBehaviour
     private GameController gameController;
 
     private MapGenerator mapGen;
+
+    public ActorData JsonConvert { get; private set; }
+    public ActorData GSDATA { get; private set; }
+
     //private readonly object fileDownloadedCallback;
 
     //private GameSparksUnity gsUnity;
@@ -45,46 +50,30 @@ public class Actor : MonoBehaviour
     {
         gameController = FindObjectOfType<GameController>();
         //main
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 2)
         {
-            StartCoroutine(AllowAutoAddParty());        
+            StartCoroutine(AllowAutoAddParty());
         }
-        
-        #region
-/*
-gsUnity = GetComponent<GameSparksUnity>();
 
-GSRequestData jsonDataToSend = new GSRequestData(data.ToString());
-LogEventRequest eventRequest = new GameSparks.Api.Requests.LogEventRequest().SetEventKey("JsonData").SetEventAttribute("JsonData", data.ToString()).SetMaxResponseTimeInSeconds(30);
+        //current iteration of gamesparks, have to disable when  pushing due to people having errors in main and town without loging in first
+        /*
+        string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
+        if (System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "actors.json")))
+        {
+            GSRequestData DATA = new GSRequestData(dataPath);
+            DATA.AddJSONStringAsObject(dataPath, "actors.json");
 
-eventRequest.Send((response) =>
-{
-    if (!response.HasErrors)
-    {
-        Debug.LogWarning("Player Saved to Gamesparks..");
+
+            new GameSparks.Api.Requests.LogEventRequest().SetEventKey("UPDATE_PLAYER_DATA")
+                .SetEventAttribute("FROM", dataPath).SetEventAttribute
+                ("VAL", dataPath).SetScriptData(DATA.AddJSONStringAsObject(dataPath, dataPath)).Send((response) => { });
+        }
+        */
     }
-    else
-    {
-        Debug.LogError("Error Saving Player Data: " + response.Errors.JSON);
-    }
-});
 
-new GetUploadUrlRequest().Send((response) => 
-{
-    StartCoroutine(UploadAFile(response.Url, "actor.json"));
-});
 
-new GetUploadedRequest().SetUploadId("").Send((response) =>
-{
-    StartCoroutine(DownloadFile(response.Url));
-});
 
-//jsonDataToSend.Add("actors.json", data);
-//jsonDataToSend.Add("health", data.characterHealth0);
-//new LogEventRequest().SetEventKey("setPlayerDataJSON").SetEventAttribute("JSONData", jsonDataToSend).Send((ActorData) => { });
-*/
-        #endregion
-    }
+
     #region
     /*
     private IEnumerator UploadAFile(string uploadUrl, string encrytpedData)
@@ -144,7 +133,7 @@ new GetUploadedRequest().SetUploadId("").Send((response) =>
     public void StoreData()
     {
         #region scene main
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 2)
         {
             string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
             dataPath = string.Empty;//attempt to clear on save
@@ -331,7 +320,7 @@ new GetUploadedRequest().SetUploadId("").Send((response) =>
 
     public void LoadMainData()
     {
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 2)
         {
             //currencies loaded
             currencyManager = GetComponent<CurrencyManager>();
