@@ -11,20 +11,20 @@ public class BaseMonster : MonoBehaviour
 
     private bool dead;
 
-    private int maxHealth,
+    public int maxHealth,
                 health,
                 attack,
                 defense;
 
+    public GameObject loot;
+
     [SerializeField]
     private Sprite icon;
-
-    public List<string> statusEffectNames = new List<string>();
-    public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
 
     void Start()
     {
         InitializeMonster();
+        
     }
 
     void InitializeMonster()
@@ -33,6 +33,7 @@ public class BaseMonster : MonoBehaviour
     }
     void SetStats()
     {
+        
         switch ((int)monsterType)
         {
             case 0:
@@ -50,6 +51,12 @@ public class BaseMonster : MonoBehaviour
             case 2:
                 maxHealth = level * 10;
                 attack = level * 10;
+                defense = level * 12;
+                break;
+
+            case 3:
+                maxHealth = level * 12;
+                attack = level * 12;
                 defense = level * 12;
                 break;
         }
@@ -117,34 +124,38 @@ public class BaseMonster : MonoBehaviour
             health = value;
             health = Mathf.Clamp(health, 0, maxHealth);
 
-            if (health == 0)            
+            if (health <= 0)
                 dead = true;
 
-            if(dead == true)
-            {
-                InventoryItem sc = gameObject.AddComponent<InventoryItem>() as InventoryItem;
-            }
-
             else
-                dead = false;
+                dead = false;         
         }
     }
-    public void AddStatusEffect<T>(T statusEffect) where T : BaseStatusEffect
+
+    //For testing
+    public void Kill()
     {
-        statusEffectNames.Add(statusEffect.statusName);
-        statusEffects.Add(statusEffect);
-        statusEffect.InitializeStatusEffect2(this);
-        print(statusEffectNames[0]);
-    }
-    public void RemoveStatusEffect(EBuffType buffType)
-    {
-        for (int i = 0; i < statusEffects.Count; i++)
+        if (Input.GetKeyDown("space"))
         {
-            if (statusEffects[i].buffType == buffType)
-            {
-                statusEffects[i].RemoveStatusEffect();
-                break;
-            }
+            health = 0;
+            dead = true;
+            Destroy(gameObject);
+        }
+           
+    }
+
+    public void Update()
+    {
+        Kill();
+        LootDrop();
+
+    }
+
+    public void LootDrop()
+    {
+        if (dead == true)
+        {
+            Instantiate(loot, transform.position, Quaternion.Euler(90, 0, 0));          
         }
     }
 

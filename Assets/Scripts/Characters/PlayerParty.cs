@@ -25,13 +25,15 @@ public class PlayerParty : MonoBehaviour
     private Sprite icon;
 
     private CharacterManager characterManager;
+    private PlayerEventManager eventManager;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         characters = new BaseCharacter[maxPartySize];
         movePosition = transform.position;
-        characterManager = FindObjectOfType<CharacterManager>(); 
+        characterManager = FindObjectOfType<CharacterManager>();
+        eventManager = GetComponent<PlayerEventManager>();
     }
 
     /*
@@ -134,38 +136,6 @@ public class PlayerParty : MonoBehaviour
         characters[partyPosition] = null;
     }
 
-    public void AddStatusEffect<T>(T statusEffect)where T : BaseStatusEffect
-    {
-        for (int i = 0; i < characters.Length; i++)
-        {
-            if (characters[i] != null)
-                characters[i].AddStatusEffect(statusEffect);
-        } 
-    }
-    public void AddStatusEffect<T>(T statusEffect, int partySlot)where T : BaseStatusEffect
-    {
-        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
-        partySlot -= 1;
-
-        characters[partySlot].AddStatusEffect(statusEffect);
-    }
-
-    public void RemoveStatusEffect(EBuffType typeToRemove)
-    {
-        for (int i = 0; i < characters.Length; i++)
-        {
-            if (characters[i] != null)
-                characters[i].RemoveStatusEffect(typeToRemove);
-        }
-    }
-    public void RemoveStatusEffect(EBuffType typeToRemove, int partySlot)
-    {
-        partySlot = Mathf.Clamp(partySlot, 1, maxPartySize);
-        partySlot -= 1;
-
-        characters[partySlot].RemoveStatusEffect(typeToRemove);
-    }
-
     IEnumerator MovePlayer()
     {
 		float loopCutoff = 0;
@@ -193,7 +163,10 @@ public class PlayerParty : MonoBehaviour
 		{
 			transform.position = oldPosition;
 			Debug.LogError("Move player while loop reached cut off time");
+            yield break;
 		}
+
+        eventManager.FireOnPlayerMove();
     }
 
     //Properties

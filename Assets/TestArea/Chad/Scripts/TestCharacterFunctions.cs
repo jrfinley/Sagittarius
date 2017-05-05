@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class TestCharacterFunctions : MonoBehaviour
 {
+    public enum TestModes { Characters, Status_Effects, Character_Trainer }
+
+    public TestModes testMode;
+
     public int trainingGold,
                goldToUse;
 
@@ -14,6 +18,7 @@ public class TestCharacterFunctions : MonoBehaviour
     public CharacterManager characterManager;
     public CharacterTrainer characterTrainer;
     public CurrencyManager currencyManager;
+    public StatusEffectManager statusEffectManager;
 
 
     private Actor actor;
@@ -55,39 +60,39 @@ public class TestCharacterFunctions : MonoBehaviour
     void DetectInput()
     {
         //Add and remove party members
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            playerParty.AddPartyMember(1, "Chad");
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            playerParty.AddPartyMember(2, "John");
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-            playerParty.AddPartyMember(3, "Jane");
-
-        else if (Input.GetKeyDown(KeyCode.Q))
-            playerParty.RemovePartyMember(1);
-        else if (Input.GetKeyDown(KeyCode.W))
-            playerParty.RemovePartyMember(2);
-        else if (Input.GetKeyDown(KeyCode.E))
-            playerParty.RemovePartyMember(3);
-
-        //Add and remove status effects
-        if (Input.GetKeyDown(KeyCode.A))
+        if (testMode == TestModes.Characters)
         {
-            Poisoned newPoison = new Poisoned();
-            newPoison.buffType = EBuffType.POISONED;
-            newPoison.statusName = "New Awesome Totaly Rad Poison Status Effect";
-            newPoison.healthChange = 1;
-            newPoison.strengthChange = 3;
-            newPoison.expirationTime = 4;
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                playerParty.AddPartyMember(1, "Chad");
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+                playerParty.AddPartyMember(2, "John");
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+                playerParty.AddPartyMember(3, "Jane");
 
-            playerParty.AddStatusEffect(newPoison);
+            else if (Input.GetKeyDown(KeyCode.Z))
+                playerParty.RemovePartyMember(1);
+            else if (Input.GetKeyDown(KeyCode.X))
+                playerParty.RemovePartyMember(2);
+            else if (Input.GetKeyDown(KeyCode.C))
+                playerParty.RemovePartyMember(3);
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+
+        //Add Status Effects
+        if (testMode == TestModes.Status_Effects)
         {
-            playerParty.RemoveStatusEffect(EBuffType.POISONED);
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                statusEffectManager.AddStatusEffect(playerParty.characters[0], 0);
         }
 
         //Add character to training area
-        if (Input.GetKeyDown(KeyCode.O))
-            characterTrainer.AddCharacter(characterManager.allCharacters[0], timeToTrain, goldToUse, true, true, false, false);
+        if (testMode == TestModes.Character_Trainer)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                characterTrainer.AddCharacter(characterManager.allCharacters[0], timeToTrain, goldToUse, true, true, false, false);
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+                characterTrainer.AddCharacter(characterManager.allCharacters[1], timeToTrain, goldToUse, true, true, false, false);
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+                characterTrainer.AddCharacter(characterManager.allCharacters[2], timeToTrain, goldToUse, true, true, false, false);
+        }
     }
 }
