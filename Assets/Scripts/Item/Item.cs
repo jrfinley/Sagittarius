@@ -3,18 +3,21 @@ using System.Collections;
 
 public class Item {
     #region Variables
-    private int id = 0;
+    private string id = string.Empty;
     private string name = string.Empty;
     private string flavorText = string.Empty;
     private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
     private int itemLevel = 0;
+    private int prefixIndex = 0;
+    private int suffixIndex = 0;
+    private int seed = 0;
     private ItemTypes itemTypes;
     private ItemStats itemStats;
     private bool statProtection = true;
     #endregion
 
     #region Properties
-    public int ID {
+    public string ID {
         get {
             return id;
         }
@@ -57,6 +60,24 @@ public class Item {
         set {
             if(!statProtection)
                 itemLevel = value;
+        }
+    }
+    public int PrefixIndex {
+        get {
+            return prefixIndex;
+        }
+        set {
+            if(!statProtection)
+                prefixIndex = value;
+        }
+    }
+    public int SuffixIndex {
+        get {
+            return suffixIndex;
+        }
+        set {
+            if(!statProtection)
+                suffixIndex = value;
         }
     }
     public ItemTypes Types {

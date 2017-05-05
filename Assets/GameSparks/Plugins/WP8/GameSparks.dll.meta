@@ -62,7 +62,6 @@ PluginImporter:
         DontProcess: False
         PlaceholderPath: 
         SDK: AnySDK
-        ScriptingBackend: AnyScriptingBackend
     iOS:
       enabled: 0
       settings:

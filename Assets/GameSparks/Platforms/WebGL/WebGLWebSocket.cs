@@ -50,7 +50,7 @@ namespace GameSparks.Platforms.WebGL
 		{
 			this.controller = controller;
 			this.controller.AddWebSocket(this);
-			GSSocketInitialize(SocketId, controller.name, GameSparksSettings.DebugBuild);
+			GSSocketInitialize(SocketId, controller.name);
 		}
 
 		public void Open ()
@@ -120,12 +120,10 @@ namespace GameSparks.Platforms.WebGL
 				closeCallback();
 		}
 
-		public bool Update(){
-			return true;
-		}
+
 		
 		[DllImport("__Internal")]
-		private static extern void GSSocketInitialize(int id, string name, Boolean debug);
+		private static extern void GSSocketInitialize(int id, string name);
 		
 		[DllImport("__Internal")]
 		private static extern void GSSocketSend(int id, string data);

@@ -1,7 +1,5 @@
 fileFormatVersion: 2
-guid: 3694cc17d85ff4f6da792b929ae1aabb
-timeCreated: 1471274635
-licenseType: Free
+guid: 9bf0e751fe4e543dea2d5304c90738c7
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -31,8 +29,7 @@ PluginImporter:
         CPU: x86_64
     LinuxUniversal:
       enabled: 1
-      settings:
-        CPU: AnyCPU
+      settings: {}
     OSXIntel:
       enabled: 1
       settings:
@@ -43,12 +40,20 @@ PluginImporter:
         CPU: AnyCPU
     OSXUniversal:
       enabled: 1
+      settings: {}
+    WP8:
+      enabled: 0
       settings:
         CPU: AnyCPU
-    PS4:
+        DontProcess: False
+        PlaceholderPath: 
+    Web:
       enabled: 1
       settings: {}
     WebGL:
+      enabled: 1
+      settings: {}
+    WebStreamed:
       enabled: 1
       settings: {}
     Win:
@@ -60,22 +65,17 @@ PluginImporter:
       settings:
         CPU: AnyCPU
     WindowsStoreApps:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: AnyCPU
         DontProcess: False
         PlaceholderPath: 
-        SDK: UWP
-        ScriptingBackend: Il2Cpp
-    XboxOne:
-      enabled: 1
-      settings: {}
+        SDK: AnySDK
     iOS:
       enabled: 1
-      settings: {}
-    tvOS:
-      enabled: 1
-      settings: {}
+      settings:
+        CompileFlags: 
+        FrameworkDependencies: 
   userData: 
   assetBundleName: 
   assetBundleVariant: 

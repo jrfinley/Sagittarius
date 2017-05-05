@@ -26,13 +26,11 @@ namespace GameSparks.Platforms
         public void AddWebSocket(IControlledWebSocket socket)
         {
             webSockets.Add(socket);
-            websocketCollectionModified = true;
         }
 
         public void RemoveWebSocket(IControlledWebSocket socket)
         {
             webSockets.Remove(socket);
-            websocketCollectionModified = true;
         }
 
         IControlledWebSocket GetSocket(int socketId)
@@ -63,12 +61,7 @@ namespace GameSparks.Platforms
                 throw new FormatException();
 
             int socketId = System.Convert.ToInt32(parsedJSON ["socketId"]);
-			IControlledWebSocket socket = GetSocket(socketId);
-				
-			if (socket != null)
-			{
-				socket.TriggerOnOpen();
-			}
+            GetSocket(socketId).TriggerOnOpen();
         }
 
         /// <summary>
@@ -79,12 +72,8 @@ namespace GameSparks.Platforms
         {
             IDictionary<string, object> parsedJSON = (IDictionary<string, object>)GSJson.From(data);
             int socketId = System.Convert.ToInt32( parsedJSON["socketId"] );
-			IControlledWebSocket socket = GetSocket(socketId);
+            GetSocket(socketId).TriggerOnClose();
 
-			if (socket != null)
-			{
-				socket.TriggerOnClose();
-			}
         }
 
         /// <summary>
@@ -95,12 +84,8 @@ namespace GameSparks.Platforms
         {
             IDictionary<string, object> parsedJSON = (IDictionary<string, object>)GSJson.From(data);
             int socketId = System.Convert.ToInt32( parsedJSON["socketId"] );
-			IControlledWebSocket socket = GetSocket(socketId);
+			GetSocket(socketId).TriggerOnMessage((string)parsedJSON["message"]);
 
-			if (socket != null)
-			{
-				socket.TriggerOnMessage((string)parsedJSON["message"]);
-			}
         }
 
         /// <summary>
@@ -113,12 +98,8 @@ namespace GameSparks.Platforms
             IDictionary<string, object> parsedJSON = (IDictionary<string, object>)GSJson.From(data);
             int socketId = System.Convert.ToInt32( parsedJSON["socketId"] );
             string error = (string)parsedJSON["error"];
-			IControlledWebSocket socket = GetSocket(socketId);
+            GetSocket(socketId).TriggerOnError(error);
 
-			if (socket != null)
-			{
-				socket.TriggerOnError(error);
-			}
         }
         #endregion
 
@@ -147,18 +128,6 @@ namespace GameSparks.Platforms
 			case "onClose" : socket.TriggerOnClose(); break;
 			}
 		}
-
-        bool websocketCollectionModified = false;
-        void Update()
-        {
-            websocketCollectionModified = false;
-            foreach (var socket in webSockets)
-            {
-                socket.Update();
-                if (websocketCollectionModified)
-                    break;
-            }
-        }
 
     }
 }

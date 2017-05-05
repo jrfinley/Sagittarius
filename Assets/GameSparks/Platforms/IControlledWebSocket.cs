@@ -12,7 +12,6 @@ namespace GameSparks.Platforms
         void TriggerOnOpen();
         void TriggerOnError(string message);
         void TriggerOnMessage(string message);
-        bool Update();
         int SocketId { get; }
     }
 

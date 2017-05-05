@@ -6,6 +6,10 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using GameSparks.Core;
 using GameSparks.Api.Requests;
+using System.Text;
+using UnityEngine.Experimental.Networking;
+using UnityEngine.Networking.Match;
+using System.IO;
 
 // paste this to libraries - 
 
@@ -18,7 +22,7 @@ public class Actor : MonoBehaviour
 
     public Vector3 pos;
 
-    public List<int> ids = new List<int>();
+    public List<string> ids = new List<string>();
     public List<EEquipmentType> equipmentType = new List<EEquipmentType>();
 
     private PlayerParty playerParty;
@@ -35,23 +39,82 @@ public class Actor : MonoBehaviour
 
     private MapGenerator mapGen;
 
+    public ActorData JsonConvert { get; private set; }
+    public ActorData GSDATA { get; private set; }
+
+    //private readonly object fileDownloadedCallback;
+
+    //private GameSparksUnity gsUnity;
 
     void Start()
     {
         gameController = FindObjectOfType<GameController>();
         //main
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 2)
         {
-            StartCoroutine(AllowAutoAddParty());        
+            StartCoroutine(AllowAutoAddParty());
         }
 
-        GSRequestData jsonDataToSend = new GSRequestData();
-        jsonDataToSend.Add("actors.json", data);
-        jsonDataToSend.Add("health", data.characterHealth0);
+        //current iteration of gamesparks, have to disable when  pushing due to people having errors in main and town without loging in first
+        /*
+        string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
+        if (System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "actors.json")))
+        {
+            GSRequestData DATA = new GSRequestData(dataPath);
+            DATA.AddJSONStringAsObject(dataPath, "actors.json");
 
-        new LogEventRequest().SetEventKey("setPlayerDataJSON").SetEventAttribute("JSONData", jsonDataToSend).Send((ActorData) => { });
-        
+
+            new GameSparks.Api.Requests.LogEventRequest().SetEventKey("UPDATE_PLAYER_DATA")
+                .SetEventAttribute("FROM", dataPath).SetEventAttribute
+                ("VAL", dataPath).SetScriptData(DATA.AddJSONStringAsObject(dataPath, dataPath)).Send((response) => { });
+        }
+        */
     }
+
+
+
+
+    #region
+    /*
+    private IEnumerator UploadAFile(string uploadUrl, string encrytpedData)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(encrytpedData);
+
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("json", bytes, "JsonData", "text/json");
+
+        UnityWebRequest request = UnityWebRequest.Post(uploadUrl, form);
+        yield return request.Send();
+
+        if(request.error == null)
+        {
+            Debug.Log("[GS] Save file uploaded successfully");
+        }
+        else
+        {
+            Debug.LogError("[GS] Error uploading save file: " + request.error);
+        }
+
+        request.Dispose();
+        request = null;
+    }
+    private IEnumerator DownloadFile(string url)
+    {
+        var fileRequest = new UnityWebRequest(url);
+        if(fileRequest == null)
+        {
+            yield break;
+        }
+        fileRequest.downloadHandler = new DownloadHandlerBuffer();
+        yield return fileRequest.Send();
+
+        if(fileDownloadedCallback != null)
+        {
+            //
+        }
+    }*/
+    #endregion
+
 
     IEnumerator AllowAutoAddParty()
     {
@@ -70,7 +133,7 @@ public class Actor : MonoBehaviour
     public void StoreData()
     {
         #region scene main
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 2)
         {
             string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
             dataPath = string.Empty;//attempt to clear on save
@@ -257,7 +320,7 @@ public class Actor : MonoBehaviour
 
     public void LoadMainData()
     {
-        if (Application.loadedLevel == 0)
+        if (Application.loadedLevel == 2)
         {
             //currencies loaded
             currencyManager = GetComponent<CurrencyManager>();
@@ -286,7 +349,7 @@ public class Actor : MonoBehaviour
                 }*/
             }
 
-            foreach (int id in data.ids)
+            foreach (string id in data.ids)
             {
                 ids.Add(id);
                 ids.Clear();
@@ -433,7 +496,7 @@ public class Actor : MonoBehaviour
 
             //loads item/ inventory info
 
-            foreach (int id in data.ids)
+            foreach (string id in data.ids)
             {
           
                 ids.Add(id);
@@ -573,7 +636,7 @@ public class Actor : MonoBehaviour
 [Serializable]
 public class ActorData
 {
-    public List<int> ids = new List<int>();
+    public List<string> ids = new List<string>();
     public List<InventoryItem> items = new List<InventoryItem>();
     public List<EEquipmentType> itemTypes = new List<EEquipmentType>();
 
