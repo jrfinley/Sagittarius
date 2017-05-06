@@ -25,8 +25,6 @@ public class Room : MonoBehaviour
     [SerializeField] protected ConnectionData _connections;
     public ConnectionData Connections { get { return _connections; } }
 
-    public Vector3 position = Vector3.zero;
-
     private void _RemoveConnection(Transform connectionToRemove)
     {
         List<Transform> list = _GetListToRemove(connectionToRemove);

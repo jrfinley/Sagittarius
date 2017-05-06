@@ -3,35 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using Validator;
 using Debug = UnityEngine.Debug;
 
 public class MapGenerator : MonoBehaviour
 {
-    private enum DungeonStyle { Circle, HorizontalBox, VerticleBox, Square };
-    private float _radius = 20f;
-    private float _width = 0f;
-    private float _height = 0f;
+    private int width = 10;
+    private int height = 10;
+    private int minXDistance = 3;
+    private int minYDistance = 3;
 
     private int _seed = 0;
     public int Seed { get { return _seed; } }
 
     private string _levelToLoad = "TestDungeon";
 
-    //public int trasureRooms = 2;
-    //public int monsterRooms = 5;
-    //public int statChecks = 3;
-
-    //private PathGenerator _pathGenerator = null;
-
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
 
-    private List<Transform> _openConnections = new List<Transform>();
-
     void Start()
     {
-        //_pathGenerator = new PathGenerator(this);
-        //StartCoroutine(GenerateDelay());  
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
@@ -40,22 +31,6 @@ public class MapGenerator : MonoBehaviour
         sw.Stop();
         Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
     }
-
-    //IEnumerator GenerateDelay()
-    //{
-    //    yield return new WaitForSeconds(.7f);
-    //    actor = FindObjectOfType<Actor>();
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-
-    //    if(actor.data.seed == 0)
-    //    {
-    //        GenerateMap();
-    //    }
-
-    //    sw.Stop();
-    //    Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
-    //}
 
     public void GenerateMap(int seed = 0)
     {
@@ -66,160 +41,77 @@ public class MapGenerator : MonoBehaviour
 
     private void _GenerateMap()
     {
-        Room spawnRoom = _GenerateSpawnRoom();
-
-        
-
-
-
-        //GameObject finalRoom = _GetUniqueRoom("Final");
-        //Room finalRoomData = finalRoom.GetComponent<Room>();
-
-        //_GenerateMainBranch(finalRoom, finalRoomData);
-
-        //_GenerateBranches();
-        //_GenerateRooms(finalRoom, finalRoomData);
-        //_GenerateMonsters();
-        //_GenerateTreasure();
-        //_GenerateStatChecks();
+        Vector3 finalTilePosition;
+        _SpawnStartAndFinalRooms(out finalTilePosition);
+        _DivideDungeonIntoNodes(finalTilePosition);
     }
 
-    private Room _GenerateSpawnRoom()
+    private void _DivideDungeonIntoNodes(Vector3 finalTilePosition)
     {
-        GameObject spawnRoom = _GetUniqueRoom("Spawn");
-        Room spawnRoomData = spawnRoom.GetComponent<Room>();
-        _openConnections = spawnRoomData.Connections.AllConnections();
-        return spawnRoomData;
-    }
-
-    //private void _GenerateMainBranch(GameObject finalRoom, Room finalRoomData)
-    //{
-    //    GameObject spawnRoom = _GetUniqueRoom("Spawn");
-    //    Room spawnRoomData = spawnRoom.GetComponent<Room>();
-    //    List<Transform> spawnRoomConnections = spawnRoomData.Connections.AllConnections();
-    //    List<Transform> finalRoomConnections = finalRoomData.Connections.AllConnections();
-
-    //    Transform startingConnection = _GetRandomConnection(spawnRoomConnections);
-    //    Transform finalConnection = _GetRandomConnection(finalRoomConnections);
-    //    spawnRoomData.JoinConnection(startingConnection.position);
-
-    //    _pathLine = _pathGenerator.GeneratePath(spawnRoom.transform.position, startingConnection.position, 15, finalConnection.position, finalRoom);
-    //    _allPaths.Add(_pathLine);
-
-    //    spawnRoomConnections = spawnRoomData.Connections.AllConnections();
-    //    _connectionRoomDict.Add(spawnRoom, spawnRoomConnections);
-    //}
-
-    //private void _GenerateRooms(GameObject forcedRoomObject = null, Room forcedRoom = null)
-    //{
-    //    foreach (List<PathNode> nodeList in _allPaths)
-    //    {
-    //        foreach (PathNode node in nodeList)
-    //        {
-    //            //GameObject temp = Instantiate(_normalRooms[node.indexOfRoom], node.position, Quaternion.identity) as GameObject;
-    //            if (node.uniqueRoom == null)
-    //            {
-    //                GameObject temp = Instantiate(_normalRooms[1], node.position, Quaternion.identity) as GameObject;
-    //                Room tempRoom = temp.GetComponent<Room>();
-
-    //                _UpdateConnections(tempRoom, node);
-
-    //                tempRoom.Connections.AllConnections().ForEach(connection => tempRoom.BlockConnection(connection));
-
-    //                _rooms.Add(temp);
-    //            }
-    //            else
-    //            {
-    //                forcedRoomObject.transform.position = node.position;
-    //                forcedRoom.JoinConnection(node.enterConnection * -1);
-    //            }
-    //        }
-    //        _allRooms.Add(_rooms);
-    //    }
-    //    foreach (GameObject tempObject in _pathGenerator.tempObjects)
-    //    {
-    //        Destroy(tempObject);
-    //    }
-    //}
-
-    //private void _GenerateBranches()
-    //{
-    //    foreach (KeyValuePair<GameObject, List<Transform>> entry in _connectionRoomDict)
-    //    {
-    //        GameObject startingRoom = entry.Key;
-    //        List<Transform> connectionList = entry.Value;
-    //        foreach (Transform connection in connectionList)
-    //        {
-    //            startingRoom.GetComponent<Room>().JoinConnection(connection.position);
-    //            _pathLine = _pathGenerator.GeneratePath(startingRoom.transform.position, connection.position, 15);
-    //        }
-    //    }
-    //}
-
-    //private void _GenerateMonsters()
-    //{
-    //    for (int i = 0; i < monsterRooms; i++)
-    //    {
-    //        int monsterIndex = Random.Range(0, _allRooms.Count);
-    //        List<GameObject> rooms = _allRooms[monsterIndex];
-    //        int roomIndex = Random.Range(0, rooms.Count);
-    //        rooms[roomIndex].GetComponent<Room>().BecomeMonsterRoom();
-    //        rooms.RemoveAt(roomIndex);
-    //    }
-    //}
-
-    //private void _GenerateTreasure()
-    //{
-    //    for (int i = 0; i < trasureRooms; i++)
-    //    {
-    //        int index = Random.Range(0, _allRooms.Count);
-    //        List<GameObject> rooms = _allRooms[index];
-    //        int roomIndex = Random.Range(0, rooms.Count);
-    //        rooms[roomIndex].GetComponent<Room>().BecomeTreasureRoom();
-    //        rooms.RemoveAt(roomIndex);
-    //    }
-    //}
-
-    //private void _GenerateStatChecks()
-    //{
-    //    for (int i = 0; i < statChecks; i++)
-    //    {
-    //        int index = Random.Range(0, _allRooms.Count);
-    //        List<GameObject> rooms = _allRooms[index];
-    //        int roomIndex = Random.Range(0, rooms.Count);
-    //        rooms[roomIndex].GetComponent<Room>().BecomeStatCheck();
-    //        rooms.RemoveAt(roomIndex);
-    //    }
-    //}
-
-    //private void _UpdateConnections(Room tempRoom, PathNode node)
-    //{
-    //    tempRoom.JoinConnection(node.enterConnection);
-    //    tempRoom.JoinConnection(node.exitConnection);
-    //    node.branchConnections.ForEach(connection => tempRoom.BranchConnection(connection));
-    //    node.mergedConnections.ForEach(connection => tempRoom.JoinConnection(connection));
-    //}
-
-    private GameObject _GetUniqueRoom(string roomName = "", Vector3 position = default(Vector3))
-    {
-        foreach (GameObject room in _uniqueRooms)
+        GameObject parent = new GameObject("Nodes");
+        for (int x = -width; x < width; x++)
         {
-            if (room.name.Contains(roomName))
+            for (int y = -height; y < height; y++)
             {
-                GameObject tempRoom = Instantiate(room, position, Quaternion.identity) as GameObject;
-                return tempRoom;
+                float posX = x / 2f;
+                float posY = y / 2f;
+
+                if (!NodeValidator.NodePlaceable(posX, posY))
+                    continue;
+
+                Vector3 position = new Vector3(x / 2f, 0f, y / 2f);
+
+                if (position == Vector3.zero || position == finalTilePosition)
+                    continue;
+
+                _CreateNode(position, parent);
             }
         }
-        Debug.LogError("Couldn't find a room with name: " + roomName);
-        return null;
     }
 
-    //private Transform _GetRandomConnection(List<Transform> connections)
-    //{
-    //    int index = Random.Range(0, connections.Count);
-    //    Transform connection = connections[index];
-    //    return connection;
-    //}
+    private void _CreateNode(Vector3 position, GameObject parent)
+    {
+        GameObject node = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        node.transform.position = position;
+        node.transform.parent = parent.transform;
+        node.transform.localScale -= new Vector3(0.5f, 0.5f, 0.5f);
+        Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
+        node.transform.rotation = rotation;
+    }
+
+    private void _SpawnStartAndFinalRooms(out Vector3 finalTilePosition)
+    {
+        finalTilePosition = Vector3.zero;
+
+        foreach (GameObject room in _uniqueRooms)
+        {
+            if (room.gameObject.name.Contains("Spawn"))
+            {
+                GameObject tempRoom = Instantiate(room);
+                tempRoom.transform.position = Vector3.zero;
+            }
+            else if (room.gameObject.name.Contains("Final"))
+            {
+                GameObject tempRoom = Instantiate(room);
+                tempRoom.transform.position = _GetRandomRoomPosition();
+                finalTilePosition = tempRoom.transform.position;
+            }
+        }
+    }
+
+    private Vector3 _GetRandomRoomPosition()
+    {
+        int x = 0;
+        int y = 0;
+
+        while (x < minXDistance && x > -minXDistance)
+            x = Random.Range(-(width / 2) + 1, width / 2);
+        while (y < minYDistance && y > -minYDistance)
+            y = Random.Range(-(height / 2) + 1, height / 2);
+
+        Vector3 position = new Vector3(x, 0f, y);
+        return position;
+    }
 
     private void _LoadRooms()
     {
@@ -227,22 +119,10 @@ public class MapGenerator : MonoBehaviour
         _uniqueRooms = Resources.LoadAll("Dungeons/" + _levelToLoad + "/UniqueRooms", typeof(GameObject)).Cast<GameObject>().ToList();
     }
 
-    public void _SetSeed(int seed = 0)
+    private void _SetSeed(int seed = 0)
     {
         _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
         Random.seed = _seed;
         //Debug.Log("Dungeon seed: " + _seed);
-    }
-
-    public GameObject GetRandomRoom(out int index)
-    {
-        index = Random.Range(0, _normalRooms.Count);
-        return _normalRooms[1];
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(Vector3.zero, _radius);
     }
 }
