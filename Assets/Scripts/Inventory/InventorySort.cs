@@ -68,7 +68,15 @@ public class InventorySort : MonoBehaviour
                 inventory.items.Sort((x, y) => y.gold.CompareTo(x.gold));
                 break;
         }
+        ClearInventoryItemCards();
         inventory.Prime(items);
+    }
+
+    void ClearInventoryItemCards()
+    {
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("ItemCard");
+        foreach (GameObject c in cards)
+            Destroy(c);
     }
 
     public void ToggleSortMode(string sortName) 

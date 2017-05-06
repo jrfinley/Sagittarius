@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
             foreach (GameObject m in menuToggleButtons)
                 m.SetActive(false);
         }
-        else
+        else if(!isMenuOpen)
         {
             menuToggleButtons[0].SetActive(true);
         }
