@@ -138,6 +138,30 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void AddRemoveEquippedItem(Item item, System.Action toggleCallback)
+    {
+        BaseCharacter selectedPlayer = playerParty.characters[selectedHero];
+        switch (item.Types.ItemType)
+        {
+            case EItemType.ARMOR:
+                selectedPlayer.EquipItem(item, 1);
+                toggleCallback();
+                break;
+            case EItemType.AMULET:
+                selectedPlayer.EquipItem(item, 4);
+                toggleCallback();
+                break;
+            case EItemType.WEAPON:
+                selectedPlayer.EquipItem(item, 3);
+                toggleCallback();
+                break;
+            default:
+                Debug.LogError("Attempted to equip unknown item type: " + item.Types.EquipSlot.ToString());
+                break;
+        }
+
+    }
+
     public void DisplayStatsPanel()
     {
         HideAllContentPanels();

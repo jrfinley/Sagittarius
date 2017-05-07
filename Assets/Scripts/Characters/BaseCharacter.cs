@@ -66,7 +66,7 @@ public class BaseCharacter : MonoBehaviour
                 if (item.Types.ItemType != EItemType.ARMOR)
                     break;
 
-                if (armor != null)
+                if (armor != null || armor==item)
                     RemoveItem(1);
 
                 armor = item;
@@ -76,7 +76,7 @@ public class BaseCharacter : MonoBehaviour
                 if (item.Types.ItemType != EItemType.WEAPON)
                     break;
 
-                if (leftHand != null)
+                if (leftHand != null || leftHand == item)
                     RemoveItem(2);
 
                 leftHand = item;
@@ -86,20 +86,23 @@ public class BaseCharacter : MonoBehaviour
                 if (item.Types.ItemType != EItemType.WEAPON)
                     break;
 
-                if (rightHand != null)
+                if (rightHand != null || rightHand == item)
                     RemoveItem(3);
 
                 rightHand = item;
                 break;
 
-            default:
+            case 4:
                 if (item.Types.ItemType != EItemType.AMULET)
                     break;
 
-                if (amulet != null)
+                if (amulet != null || amulet == item)
                     RemoveItem(4);
 
                 amulet = item;
+                break;
+            default:
+                Debug.LogError("Invalid Item Type");
                 break;
         }
 

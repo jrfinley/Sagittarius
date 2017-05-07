@@ -18,6 +18,8 @@ public class InventoryItemDisplay : MonoBehaviour
     public Text scrap;
     public Text health;
 
+    bool isEquiped = false;
+
 
     void Awake()
     {
@@ -40,4 +42,22 @@ public class InventoryItemDisplay : MonoBehaviour
         scrap.text = "scrap:  " + item.scrap.ToString();
         health.text = "Health: " + item.health.ToString();
     }
+
+    public void SelectItem()
+    {
+        UIManager ui = GameObject.FindGameObjectWithTag("UI").GetComponent<UIManager>();
+        if(ui != null)
+        {
+            Item _item = item.item;
+            if (_item.Types.ItemType == EItemType.AMULET || _item.Types.ItemType == EItemType.ARMOR || _item.Types.ItemType == EItemType.WEAPON)
+                ui.AddRemoveEquippedItem(_item, ChangeEquipStatus); 
+        }
+    }
+
+    public void ChangeEquipStatus() //WIP
+    {
+        Image background = GetComponent<Image>();
+        isEquiped = !isEquiped;
+    }
+
 }

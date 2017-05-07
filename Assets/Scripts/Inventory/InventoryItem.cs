@@ -20,7 +20,7 @@ public class InventoryItem : MonoBehaviour
     public string id;
     public int health;
 
-    private Item item;
+    public Item item;
 
     void Awake()
     {
