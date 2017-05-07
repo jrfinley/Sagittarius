@@ -6,21 +6,7 @@ namespace Validator
 {
     public class RoomValidator
     {
-        public static bool RoomInPath(Vector3 pointToCheck)
-        {
-            if (Physics.CheckSphere(pointToCheck, 3f))
-            {
-                Collider[] colliders = Physics.OverlapSphere(pointToCheck, 3f);
-                foreach (Collider collider in colliders)
-                {
-                    if (collider.gameObject.name.Contains("Room"))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        
     }
 
     public class NodeValidator
@@ -29,12 +15,12 @@ namespace Validator
         {
             if (posX % 1 != 0)
                 if (posY % 1 == 0)
-                    return false;
+                    return true;
             if (posY % 1 != 0)
                 if (posX % 1 == 0)
-                    return false;
+                    return true;
 
-            return true;
+            return false;
         }
     }
 }

@@ -49,6 +49,7 @@ public class MapGenerator : MonoBehaviour
     private void _DivideDungeonIntoNodes(Vector3 finalTilePosition)
     {
         GameObject parent = new GameObject("Nodes");
+        Grid grid = new Grid();
         for (int x = -width; x < width; x++)
         {
             for (int y = -height; y < height; y++)
@@ -56,7 +57,7 @@ public class MapGenerator : MonoBehaviour
                 float posX = x / 2f;
                 float posY = y / 2f;
 
-                if (!NodeValidator.NodePlaceable(posX, posY))
+                if (NodeValidator.NodePlaceable(posX, posY))
                     continue;
 
                 Vector3 position = new Vector3(x / 2f, 0f, y / 2f);
