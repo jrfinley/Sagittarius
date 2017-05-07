@@ -135,7 +135,7 @@ public class BaseMonster : MonoBehaviour
     //For testing
     public void Kill()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("k"))
         {
             health = 0;
             dead = true;
@@ -158,5 +158,8 @@ public class BaseMonster : MonoBehaviour
             Instantiate(loot, transform.position, Quaternion.Euler(90, 0, 0));          
         }
     }
+
+    
+
 
 }

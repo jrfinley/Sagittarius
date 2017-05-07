@@ -5,6 +5,8 @@ using System.Linq;
 
 public class Room : MonoBehaviour
 {
+    public GameObject monsterParty;  //By Steven for testing
+
     [System.Serializable]
     public struct ConnectionData
     {
@@ -84,6 +86,8 @@ public class Room : MonoBehaviour
     public void BecomeMonsterRoom()
     {
         gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+
+        Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
     }
 
     public void BecomeTreasureRoom()
