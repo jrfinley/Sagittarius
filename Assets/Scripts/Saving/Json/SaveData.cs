@@ -27,7 +27,7 @@ public class SaveData
     {
         OnBeforeSave();
 
-        SaveActors(path, actors);//
+        SaveActors(path, actors);
 
         ClearActorList();
     }
