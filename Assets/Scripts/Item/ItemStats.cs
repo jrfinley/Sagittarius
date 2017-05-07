@@ -4,7 +4,7 @@ using System.Collections;
 public class ItemStats {
     #region Variables
     private float weight = 0;
-    private float health = 0; //These will work like stat modifyers
+    private float health = 0;
     private float attack = 0;
     private float strength = 0;
     private float intelect = 0;
