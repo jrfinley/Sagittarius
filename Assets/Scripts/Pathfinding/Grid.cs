@@ -27,7 +27,7 @@ public class Grid
         _height = height;
         _nodeUnitSize = nodeUnitSize;
 
-        _grid = new Node[_width, _height];
+        _grid = new Node[_width * 2, _height * 2];
         _path = new FindPath(this, _width + _height);
         _unwalkableNodes = new HashSet<Node>();
         _CreateGrid(finalRoomPosition);
@@ -36,30 +36,12 @@ public class Grid
     private void _CreateGrid(Vector3 finalTilePosition)
     {
         GameObject parent = new GameObject("Nodes");
-        //for (int x = 0; x < _width; x++)
-        //{
-        //    for (int y = 0; y < _height; y++)
-        //    {
-        //        float posX = x - _width / 2f;
-        //        float posY = y - _height / 2f;
-
-        //        if (NodeValidator.NodePlaceable(posX, posY))
-        //            continue;
-
-        //        Vector3 position = new Vector3(posX, 0f, posY);
-
-        //        if (position == Vector3.zero || position == finalTilePosition)
-        //            continue;
-
-        //        _CreateNode(position, x, y, parent);
-        //    }
-        //}
-        for (int x = -_width; x < _width; x++)
+        for (int x = 0; x < _width * 2; x++)
         {
-            for (int y = -_height; y < _height; y++)
+            for (int y = 0; y < _height * 2; y++)
             {
-                float posX = x / 2f;
-                float posY = y / 2f;
+                float posX = (x - _width) / 2f;
+                float posY = (y - _height) / 2f;
 
                 if (NodeValidator.NodePlaceable(posX, posY))
                     continue;
@@ -69,7 +51,7 @@ public class Grid
                 if (position == Vector3.zero || position == finalTilePosition)
                     continue;
 
-                _CreateNode(position, (x + _width) / 2, (y + _height) / 2, parent);
+                _CreateNode(position, x, y / 2, parent);
             }
         }
     }
@@ -83,6 +65,7 @@ public class Grid
         Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
         visualNode.transform.rotation = rotation;
 
+        //Debug.Log(x + " " + y);
         _grid[x, y] = new Node(position, x, y, 1f);
     }
 
@@ -110,7 +93,7 @@ public class Grid
         Debug.Log("World: " + nodeX + " " + nodeY);
 
         float percentX = nodeX / ((float)_width * 2);
-        float percentY = nodeY / ((float)_height * 2);
+        float percentY = nodeY / ((float)_height);
 
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
@@ -120,8 +103,8 @@ public class Grid
         int x = Mathf.RoundToInt((((_width / _nodeUnitSize)) * percentX));
         int y = Mathf.RoundToInt((((_height / _nodeUnitSize)) * percentY));
 
-        x = (x + _width / 2);
-        y = (y + _height / 2);
+        //x = (x + _width / 2);
+        //y = (y + _height / 2);
 
         x = Mathf.Clamp(x, 0, _width - 1);
         y = Mathf.Clamp(y, 0, _height - 1);
