@@ -63,17 +63,18 @@ public static class ItemGenerator {
 
         //following need to be called last to override base stats in id>item, and save base stats in id
         item.ID = GenerateID(item); 
-        item.Stats = CalculateItemStats(item);        
+        item.Stats = CalculateItemStats(item);
+
         return new Item(item, true);
     }
     public static Item IDToItem(string id) {
         string[] splits = id.Split(seperationChar);
-        int[] values = new int[15];
-        if(splits.Length != 16)
+        int[] values = new int[16];
+        if(splits.Length != 17)
             Debug.LogError("Split failed!");
         //hard coded length because it needs to be that value
 
-        for(int i = 1; i < 16; i++) {
+        for(int i = 1; i < 17; i++) {
             try {
                 values[i - 1] = int.Parse(splits[i]);
             }
