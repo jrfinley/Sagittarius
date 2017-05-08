@@ -9,7 +9,7 @@ namespace ItemGeneratorHelpers{
         private string armorPath = "Armor/";
         private string consumablesPath = "Consumables/";
         private string weaponsPath = "Weapons/";
-        private string questPath = "Qeust/";
+        private string questPath = "Quest/";
         private string defaultIcon = "Default_Icon";
 
         public string GetPathName(EItemType itemType) {

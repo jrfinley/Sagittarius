@@ -82,7 +82,7 @@ public class Item {
     }
     public int Seed {
         get { return seed; }
-        set { if(!statProtection) { suffixIndex = value; } }
+        set { if(!statProtection) { seed = value; } }
     }
     public ItemTypes Types {
         get {

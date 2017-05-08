@@ -38,7 +38,7 @@ public class ItemModifyer {
     public string GetPrefix(int i) {
         return prefixes[i];
     }
-    public string GetSuffix(int i) { 
+    public string GetSuffix(int i) {
         return suffixes[i];
     }
 }
