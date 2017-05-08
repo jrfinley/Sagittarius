@@ -179,6 +179,8 @@ public class UIManager : MonoBehaviour
     public void DisplayInventoryPanel()
     {
         HideAllContentPanels();
+        if(playerParty != null)
+            inventory.SetCarryWeight(playerParty.maxEquipmentLoad, playerParty.equipmentLoad);
         contentPanels[2].SetActive(true);
     }
 
