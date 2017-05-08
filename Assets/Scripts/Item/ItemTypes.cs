@@ -63,7 +63,7 @@ public class ItemTypes {
             weaponRange = value;
         }
     }
-    public EItemRarity ItemRarity {
+    public EItemRarity Rarity {
         get {
             return itemRarity;
         }
@@ -71,7 +71,7 @@ public class ItemTypes {
             itemRarity = value;
         }
     }
-    public EItemModifyer PrefixItemModifyer {
+    public EItemModifyer PrefixModifyer {
         get {
             return prefixItemModifyer;
         }
@@ -79,7 +79,7 @@ public class ItemTypes {
             prefixItemModifyer = value;
         }
     }
-    public EItemModifyer SuffixItemModifyer {
+    public EItemModifyer SuffixModifyer {
         get {
             return suffixItemModifyer;
         }
@@ -92,7 +92,8 @@ public class ItemTypes {
     #region Contructors
     public ItemTypes() { }
     public ItemTypes(EItemType itemType, EEquipmentType equipmentType, EItemEquipSlot equipSlot, EItemWeightClass weightClass,
-            EWeaponDamageType damageType, EWeaponRange weaponRange, EItemRarity itemRarity) {
+            EWeaponDamageType damageType, EWeaponRange weaponRange, EItemRarity itemRarity, 
+            EItemModifyer prefixItemModifyer = EItemModifyer.NONE, EItemModifyer suffixItemModifyer = EItemModifyer.NONE) {
         this.itemType = itemType;
         this.equipmentType = equipmentType;
         this.equipSlot = equipSlot;
@@ -100,15 +101,19 @@ public class ItemTypes {
         this.damageType = damageType;
         this.weaponRange = weaponRange;
         this.itemRarity = itemRarity;
+        this.prefixItemModifyer = prefixItemModifyer;
+        this.suffixItemModifyer = suffixItemModifyer;
     }
-    public ItemTypes(ItemTypes itemTypes) {
-        this.itemType = itemTypes.ItemType;
-        this.equipmentType = itemTypes.EquipmentType;
-        this.equipSlot = itemTypes.EquipSlot;
-        this.weightClass = itemTypes.WeightClass;
-        this.damageType = itemTypes.DamageType;
-        this.weaponRange = itemTypes.WeaponRange;
-        this.itemRarity = itemTypes.ItemRarity;
+    public ItemTypes(ItemTypes types) {
+        itemType = types.ItemType;
+        equipmentType = types.EquipmentType;
+        equipSlot = types.EquipSlot;
+        weightClass = types.WeightClass;
+        damageType = types.DamageType;
+        weaponRange = types.WeaponRange;
+        itemRarity = types.Rarity;
+        prefixItemModifyer = types.PrefixModifyer;
+        suffixItemModifyer = types.SuffixModifyer;
     }
     #endregion
 }

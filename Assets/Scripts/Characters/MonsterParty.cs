@@ -7,7 +7,11 @@ public class MonsterParty : MonoBehaviour
 
     public Rigidbody rb;
 
+    public Transform playerParty;
+
     public Vector3 movePosition;
+
+    private float rotationDamping = 10;
 
     public int minPartySize = 1,
                maxPartySize = 6;
@@ -18,7 +22,8 @@ public class MonsterParty : MonoBehaviour
     void Start ()
     {        
         rb = GetComponent<Rigidbody>();
-        monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];   
+        monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];
+        movePosition = transform.position;
     }
 
     public Sprite Icon
@@ -27,7 +32,43 @@ public class MonsterParty : MonoBehaviour
         set { icon = value; }
     }
 
-    //Monsters spawn via Dungeon Gen
-    //Monsters move toward player after fail in barrier checks, movement possibly the same as player party or use room passing
+    //Testing
+    public void Move ()
+    {
+        if (transform.position != movePosition)
+            return;
 
+        Vector3 oldPosition = transform.position;
+
+        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
+        Debug.Log(moveSquares.Length);
+
+        if (moveSquares.Length == 0)
+        {
+            movePosition = oldPosition;
+            return;
+        }
+
+    }
+
+    void FindPlayerParty()
+    {
+        Quaternion rotation = Quaternion.LookRotation(playerParty.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationDamping);
+    }
+
+    void Update()
+    {
+        FindPlayerParty();
+
+        if (Input.GetKeyDown("m"))  //Switch out with overt action
+        {
+            Move();
+        }
+
+    }
+
+    //Monsters spawn via Dungeon Gen
+    //Monsters move toward player after fail in barrier checks, use room passing
+    //Movement similar to player party?
 }

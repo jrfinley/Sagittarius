@@ -7,7 +7,7 @@ public class Item {
     private string name = string.Empty;
     private string flavorText = string.Empty;
     private string iconName = string.Empty; //Why a string? It is so we can utilize the Resources folder, using refrences could cause crashes while in development (ie refrencing something that doesn't exist).
-    private int itemLevel = 0;
+    private int level = 0;
     private int prefixIndex = 0;
     private int suffixIndex = 0;
     private int seed = 0;
@@ -55,11 +55,11 @@ public class Item {
     }
     public int Level {
         get {
-            return itemLevel;
+            return level;
         }
         set {
             if(!statProtection)
-                itemLevel = value;
+                level = value;
         }
     }
     public int PrefixIndex {
@@ -79,6 +79,10 @@ public class Item {
             if(!statProtection)
                 suffixIndex = value;
         }
+    }
+    public int Seed {
+        get { return seed; }
+        set { if(!statProtection) { seed = value; } }
     }
     public ItemTypes Types {
         get {
@@ -121,13 +125,17 @@ public class Item {
         this.statProtection = statProtection;
     }
     public Item(Item item, bool statProtection = false) {
-        this.id = item.id;
-        this.name = item.name;
-        this.flavorText = item.flavorText;
-        this.iconName = item.iconName;
-        this.itemLevel = item.itemLevel;
-        this.itemTypes = new ItemTypes(item.Types);
-        this.itemStats = new ItemStats(item.Stats);
+        id = item.id;
+        name = item.name;
+        flavorText = item.flavorText;
+        iconName = item.iconName;
+        level = item.level;
+        prefixIndex = item.PrefixIndex;
+        suffixIndex = item.SuffixIndex;
+        seed = item.Seed;
+
+        itemTypes = new ItemTypes(item.Types);
+        itemStats = new ItemStats(item.Stats);
         this.statProtection = statProtection;
     }
     #endregion
@@ -148,7 +156,7 @@ public class Item {
             "Weight Class" + col + itemTypes.WeightClass + spc +
             "Damage Type" + col + itemTypes.DamageType + spc +
             "Weapon Range" + col + itemTypes.WeaponRange + spc +
-            "Rarity" + col + itemTypes.ItemRarity + spc + "\n" +
+            "Rarity" + col + itemTypes.Rarity + spc + "\n" +
             "Weight" + col + itemStats.Weight + spc +
             "Health" + col + itemStats.Health + spc +
             "Attack" + col + itemStats.Attack + spc +
