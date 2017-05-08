@@ -35,37 +35,33 @@ public class PlayerParty : MonoBehaviour
         characterManager = FindObjectOfType<CharacterManager>();
         eventManager = GetComponent<PlayerEventManager>();
     }
-
-    /*
-    This function is just brain storming for what might work when the dungeon gen is done
     
-    public void NewSetMoveDirection(InputDirection inputDirection, Tile currentTile)
-    {
-        Vector3 oldPosition = transform.position;
-        Hallway[] tileHallways = currentTile.hallways;
-        Hallway selectedHallway;
+    //public void NewSetMoveDirection(InputDirection inputDirection)
+    //{
+    //    Vector3 oldPosition = transform.position;
+    //    Hallway[] tileHallways = currentTile.hallways;
+    //    Hallway selectedHallway;
 
-        for (int i = 0; i < tileHallways.Length; i++)
-        {
-            if (tileHallways[i].direction == inputDirection)
-            {
-                selectedHallway = tileHallways[i];
-                movePosition = selectedHallway.transform.position;
-                StartCoroutine(MovePlayer());
-            }
-        }
+    //    for (int i = 0; i < tileHallways.Length; i++)
+    //    {
+    //        if (tileHallways[i].direction == inputDirection)
+    //        {
+    //            selectedHallway = tileHallways[i];
+    //            movePosition = selectedHallway.transform.position;
+    //            StartCoroutine(MovePlayer());
+    //        }
+    //    }
 
-        if (selectedHallway.hasBlocker)
-        {
-            //Do stat check stuff.
-            if(failedStatCheck)
-            {
-                movePosition = oldPosition;
-                StartCoroutine(MovePlayer());
-            }
-        }
-    }
-    */
+    //    if (selectedHallway.hasBlocker)
+    //    {
+    //        //Do stat check stuff.
+    //        if(failedStatCheck)
+    //        {
+    //            movePosition = oldPosition;
+    //            StartCoroutine(MovePlayer());
+    //        }
+    //    }
+    //}
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
@@ -83,7 +79,7 @@ public class PlayerParty : MonoBehaviour
         else if (moveDirection.x < 0)
             movePosition.x -= moveXAmount;
 
-        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
+        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 0.2f);
         Debug.Log(moveSquares.Length);
 
         if (moveSquares.Length == 0)
