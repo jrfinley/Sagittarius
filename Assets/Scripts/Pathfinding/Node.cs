@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Node : IHeapItem<Node>
 {
-    public Node parentNode;
+    public Node parent;
     public Vector3 worldPosition;
     public float nodeSize;
     public int x;
@@ -30,5 +30,10 @@ public class Node : IHeapItem<Node>
         if (compare == 0)
             compare = hCost.CompareTo(nodeToCompare.hCost);
         return -compare;
+    }
+
+    public override string ToString()
+    {
+        return x.ToString() + " , " + y.ToString();
     }
 }

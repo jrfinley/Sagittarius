@@ -26,7 +26,8 @@ public class MapGenerator : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        GenerateMap();
+        //1752787940
+        GenerateMap(1752787940);
 
         sw.Stop();
         Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
@@ -41,45 +42,29 @@ public class MapGenerator : MonoBehaviour
 
     private void _GenerateMap()
     {
-        Vector3 finalTilePosition;
-        _SpawnStartAndFinalRooms(out finalTilePosition);
-        _DivideDungeonIntoNodes(finalTilePosition);
-    }
+        Vector3 finalRoomPosition;
+        _SpawnStartAndFinalRooms(out finalRoomPosition);
+        Grid grid = new Grid(width, height, 1f, finalRoomPosition);
 
-    private void _DivideDungeonIntoNodes(Vector3 finalTilePosition)
-    {
-        GameObject parent = new GameObject("Nodes");
-        Grid grid = new Grid();
-        for (int x = -width; x < width; x++)
+        List<Node> path = grid.GetPath(Vector3.zero, finalRoomPosition);
+        if (path != null)
         {
-            for (int y = -height; y < height; y++)
+            for (int i = 0; i < path.Count; i++)
             {
-                float posX = x / 2f;
-                float posY = y / 2f;
+                GameObject visualNode = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                visualNode.transform.position = path[i].worldPosition;
+                //visualNode.transform.position = new Vector3(path[i].x, 0f, path[i].y);
+                visualNode.transform.localScale -= new Vector3(0.5f, 0.5f, 0.5f);
+                visualNode.GetComponent<MeshRenderer>().material.color = Color.black;
+                if (i == 0)
+                    visualNode.GetComponent<MeshRenderer>().material.color = Color.cyan;
 
-                if (NodeValidator.NodePlaceable(posX, posY))
-                    continue;
-
-                Vector3 position = new Vector3(x / 2f, 0f, y / 2f);
-
-                if (position == Vector3.zero || position == finalTilePosition)
-                    continue;
-
-                _CreateNode(position, parent);
+                Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
+                visualNode.transform.rotation = rotation;
             }
         }
     }
-
-    private void _CreateNode(Vector3 position, GameObject parent)
-    {
-        GameObject node = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        node.transform.position = position;
-        node.transform.parent = parent.transform;
-        node.transform.localScale -= new Vector3(0.5f, 0.5f, 0.5f);
-        Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
-        node.transform.rotation = rotation;
-    }
-
+    
     private void _SpawnStartAndFinalRooms(out Vector3 finalTilePosition)
     {
         finalTilePosition = Vector3.zero;
