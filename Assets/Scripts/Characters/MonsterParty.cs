@@ -33,7 +33,7 @@ public class MonsterParty : MonoBehaviour
     }
 
     //Testing
-    public void Move ()
+    /*public void Move ()
     {
         if (transform.position != movePosition)
             return;
@@ -66,9 +66,8 @@ public class MonsterParty : MonoBehaviour
             Move();
         }
 
-    }
+    }*/
 
-    //Monsters spawn via Dungeon Gen
-    //Monsters move toward player after fail in barrier checks, use room passing
-    //Movement similar to player party?
+     //Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
+
 }

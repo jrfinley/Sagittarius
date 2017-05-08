@@ -148,6 +148,7 @@ public class BaseMonster : MonoBehaviour
     {
         Kill();
         LootDrop();
+        ApplyRotation();
 
     }
 
@@ -155,11 +156,14 @@ public class BaseMonster : MonoBehaviour
     {
         if (dead == true)
         {
-            Instantiate(loot, transform.position, Quaternion.Euler(90, 0, 0));          
+            Instantiate(loot, new Vector3(transform.position.x,0.10f,transform.position.z), Quaternion.Euler(90, 0, 0));          
         }
     }
 
-    
+    public void ApplyRotation()
+    {
+         transform.Rotate(Vector3.right * Time.deltaTime);
+    }
 
 
 }
