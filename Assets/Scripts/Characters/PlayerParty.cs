@@ -65,6 +65,8 @@ public class PlayerParty : MonoBehaviour
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
+        //uncomment connection stuff when dungeon connections are done
+
         if (isMoving == true)
             return;
         else
@@ -98,6 +100,10 @@ public class PlayerParty : MonoBehaviour
         }
 
         Room targetRoom = GetRoom(movePosition);
+
+        //for (int i = 0; i < currentRoom.Connections.closedConnections.Count; i++)
+        //    if (connection == currentRoom.Connections.closedConnections[i])
+        //        targetRoom = null;
 
         if (targetRoom == null)
         {
