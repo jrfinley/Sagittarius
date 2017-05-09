@@ -83,6 +83,7 @@ public class UIManager : MonoBehaviour
         menuToggleButtons[1].SetActive(true);
         SelectHero(selectedHero);
         UpdateAllHeroStats();
+        inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         Canvas.ForceUpdateCanvases();
     }
 
@@ -150,13 +151,13 @@ public class UIManager : MonoBehaviour
                 if (selectedPlayer != itemDisplay.item.equippedBy)
                 {
                     if(itemDisplay.item.equippedBy != null)
-                        itemDisplay.item.equippedBy.EquipItem(item, 1); //Remove from previous character
+                        itemDisplay.item.equippedBy.RemoveItem(1); //Remove from previous character
                     selectedPlayer.EquipItem(item, 1);
                     itemDisplay.Equip(selectedPlayer);
                 }
                 else
                 {
-                    selectedPlayer.EquipItem(item, 1);
+                    selectedPlayer.RemoveItem(1);
                     itemDisplay.Remove();
                 }
                 break;
@@ -164,13 +165,13 @@ public class UIManager : MonoBehaviour
                 if (selectedPlayer != itemDisplay.item.equippedBy)
                 {
                     if (itemDisplay.item.equippedBy != null)
-                        itemDisplay.item.equippedBy.EquipItem(item, 4); 
+                        itemDisplay.item.equippedBy.RemoveItem(4); 
                     selectedPlayer.EquipItem(item, 4);
                     itemDisplay.Equip(selectedPlayer);
                 }
                 else
                 {
-                    selectedPlayer.EquipItem(item, 4);
+                    selectedPlayer.RemoveItem(4);
                     itemDisplay.Remove();
                 }
                 break;
@@ -178,13 +179,13 @@ public class UIManager : MonoBehaviour
                 if (selectedPlayer != itemDisplay.item.equippedBy)
                 {
                     if (itemDisplay.item.equippedBy != null)
-                        itemDisplay.item.equippedBy.EquipItem(item, 3); 
+                        itemDisplay.item.equippedBy.RemoveItem(3); 
                     selectedPlayer.EquipItem(item, 3);
                     itemDisplay.Equip(selectedPlayer);
                 }
                 else
                 {
-                    selectedPlayer.EquipItem(item, 3);
+                    selectedPlayer.RemoveItem(3);
                     itemDisplay.Remove();
                 }
                 break;
