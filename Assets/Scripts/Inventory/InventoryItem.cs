@@ -20,6 +20,8 @@ public class InventoryItem : MonoBehaviour
     public string id;
     public int health;
 
+    public BaseCharacter equippedBy = null;
+
     public Item item;
 
     void Awake()

@@ -6,6 +6,7 @@ public class InventoryItemDisplay : MonoBehaviour
 {
     public Text textName;
     public Image sprite;
+    Image background;
 
     public InventoryItem item;
 
@@ -18,12 +19,15 @@ public class InventoryItemDisplay : MonoBehaviour
     public Text scrap;
     public Text health;
 
-    bool isEquiped = false;
-
 
     void Awake()
     {
-        if (item != null) Prime(item);
+        background = GetComponent<Image>();
+        if (item != null)
+        {
+            Prime(item);
+        }
+
     }
 
     public void Prime(InventoryItem item)
@@ -34,6 +38,8 @@ public class InventoryItemDisplay : MonoBehaviour
             textName.text = item.displayName;
         if (sprite != null)
             sprite.sprite = item.sprite;
+        if (item.equippedBy != null)
+            background.color = Color.gray;
         flavorText.text = item.desc;
         strength.text = "STR:  " + item.strength.ToString();
         dexterity.text = "DEX:  " + item.dexterity.ToString();
@@ -50,14 +56,20 @@ public class InventoryItemDisplay : MonoBehaviour
         {
             Item _item = item.item;
             if (_item.Types.ItemType == EItemType.AMULET || _item.Types.ItemType == EItemType.ARMOR || _item.Types.ItemType == EItemType.WEAPON)
-                ui.AddRemoveEquippedItem(_item, ChangeEquipStatus); 
+                ui.AddRemoveEquippedItem(_item, this); 
         }
     }
 
-    public void ChangeEquipStatus() //WIP
+    public void Equip(BaseCharacter equippingCharacter)
     {
-        Image background = GetComponent<Image>();
-        isEquiped = !isEquiped;
+        item.equippedBy = equippingCharacter;
+        background.color = Color.gray;
+    }
+
+    public void Remove()
+    {
+        item.equippedBy = null;
+        background.color = new Color32(255, 255, 255, 100);
     }
 
 }

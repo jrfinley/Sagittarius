@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
     public DialogueBox dialogueBox;
     public CharacterStats characterStats;
     public Inventory inventory;
+    public InventoryDisplay inventoryDisplay;
+    public GearPanel gear;
     CanvasScaler canvasScaler;
     PlayerParty playerParty;
 
@@ -113,6 +115,7 @@ public class UIManager : MonoBehaviour
         toggle = heroIcons[selectedHero].GetComponent<Toggle>();
         heroIcons[hero].GetComponent<Image>().color = toggle.colors.pressedColor;
         UpdateHeroStats(hero);
+        gear.UpdateGear();
     }
 
     public void UpdateHeroStats(int hero)
@@ -138,22 +141,52 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void AddRemoveEquippedItem(Item item, System.Action toggleCallback)
+    public void AddRemoveEquippedItem(Item item, InventoryItemDisplay itemDisplay) //Entire inventory system needs to be completely refactored. This level of script cross-talk shouldn't be necessary.
     {
-        BaseCharacter selectedPlayer = playerParty.characters[selectedHero];
+        BaseCharacter selectedPlayer = GetSelectedCharacter();
         switch (item.Types.ItemType)
         {
             case EItemType.ARMOR:
-                selectedPlayer.EquipItem(item, 1);
-                toggleCallback();
+                if (selectedPlayer != itemDisplay.item.equippedBy)
+                {
+                    if(itemDisplay.item.equippedBy != null)
+                        itemDisplay.item.equippedBy.EquipItem(item, 1); //Remove from previous character
+                    selectedPlayer.EquipItem(item, 1);
+                    itemDisplay.Equip(selectedPlayer);
+                }
+                else
+                {
+                    selectedPlayer.EquipItem(item, 1);
+                    itemDisplay.Remove();
+                }
                 break;
             case EItemType.AMULET:
-                selectedPlayer.EquipItem(item, 4);
-                toggleCallback();
+                if (selectedPlayer != itemDisplay.item.equippedBy)
+                {
+                    if (itemDisplay.item.equippedBy != null)
+                        itemDisplay.item.equippedBy.EquipItem(item, 4); 
+                    selectedPlayer.EquipItem(item, 4);
+                    itemDisplay.Equip(selectedPlayer);
+                }
+                else
+                {
+                    selectedPlayer.EquipItem(item, 4);
+                    itemDisplay.Remove();
+                }
                 break;
             case EItemType.WEAPON:
-                selectedPlayer.EquipItem(item, 3);
-                toggleCallback();
+                if (selectedPlayer != itemDisplay.item.equippedBy)
+                {
+                    if (itemDisplay.item.equippedBy != null)
+                        itemDisplay.item.equippedBy.EquipItem(item, 3); 
+                    selectedPlayer.EquipItem(item, 3);
+                    itemDisplay.Equip(selectedPlayer);
+                }
+                else
+                {
+                    selectedPlayer.EquipItem(item, 3);
+                    itemDisplay.Remove();
+                }
                 break;
             default:
                 Debug.LogError("Attempted to equip unknown item type: " + item.Types.EquipSlot.ToString());
@@ -173,6 +206,7 @@ public class UIManager : MonoBehaviour
     public void DisplayGearPanel()
     {
         HideAllContentPanels();
+        gear.UpdateGear();
         contentPanels[1].SetActive(true);
     }
 
@@ -237,5 +271,10 @@ public class UIManager : MonoBehaviour
     public void SetCurrencyScrap(int value)
     {
         currencyTexts[2].text = value.ToString();
+    }
+
+    public BaseCharacter GetSelectedCharacter()
+    {
+        return playerParty.characters[selectedHero];
     }
 }
