@@ -23,8 +23,8 @@ namespace ItemGeneratorHelpers {
         public EEquipmentType EquipmentType { get { return equipmentType; } }
         public EItemModifyer PrefixModifyer { get { return prefixModifyer; } }
         public EItemModifyer SuffixModifyer { get { return suffixModifyer; } }
-        public int PrefixIndex { get { return seed; } }
-        public int SuffixIndex { get { return seed; } }
+        public int PrefixIndex { get { return prefixIndex; } }
+        public int SuffixIndex { get { return suffixIndex; } }
         public ItemStats Stats { get { return stats; } }
         public bool OverrideBaseStats { get { return overrideBaseStats; } }
         #endregion

@@ -19,13 +19,13 @@ public class PlayerParty : MonoBehaviour
 
     public Rigidbody rb;
 
-    [SerializeField]
-    private int characterOneID;
+    private bool isMoving;
 
     private Sprite icon;
 
     private CharacterManager characterManager;
     private PlayerEventManager eventManager;
+    private Room currentRoom;
 
     void Start()
     {
@@ -35,66 +35,85 @@ public class PlayerParty : MonoBehaviour
         characterManager = FindObjectOfType<CharacterManager>();
         eventManager = GetComponent<PlayerEventManager>();
     }
-
-    /*
-    This function is just brain storming for what might work when the dungeon gen is done
     
-    public void NewSetMoveDirection(InputDirection inputDirection, Tile currentTile)
-    {
-        Vector3 oldPosition = transform.position;
-        Hallway[] tileHallways = currentTile.hallways;
-        Hallway selectedHallway;
+    //public void NewSetMoveDirection(InputDirection inputDirection)
+    //{
+    //    Vector3 oldPosition = transform.position;
+    //    Hallway[] tileHallways = currentTile.hallways;
+    //    Hallway selectedHallway;
 
-        for (int i = 0; i < tileHallways.Length; i++)
-        {
-            if (tileHallways[i].direction == inputDirection)
-            {
-                selectedHallway = tileHallways[i];
-                movePosition = selectedHallway.transform.position;
-                StartCoroutine(MovePlayer());
-            }
-        }
+    //    for (int i = 0; i < tileHallways.Length; i++)
+    //    {
+    //        if (tileHallways[i].direction == inputDirection)
+    //        {
+    //            selectedHallway = tileHallways[i];
+    //            movePosition = selectedHallway.transform.position;
+    //            StartCoroutine(MovePlayer());
+    //        }
+    //    }
 
-        if (selectedHallway.hasBlocker)
-        {
-            //Do stat check stuff.
-            if(failedStatCheck)
-            {
-                movePosition = oldPosition;
-                StartCoroutine(MovePlayer());
-            }
-        }
-    }
-    */
+    //    if (selectedHallway.hasBlocker)
+    //    {
+    //        //Do stat check stuff.
+    //        if(failedStatCheck)
+    //        {
+    //            movePosition = oldPosition;
+    //            StartCoroutine(MovePlayer());
+    //        }
+    //    }
+    //}
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
-        if (transform.position != movePosition)
+        //uncomment connection stuff when dungeon connections are done
+
+        if (isMoving == true)
             return;
+        else
+            isMoving = true;
+
+        if (currentRoom == null)
+            currentRoom = GetRoom(transform.position);
 
         Vector3 oldPosition = transform.position;
+        //Transform connection = null;
 
         if (moveDirection.z > 0)
+        {
+            //connection = currentRoom.Connections.northConnections[0];
             movePosition.z += moveZAmount;
+        }
         else if (moveDirection.z < 0)
+        {
+            //connection = currentRoom.Connections.southConnections[0];
             movePosition.z -= moveZAmount;
+        }
         else if (moveDirection.x > 0)
+        {
+            //connection = currentRoom.Connections.eastConnections[0];
             movePosition.x += moveXAmount;
+        }
         else if (moveDirection.x < 0)
+        {
+            //connection = currentRoom.Connections.westConnections[0];
             movePosition.x -= moveXAmount;
+        }
 
-        Collider[] moveSquares = Physics.OverlapSphere(movePosition, 1f);
-        Debug.Log(moveSquares.Length);
+        Room targetRoom = GetRoom(movePosition);
 
-        if (moveSquares.Length == 0)
+        //for (int i = 0; i < currentRoom.Connections.closedConnections.Count; i++)
+        //    if (connection == currentRoom.Connections.closedConnections[i])
+        //        targetRoom = null;
+
+        if (targetRoom == null)
         {
             movePosition = oldPosition;
+            isMoving = false;
             return;
         }
 
-        StartCoroutine(MovePlayer());
+        StartCoroutine(MovePlayer(targetRoom.transform.position));
     }
-
     public void AddPartyMember(int partyPosition, string name)
     {
         partyPosition = Mathf.Clamp(partyPosition, 1, maxPartySize);
@@ -136,14 +155,26 @@ public class PlayerParty : MonoBehaviour
         characters[partyPosition] = null;
     }
 
-    IEnumerator MovePlayer()
+    Room GetRoom(Vector3 checkPosition)
+    {
+        Room room = null;
+        Collider[] moveSquares = Physics.OverlapSphere(checkPosition, transform.localScale.x);
+
+        for (int i = 0; i < moveSquares.Length; i++)
+            if (moveSquares[i].gameObject.GetComponent<Room>())
+                room = moveSquares[i].gameObject.GetComponent<Room>();
+
+        return room;
+    }
+
+    IEnumerator MovePlayer(Vector3 targetPosition)
     {
 		float loopCutoff = 0;
 		Vector3 oldPosition = transform.position;
 		
-        while (transform.position != movePosition && loopCutoff < 5)
+        while (transform.position != targetPosition && loopCutoff < 5)
         {
-            Vector3 moveDir = (movePosition - transform.position);
+            Vector3 moveDir = (targetPosition - transform.position);
 
             if (moveDir.magnitude > posSnapDistance)
             {
@@ -152,7 +183,7 @@ public class PlayerParty : MonoBehaviour
             }
             else
             {
-                transform.position = movePosition;
+                transform.position = targetPosition;
             }
 			
 			loopCutoff += Time.fixedDeltaTime;
@@ -162,10 +193,13 @@ public class PlayerParty : MonoBehaviour
 		if (loopCutoff >= 5)
 		{
 			transform.position = oldPosition;
-			Debug.LogError("Move player while loop reached cut off time");
+            movePosition = oldPosition;
+            isMoving = false;
+            Debug.LogError("Move player while loop reached cut off time");
             yield break;
 		}
 
+        isMoving = false;
         eventManager.FireOnPlayerMove();
     }
 
