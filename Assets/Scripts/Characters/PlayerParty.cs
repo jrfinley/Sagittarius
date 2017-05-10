@@ -108,14 +108,15 @@ public class PlayerParty : MonoBehaviour
         //    if (connection == currentRoom.Connections.closedConnections[i])
         //        targetRoom = null;
 
-        if (targetRoom == null)
-        {
-            movePosition = oldPosition;
-            isMoving = false;
-            return;
-        }
+        //if (targetRoom == null)
+        //{
+        //    movePosition = oldPosition;
+        //    isMoving = false;
+        //    return;
+        //}
 
-        StartCoroutine(MovePlayer(targetRoom.transform.position));
+        StartCoroutine(MovePlayer(movePosition));
+        //StartCoroutine(MovePlayer(targetRoom.transform.position));
     }
     public void AddPartyMember(int partyPosition, string name)
     {
