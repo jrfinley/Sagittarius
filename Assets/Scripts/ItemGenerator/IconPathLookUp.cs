@@ -22,7 +22,7 @@ namespace ItemGeneratorHelpers{
                     return itemPathRoot + consumablesPath;
                 case EItemType.QUEST:
                     return itemPathRoot + questPath;
-                case EItemType.WEAPON:
+                case EItemType.HELD:
                     return itemPathRoot + weaponsPath;
                 default:
                     Debug.LogError("Invalid item type");

@@ -1,7 +1,9 @@
 ﻿public enum EItemEquipSlot {
     NONE,
+    HELMET,
     ARMOR,
     ONE_HAND,
     TWO_HAND,
-    ACCESSORY
+    SHIELD,
+    AMULET
 };

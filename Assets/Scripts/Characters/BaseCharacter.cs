@@ -73,7 +73,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 2:
-                if (item.Types.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.HELD)
                     break;
 
                 if (leftHand != null)
@@ -83,7 +83,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 3:
-                if (item.Types.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.HELD)
                     break;
 
                 if (rightHand != null)

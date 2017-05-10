@@ -11,6 +11,8 @@
     SHORT_BOW,
     LONG_BOW,
     CROSSBOW,
+    SHIELD,
+    HELMET,
     ARMOR,
     AMULET,
     TEST_QEUST_ITEM
