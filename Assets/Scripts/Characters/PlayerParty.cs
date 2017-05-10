@@ -85,21 +85,25 @@ public class PlayerParty : MonoBehaviour
         {
             //connection = currentRoom.Connections.northConnections[0];
             movePosition.z += moveZAmount;
+            movePosition.x += moveXAmount;
         }
         else if (moveDirection.z < 0)
         {
             //connection = currentRoom.Connections.southConnections[0];
             movePosition.z -= moveZAmount;
+            movePosition.x -= moveXAmount;
         }
         else if (moveDirection.x > 0)
         {
             //connection = currentRoom.Connections.eastConnections[0];
             movePosition.x += moveXAmount;
+            movePosition.z -= moveZAmount;
         }
         else if (moveDirection.x < 0)
         {
             //connection = currentRoom.Connections.westConnections[0];
             movePosition.x -= moveXAmount;
+            movePosition.z += moveZAmount;
         }
 
         Room targetRoom = GetRoom(movePosition);
@@ -108,12 +112,12 @@ public class PlayerParty : MonoBehaviour
         //    if (connection == currentRoom.Connections.closedConnections[i])
         //        targetRoom = null;
 
-        //if (targetRoom == null)
-        //{
-        //    movePosition = oldPosition;
-        //    isMoving = false;
-        //    return;
-        //}
+        if (targetRoom == null)
+        {
+            movePosition = oldPosition;
+            isMoving = false;
+            return;
+        }
 
         StartCoroutine(MovePlayer(movePosition));
         //StartCoroutine(MovePlayer(targetRoom.transform.position));
@@ -165,8 +169,13 @@ public class PlayerParty : MonoBehaviour
         Collider[] moveSquares = Physics.OverlapSphere(checkPosition, transform.localScale.x);
 
         for (int i = 0; i < moveSquares.Length; i++)
-            if (moveSquares[i].gameObject.GetComponent<Room>())
+        {
+            print(checkPosition);
+            float distFromCheck = (checkPosition - moveSquares[i].transform.position).magnitude;
+
+            if (moveSquares[i].gameObject.GetComponent<Room>() && distFromCheck < 0.2f)
                 room = moveSquares[i].gameObject.GetComponent<Room>();
+        }
 
         return room;
     }
