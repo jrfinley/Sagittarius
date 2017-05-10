@@ -171,7 +171,10 @@ public class Item {
     }
     public Sprite GetSprite()
     {
-        return Resources.Load<Sprite>(iconName);
+        Sprite tmpSprt = Resources.Load<Sprite>(iconName);
+        if(tmpSprt == null)
+            return Resources.Load<Sprite>("ItemIcons/Default_Icon");
+        return tmpSprt;
     }
     #endregion
 }

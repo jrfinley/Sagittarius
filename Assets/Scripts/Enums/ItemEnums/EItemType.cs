@@ -1,6 +1,6 @@
 ﻿public enum EItemType {
     CONSUMABLE,
-    WEAPON,
+    HELD,
     ARMOR,
     AMULET,
     QUEST
