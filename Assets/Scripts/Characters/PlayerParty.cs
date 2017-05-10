@@ -119,8 +119,8 @@ public class PlayerParty : MonoBehaviour
             return;
         }
 
-        StartCoroutine(MovePlayer(movePosition));
-        //StartCoroutine(MovePlayer(targetRoom.transform.position));
+        //StartCoroutine(MovePlayer(movePosition));
+        StartCoroutine(MovePlayer(targetRoom.transform.position));
     }
     public void AddPartyMember(int partyPosition, string name)
     {
