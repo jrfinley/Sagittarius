@@ -5,7 +5,7 @@ using System.Collections;
 
 public class InputManager : MonoBehaviour
 {
-    void Start()
+    void Awake()
     {
         playerParty = FindObjectOfType<PlayerParty>();
     }

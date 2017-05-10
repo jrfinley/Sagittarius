@@ -14,15 +14,22 @@ public class Transition : MonoBehaviour
 
     public void StartFade(Color c, float speed)
     {
-        StartCoroutine(Fade(c, speed));
+        StartCoroutine(Fade(c, speed, null));
     }
 
-    IEnumerator Fade(Color c, float speed)
+    public void StartFade(Color c, float speed, System.Action afterFadeCallback)
+    {
+        StartCoroutine(Fade(c, speed, afterFadeCallback));
+    }
+
+    IEnumerator Fade(Color c, float speed, System.Action afterFadeCallback)
     {
         while(guiTexture.color != c)
         {
             guiTexture.color = Vector4.MoveTowards(guiTexture.color, c, speed * Time.deltaTime);
             yield return null;
         }
+        if (afterFadeCallback != null)
+            afterFadeCallback();
     }
 }

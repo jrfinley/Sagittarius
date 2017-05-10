@@ -20,6 +20,7 @@ public class PlayerParty : MonoBehaviour
     public Rigidbody rb;
 
     private bool isMoving;
+    public bool lockMovement = false;
 
     private Sprite icon;
 
@@ -66,6 +67,8 @@ public class PlayerParty : MonoBehaviour
     public void SetMoveDirection(Vector3 moveDirection)
     {
         //uncomment connection stuff when dungeon connections are done
+        if (lockMovement)
+            return;
 
         if (isMoving == true)
             return;
