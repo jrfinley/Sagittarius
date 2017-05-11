@@ -17,6 +17,8 @@
     { get; set; }
     int EquipmentCapacityChange
     { get; set; }
+    int IterationNumber
+    { get; set; }
 
     float ExpireTime
     { get; set; }
@@ -28,7 +30,7 @@
     PlayerEventManager EventManager
     { get; set; }
 
-    void InitializeStatusEffect(BaseCharacter _character);
+    void InitializeStatusEffect(BaseCharacter _character, int _iterationNumber);
     void ApplyStatusEffect();
     void ExpireStatusEffect();
 }
