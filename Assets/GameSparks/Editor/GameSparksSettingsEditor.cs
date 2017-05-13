@@ -5,6 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEditor.SceneManagement;
 
 namespace GameSparks.Editor
 {
@@ -92,7 +93,7 @@ namespace GameSparks.Editor
 
     		String testButtonText = "Test Configuration";
 
-    		if(EditorApplication.currentScene.Equals(testScenePath) && EditorApplication.isPlaying){
+    		if(EditorSceneManager.GetActiveScene().Equals(testScenePath) && EditorApplication.isPlaying){
     			testButtonText = "Stop Test";
     		}
 
@@ -150,10 +151,10 @@ namespace GameSparks.Editor
     		GUILayout.TextArea("Run the GameSparks test harness in the editor. ", EditorStyles.wordWrappedLabel);
     		if(GUILayout.Button(testButtonText)){
     			EditorUtility.SetDirty(settings);
-    			if(EditorApplication.currentScene.Equals(testScenePath) && EditorApplication.isPlaying){
+    			if(EditorSceneManager.GetActiveScene().Equals(testScenePath) && EditorApplication.isPlaying){
     				EditorApplication.isPlaying = false;
     			} else {
-    				if(!EditorApplication.currentScene.Equals(testScenePath)){
+    				if(!EditorSceneManager.GetActiveScene().Equals(testScenePath)){
     					if(EditorApplication.SaveCurrentSceneIfUserWantsTo()){
     						if(!EditorApplication.OpenScene(testScenePath)){
     							EditorApplication.NewScene();

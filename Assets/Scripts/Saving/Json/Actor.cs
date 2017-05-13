@@ -40,6 +40,8 @@ public class Actor : MonoBehaviour
     private GameController gameController;
 
     private MapGenerator mapGen;
+
+    private EquipItems[] equipItems;
     #endregion
 
     void Start()
@@ -64,6 +66,7 @@ public class Actor : MonoBehaviour
         currencyManager = GetComponent<CurrencyManager>();
         currencyUI = FindObjectOfType<CurrencyUI>();
         fogOfWar = FindObjectOfType<FOW>();
+        equipItems = FindObjectsOfType<EquipItems>();
     }
     #endregion
 
@@ -254,6 +257,7 @@ public class Actor : MonoBehaviour
             data.character3PartyPosition = -5;
         }
 
+        
         /*
           GameSparks, *NOTE: While gamesparks storage is working fine, i comment out this code during pushes because, if 
                        you don't start from gamesparks login scene, saving will give you errors, as it should, 

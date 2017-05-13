@@ -33,11 +33,11 @@ public class InventoryItemDisplay : MonoBehaviour
         if (sprite != null)
             sprite.sprite = item.sprite;
         flavorText.text = item.desc;
-        strength.text = "STR:  " + item.strength.ToString();
-        dexterity.text = "DEX:  " + item.dexterity.ToString();
-        intellect.text = "INT:  " + item.intellect.ToString();
-        gold.text = "value:  " + item.gold.ToString();
-        scrap.text = "scrap:  " + item.scrap.ToString();
-        health.text = "Health: " + item.health.ToString();
+        strength.text = "STR:  " + item.strength;
+        dexterity.text = "DEX:  " + item.dexterity;
+        intellect.text = "INT:  " + item.intellect;
+        gold.text = "value:  " + item.gold;
+        scrap.text = "scrap:  " + item.scrap;
+        health.text = "Health: " + item.health;
     }
 }
