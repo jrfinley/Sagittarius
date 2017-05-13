@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class BasicStatusEffect : BaseStatusEffect, IStatusEffect
 {
-    public void InitializeStatusEffect(BaseCharacter _character)
+    public void InitializeStatusEffect(BaseCharacter _character, int _iterationNumber)
     {
+        IterationNumber = _iterationNumber;
         Character = _character;
+        Character.hasStatusEffect = true;
         EventManager = FindObjectOfType<PlayerEventManager>();
+        EffectManager = FindObjectOfType<StatusEffectManager>();
+
+        Character.statusEffects.Add(IterationNumber);
+        EffectManager.activeStatusEffects.Add(gameObject);
 
         if (ExpireType == EBuffExpiration.MOVEMENT_BASED)
             EventManager.OnPlayerMove += ExpireStatusEffect;
@@ -35,11 +41,21 @@ public class BasicStatusEffect : BaseStatusEffect, IStatusEffect
         if (ExpireTime > 0)
             return;
 
+        EffectManager.activeStatusEffects.Remove(gameObject);
+        for (int i = 0; i < Character.statusEffects.Count; i++)
+            if (Character.statusEffects[i] == IterationNumber)
+            {
+                Character.statusEffects.Remove(Character.statusEffects[i]);
+                break;
+            }
+
         if (ExpireType == EBuffExpiration.MOVEMENT_BASED)
             EventManager.OnPlayerMove -= ExpireStatusEffect;
         else if (ExpireType == EBuffExpiration.BATTLE_BASED)
             EventManager.OnBattleStart -= ExpireStatusEffect;
 
+        if (Character.statusEffects.Count == 0)
+            Character.hasStatusEffect = false;
         Character.Strength -= StrengthChange;
         Character.Dexterity -= DexterityChange;
         Character.Intelect -= IntelectChange;
