@@ -87,7 +87,7 @@ public class Room : MonoBehaviour
     {
         gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
 
-        Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
+        //Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
     }
 
     public void BecomeTreasureRoom()
