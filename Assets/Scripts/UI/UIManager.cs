@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
     public CharacterStats characterStats;
+    public GearStats gearStats;
     public Inventory inventory;
     CanvasScaler canvasScaler;
     PlayerParty playerParty;
@@ -88,6 +89,11 @@ public class UIManager : MonoBehaviour
         Canvas.ForceUpdateCanvases();
     }
 
+    public int GetSelectedHero()
+    {
+        return selectedHero;
+    }
+
     public void CloseMenu()
     {
         isMenuOpen = false;
@@ -127,6 +133,7 @@ public class UIManager : MonoBehaviour
         {
             characterStats.DrawCharacterStatistics(playerParty.characters[hero]);
             heroCards[hero].SetHealthBar(playerParty.characters[hero].Health, playerParty.characters[hero].MaxHealth); //Not robust. May want to have this as part of the character class.
+            gearStats.SetGearBonusStats(playerParty.characters[hero]);
         }
     }
 
