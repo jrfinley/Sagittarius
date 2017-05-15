@@ -21,13 +21,17 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
 
+    private GameObject _dungeonContainer = null;
+
     void Start()
     {
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
         //1752787940
-        GenerateMap(1752787940);
+        //1857710287
+        //-688597782
+        GenerateMap();
 
         sw.Stop();
         Debug.Log("Dungeon Generated in: " + sw.ElapsedMilliseconds + "ms");
@@ -42,11 +46,14 @@ public class MapGenerator : MonoBehaviour
 
     private void _GenerateMap()
     {
+        _dungeonContainer = new GameObject();
+        _dungeonContainer.name = "DungeonContainer";
+
         Vector3 finalRoomPosition;
         _SpawnStartAndFinalRooms(out finalRoomPosition);
         Grid grid = new Grid(width, height, 1f, finalRoomPosition);
 
-        List<Node> path = grid.GetPath(Vector3.zero, finalRoomPosition);
+        List<Node> path = grid.GetPath(new Vector3(width / 2f, 0f, height / 2f), finalRoomPosition);
         if (path != null)
         {
             for (int i = 0; i < path.Count; i++)
@@ -61,8 +68,10 @@ public class MapGenerator : MonoBehaviour
 
                 Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
                 visualNode.transform.rotation = rotation;
+                visualNode.transform.parent = _dungeonContainer.transform;
             }
         }
+        _dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
     }
     
     private void _SpawnStartAndFinalRooms(out Vector3 finalTilePosition)
@@ -74,26 +83,28 @@ public class MapGenerator : MonoBehaviour
             if (room.gameObject.name.Contains("Spawn"))
             {
                 GameObject tempRoom = Instantiate(room);
-                tempRoom.transform.position = Vector3.zero;
+                tempRoom.transform.position = new Vector3(width / 2f, 0f, height / 2f);
+                tempRoom.transform.parent = _dungeonContainer.transform;
             }
             else if (room.gameObject.name.Contains("Final"))
             {
                 GameObject tempRoom = Instantiate(room);
                 tempRoom.transform.position = _GetRandomRoomPosition();
                 finalTilePosition = tempRoom.transform.position;
+                tempRoom.transform.parent = _dungeonContainer.transform;
             }
         }
     }
 
     private Vector3 _GetRandomRoomPosition()
     {
-        int x = 0;
-        int y = 0;
+        int x = (int)width / 2;
+        int y = (int)height / 2;
 
-        while (x < minXDistance && x > -minXDistance)
-            x = Random.Range(-(width / 2) + 1, width / 2);
-        while (y < minYDistance && y > -minYDistance)
-            y = Random.Range(-(height / 2) + 1, height / 2);
+        while (x < minXDistance + (width / 2f) && x > -minXDistance + (width / 2f))
+            x = Random.Range(1, width);
+        while (y < minYDistance + (height / 2f) && y > -minYDistance + (height / 2f))
+            y = Random.Range(1, height);
 
         Vector3 position = new Vector3(x, 0f, y);
         return position;
@@ -109,6 +120,6 @@ public class MapGenerator : MonoBehaviour
     {
         _seed = seed == 0 ? (int)System.DateTime.Now.Ticks : seed;
         Random.seed = _seed;
-        //Debug.Log("Dungeon seed: " + _seed);
+        Debug.Log("Dungeon seed: " + _seed);
     }
 }

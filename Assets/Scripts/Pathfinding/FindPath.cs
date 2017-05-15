@@ -55,7 +55,7 @@ public class FindPath
 
             foreach (Node neighbour in _grid.GetNeighbours(currentNode))
             {
-                if (_grid.UnwalkableNodes.Contains(neighbour) || closedSet.Contains(neighbour))
+                if (closedSet.Contains(neighbour))
                     continue;
 
                 int newMovementCostToNeighbour = currentNode.gCost + _GetDistance(currentNode, neighbour);
