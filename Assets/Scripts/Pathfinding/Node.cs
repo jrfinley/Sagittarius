@@ -6,6 +6,7 @@ public class Node : IHeapItem<Node>
     public Node parent;
     public Vector3 worldPosition;
     public float nodeSize;
+    public int movementPenalty;
     public int x;
     public int y;
 

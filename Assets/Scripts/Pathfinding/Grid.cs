@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Validator;
+using Random = UnityEngine.Random;
 
 public class Grid
 {
@@ -20,7 +21,7 @@ public class Grid
         _nodeUnitSize = nodeUnitSize;
 
         _grid = new Node[_width, _height];
-        _path = new FindPath(this, _width + _height);
+        _path = new FindPath(this, _width * _height);
         _CreateGrid(finalRoomPosition);
     }
 
@@ -47,6 +48,22 @@ public class Grid
         visualNode.transform.rotation = rotation;
 
         _grid[x, y] = new Node(position, x, y, 1f);
+
+        if (Random.value > 0.5f)
+            _grid[x, y].movementPenalty = 500;
+        else
+            _grid[x, y].movementPenalty = UnityEngine.Random.Range(0, 100);
+        
+        if (_grid[x, y].movementPenalty == 500)
+            visualNode.GetComponent<MeshRenderer>().material.color = Color.black;
+        else if (_grid[x, y].movementPenalty > 75)
+            visualNode.GetComponent<MeshRenderer>().material.color = Color.red;
+        else if (_grid[x, y].movementPenalty > 50)
+            visualNode.GetComponent<MeshRenderer>().material.color = Color.yellow;
+        else if (_grid[x, y].movementPenalty > 25)
+            visualNode.GetComponent<MeshRenderer>().material.color = Color.green;
+        else
+            visualNode.GetComponent<MeshRenderer>().material.color = Color.cyan;
     }
 
     public List<Node> GetNeighbours(Node currentNode)

@@ -71,7 +71,7 @@ public class MapGenerator : MonoBehaviour
                 visualNode.transform.parent = _dungeonContainer.transform;
             }
         }
-        _dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
+        //_dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
     }
     
     private void _SpawnStartAndFinalRooms(out Vector3 finalTilePosition)

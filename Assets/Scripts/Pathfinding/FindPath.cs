@@ -58,7 +58,7 @@ public class FindPath
                 if (closedSet.Contains(neighbour))
                     continue;
 
-                int newMovementCostToNeighbour = currentNode.gCost + _GetDistance(currentNode, neighbour);
+                int newMovementCostToNeighbour = currentNode.gCost + _GetDistance(currentNode, neighbour) + neighbour.movementPenalty;
                 if (newMovementCostToNeighbour < neighbour.gCost || !openSetContainer.Contains(neighbour))
                 {
                     neighbour.gCost = newMovementCostToNeighbour;
