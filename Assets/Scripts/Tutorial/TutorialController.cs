@@ -50,6 +50,7 @@ public class TutorialController : MonoBehaviour
         cutsceneCam.SetActive(false);
         mainCam.SetActive(true);
         player.lockMovement = false;
+        transition.SetColor(Color.clear);
         ui.CreateNewDialogueBox("This way! Swipe up and down to walk down the hall!");
     }
 

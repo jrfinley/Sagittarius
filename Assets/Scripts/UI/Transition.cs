@@ -12,6 +12,12 @@ public class Transition : MonoBehaviour
         guiTexture = GetComponent<GUITexture>();
     }
 
+    public void SetColor(Color c)
+    {
+        StopAllCoroutines();
+        guiTexture.color = c;
+    }
+
     public void StartFade(Color c, float speed)
     {
         StartCoroutine(Fade(c, speed, null));
