@@ -2,6 +2,7 @@
 {
     WARRIOR,
     ROGUE,
-    MAGE
+    MAGE,
+    UTILITY
 }
 

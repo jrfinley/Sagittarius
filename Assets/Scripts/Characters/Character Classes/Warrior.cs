@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Warrior : BaseCharacter
+public class Warrior : BaseCharacter, IAbilityCharacter
 {
     private void Start()
     {
         Strength = (int)(Strength * 1.2f);
     }
 
-    void BreakOpenDoor(int strength)
+    public void ActivateAbility()
     {
-        //Need to see how doors will work to advance
+        
     }
 }

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mage : BaseCharacter
+public class Mage : BaseCharacter,IAbilityCharacter
 {
     private void Start()
     {
         Intelect = (int)(Intelect * 1.2f);
     }
 
-    void RevealRoom(int intelect)
+    public void ActivateAbility()
     {
-        //Need to see how fog of war system works to advance
+        
     }
 }

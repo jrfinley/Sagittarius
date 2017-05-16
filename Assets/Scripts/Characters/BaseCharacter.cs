@@ -206,7 +206,7 @@ public class BaseCharacter : MonoBehaviour
     public int Intelect
     {
         get { return intelect; }
-        set { dexterity = value; }
+        set { intelect = value; }
     }
     public int Experience
     {

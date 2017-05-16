@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rogue : BaseCharacter
+public class Rogue : BaseCharacter, IAbilityCharacter
 {
     private void Start()
     {
         Dexterity = (int)(Dexterity * 1.2f);
     }
 
-    void PickLock(int dexterity)
+    public void ActivateAbility()
     {
-        //Need to see how door/loot system works to advance
+        
     }
 }
