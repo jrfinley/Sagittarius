@@ -73,42 +73,41 @@ public class Actor : MonoBehaviour
     #region Save Data
     public void StoreData()
     {
-        characterManager = FindObjectOfType<CharacterManager>();
-        playerParty = FindObjectOfType<PlayerParty>();
-        data.playerParty = FindObjectOfType<PlayerParty>();
-        currencyManager = GetComponent<CurrencyManager>();
-        currencyUI = FindObjectOfType<CurrencyUI>();
-        fogOfWar = FindObjectOfType<FOW>();
-
-        string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
-        dataPath = string.Empty;//attempt to clear on save
-                                //saved currencies
-        data.goldValue += currencyManager.Gold.Value;
-        data.scrapValue += currencyManager.Scrap.Value;
-        data.foodValue += currencyManager.Food.Value;
-
         if (Application.loadedLevel == 2)
         {
-            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
-            inventoryItem = FindObjectsOfType<InventoryItem>();
+            string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
+            dataPath = string.Empty;//attempt to clear on save
+
+            data.goldValue += currencyManager.Gold.Value;
+            data.scrapValue += currencyManager.Scrap.Value;
+            data.foodValue += currencyManager.Food.Value;
 
             mapGen = FindObjectOfType<MapGenerator>();
 
             data.seed = mapGen.Seed;
 
+            //inventoryDisplay = FindObjectOfType<InventoryDisplay>();
+            //inventoryItem = FindObjectsOfType<InventoryItem>();
+         
             //stores item/ inventory info
             if (inventoryDisplay != null)
             {
                 data.items = inventoryDisplay.items;
-                foreach (InventoryItem inventoryItems in inventoryDisplay.items)
+                foreach (InventoryItem inventoryItem in inventoryDisplay.items)
                 {
-                    data.ids.Add(inventoryItems.id);
+                    data.ids.Add(inventoryItem.id);
                     //data.ids.Remove(inventoryItem.id);
-                    data.itemTypes.Add(inventoryItems.itemType);
+                    data.itemTypes.Add(inventoryItem.itemType);
                     //data.itemTypes.Remove(inventoryItem.itemType);
+                    Debug.Log("Saved items");
                 }
             }
         }
+       
+       
+        
+
+        
 
         //Saves Character info
         //0

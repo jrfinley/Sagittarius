@@ -29,12 +29,12 @@ public class GenerateLoader : MonoBehaviour
         if (System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "actors.json")))
         {
             StartCoroutine(CallLoaderSpawn());
-            Debug.Log(System.IO.File.Exists("C:/ Users / Gonzales / AppData / LocalLow / GAM53 / Sagittarius\actors.json"));
+            Debug.Log(System.IO.File.Exists("actors.json"));
         }
         else
         {
             StartCoroutine(CallCreateFakeLoader());
-            Debug.Log(System.IO.File.Exists("C:/ Users / Gonzales / AppData / LocalLow / GAM53 / Sagittarius\actors.json"));
+            Debug.Log(System.IO.File.Exists("actors.json"));
         }
     }
 

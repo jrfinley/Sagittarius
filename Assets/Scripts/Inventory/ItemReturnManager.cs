@@ -19,7 +19,7 @@ public class ItemReturnManager : MonoBehaviour
 
     void Start ()
     {
-        if(Application.loadedLevel == 0)
+        if(Application.loadedLevel == 2)
         {
             //must remove this later, here till fix inventory load bugg
             actor = FindObjectOfType<Actor>();
