@@ -16,7 +16,7 @@ namespace ItemGeneratorHelpers {
             switch(itemType) {
                 case EItemType.CONSUMABLE:
                     return (EEquipmentType)Random.Range(etConsumable, etWeapon);
-                case EItemType.WEAPON:
+                case EItemType.HELD:
                     return (EEquipmentType)Random.Range(etWeapon, etArmor);
                 case EItemType.ARMOR:
                     return (EEquipmentType)Random.Range(etArmor, etAmulet);

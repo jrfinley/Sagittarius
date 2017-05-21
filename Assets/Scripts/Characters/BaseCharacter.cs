@@ -34,6 +34,9 @@ public class BaseCharacter : MonoBehaviour
     private Sprite icon;
 
     public bool isUnlocked = true;
+    public bool hasStatusEffect = false;
+
+    public List<int> statusEffects = new List<int>();
 
     public Item armor;
     public Item leftHand;
@@ -53,6 +56,14 @@ public class BaseCharacter : MonoBehaviour
         equipmentCapacity = strength * 2;
     }
 
+    public void InitializeStatusEffects(List<int> savedStatusEffects)
+    {
+        StatusEffectManager effectManager = FindObjectOfType<StatusEffectManager>();
+
+        if (savedStatusEffects.Count > 0)
+            for (int i = 0; i < statusEffects.Count; i++)
+                effectManager.AddStatusEffect(this, statusEffects[i]);
+    }
     public void InitializeCharacter(string _name, int _level)
     {
         Name = _name;
@@ -73,7 +84,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 2:
-                if (item.Types.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.HELD)
                     break;
 
                 if (leftHand != null || leftHand == item)
@@ -83,7 +94,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             case 3:
-                if (item.Types.ItemType != EItemType.WEAPON)
+                if (item.Types.ItemType != EItemType.HELD)
                     break;
 
                 if (rightHand != null || rightHand == item)
@@ -198,7 +209,7 @@ public class BaseCharacter : MonoBehaviour
     public int Intelect
     {
         get { return intelect; }
-        set { dexterity = value; }
+        set { intelect = value; }
     }
     public int Experience
     {

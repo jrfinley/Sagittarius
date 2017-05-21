@@ -15,12 +15,15 @@ public class BaseStatusEffect : MonoBehaviour
                 experienceChange,
                 equipmentCapacityChange;
 
+    private int iterationNumber;
+
     [SerializeField]
     private float expireTime,
                   expMultiplierChange;
 
     private BaseCharacter character;
     private PlayerEventManager eventManager;
+    private StatusEffectManager effectManager;
 
     //properties
     public EBuffExpiration ExpireType
@@ -63,6 +66,11 @@ public class BaseStatusEffect : MonoBehaviour
         get { return equipmentCapacityChange; }
         set { equipmentCapacityChange = value; }
     }
+    public int IterationNumber
+    {
+        get { return iterationNumber; }
+        set { iterationNumber = value; }
+    }
     public float ExpireTime
     {
         get { return expireTime; }
@@ -82,5 +90,10 @@ public class BaseStatusEffect : MonoBehaviour
     {
         get { return eventManager; }
         set { eventManager = value; }
+    }
+    public StatusEffectManager EffectManager
+    {
+        get { return effectManager; }
+        set { effectManager = value; }
     }
 }

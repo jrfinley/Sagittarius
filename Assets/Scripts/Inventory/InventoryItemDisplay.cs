@@ -41,12 +41,12 @@ public class InventoryItemDisplay : MonoBehaviour
         if (item.equippedBy != null)
             background.color = Color.gray;
         flavorText.text = item.desc;
-        strength.text = "STR:  " + item.strength.ToString();
-        dexterity.text = "DEX:  " + item.dexterity.ToString();
-        intellect.text = "INT:  " + item.intellect.ToString();
-        gold.text = "value:  " + item.gold.ToString();
-        scrap.text = "scrap:  " + item.scrap.ToString();
-        health.text = "Health: " + item.health.ToString();
+        strength.text = "STR:  " + item.strength;
+        dexterity.text = "DEX:  " + item.dexterity;
+        intellect.text = "INT:  " + item.intellect;
+        gold.text = "value:  " + item.gold;
+        scrap.text = "scrap:  " + item.scrap;
+        health.text = "Health: " + item.health;
     }
 
     public void SelectItem()
@@ -55,7 +55,7 @@ public class InventoryItemDisplay : MonoBehaviour
         if(ui != null)
         {
             Item _item = item.item;
-            if (_item.Types.ItemType == EItemType.AMULET || _item.Types.ItemType == EItemType.ARMOR || _item.Types.ItemType == EItemType.WEAPON)
+            if (_item.Types.ItemType == EItemType.AMULET || _item.Types.ItemType == EItemType.ARMOR)
                 ui.AddRemoveEquippedItem(_item, this); 
         }
     }

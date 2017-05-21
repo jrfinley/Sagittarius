@@ -12,17 +12,30 @@ public class Transition : MonoBehaviour
         guiTexture = GetComponent<GUITexture>();
     }
 
-    public void StartFade(Color c, float speed)
+    public void SetColor(Color c)
     {
-        StartCoroutine(Fade(c, speed));
+        StopAllCoroutines();
+        guiTexture.color = c;
     }
 
-    IEnumerator Fade(Color c, float speed)
+    public void StartFade(Color c, float speed)
+    {
+        StartCoroutine(Fade(c, speed, null));
+    }
+
+    public void StartFade(Color c, float speed, System.Action afterFadeCallback)
+    {
+        StartCoroutine(Fade(c, speed, afterFadeCallback));
+    }
+
+    IEnumerator Fade(Color c, float speed, System.Action afterFadeCallback)
     {
         while(guiTexture.color != c)
         {
             guiTexture.color = Vector4.MoveTowards(guiTexture.color, c, speed * Time.deltaTime);
             yield return null;
         }
+        if (afterFadeCallback != null)
+            afterFadeCallback();
     }
 }

@@ -10,7 +10,7 @@ public class CombatPanel : MonoBehaviour
 {
     public GameObject combatCardObj;
     public List<CombatCard> debug_testCombatCards = new List<CombatCard>(); //Just here to test the UI
-
+    public System.Action postCombatCallback = null;
     /*
     public void CreateNewCombatMatch(Enemy[] enemies) //I plan to have this function read in an array of enemy classes and fill-in the enemy combat cards automatically.
     {
@@ -18,8 +18,15 @@ public class CombatPanel : MonoBehaviour
     }
     */
 
+    public void SetPostCombatCallback(System.Action callback)
+    {
+        postCombatCallback = callback;
+    }
+
     public void Run()
     {
+        if (postCombatCallback != null)
+            postCombatCallback();
         EndCombat();
     }	
 

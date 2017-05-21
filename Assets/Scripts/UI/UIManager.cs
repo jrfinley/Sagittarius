@@ -20,12 +20,18 @@ public class UIManager : MonoBehaviour
     public CombatPanel combatPanel;
     public DialogueBox dialogueBox;
     public CharacterStats characterStats;
+    public GearStats gearStats;
     public Inventory inventory;
     public InventoryDisplay inventoryDisplay;
     public GearPanel gear;
     CanvasScaler canvasScaler;
     PlayerParty playerParty;
 
+
+    void Awake()
+    {
+        playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
+    }
 
     void Start()
     {
@@ -36,7 +42,6 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
-        playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
@@ -87,6 +92,11 @@ public class UIManager : MonoBehaviour
         Canvas.ForceUpdateCanvases();
     }
 
+    public int GetSelectedHero()
+    {
+        return selectedHero;
+    }
+
     public void CloseMenu()
     {
         isMenuOpen = false;
@@ -116,7 +126,7 @@ public class UIManager : MonoBehaviour
         toggle = heroIcons[selectedHero].GetComponent<Toggle>();
         heroIcons[hero].GetComponent<Image>().color = toggle.colors.pressedColor;
         UpdateHeroStats(hero);
-        gear.UpdateGear();
+        //gear.UpdateGear();
     }
 
     public void UpdateHeroStats(int hero)
@@ -127,6 +137,7 @@ public class UIManager : MonoBehaviour
         {
             characterStats.DrawCharacterStatistics(playerParty.characters[hero]);
             heroCards[hero].SetHealthBar(playerParty.characters[hero].Health, playerParty.characters[hero].MaxHealth); //Not robust. May want to have this as part of the character class.
+            gearStats.SetGearBonusStats(playerParty.characters[hero]);
         }
     }
 
@@ -175,20 +186,20 @@ public class UIManager : MonoBehaviour
                     itemDisplay.Remove();
                 }
                 break;
-            case EItemType.WEAPON:
-                if (selectedPlayer != itemDisplay.item.equippedBy)
-                {
-                    if (itemDisplay.item.equippedBy != null)
-                        itemDisplay.item.equippedBy.RemoveItem(3); 
-                    selectedPlayer.EquipItem(item, 3);
-                    itemDisplay.Equip(selectedPlayer);
-                }
-                else
-                {
-                    selectedPlayer.RemoveItem(3);
-                    itemDisplay.Remove();
-                }
-                break;
+            //case EItemType.WEAPON:
+            //    if (selectedPlayer != itemDisplay.item.equippedBy)
+            //    {
+            //        if (itemDisplay.item.equippedBy != null)
+            //            itemDisplay.item.equippedBy.RemoveItem(3); 
+            //        selectedPlayer.EquipItem(item, 3);
+            //        itemDisplay.Equip(selectedPlayer);
+            //    }
+            //    else
+            //    {
+            //        selectedPlayer.RemoveItem(3);
+            //        itemDisplay.Remove();
+            //    }
+            //    break;
             default:
                 Debug.LogError("Attempted to equip unknown item type: " + item.Types.EquipSlot.ToString());
                 break;
@@ -207,7 +218,7 @@ public class UIManager : MonoBehaviour
     public void DisplayGearPanel()
     {
         HideAllContentPanels();
-        gear.UpdateGear();
+        //gear.UpdateGear();
         contentPanels[1].SetActive(true);
     }
 
@@ -225,13 +236,23 @@ public class UIManager : MonoBehaviour
         contentPanels[3].SetActive(true);
     }
 
-    public void DisplayCombatPanel() //Eventually pass in an array of enemy-classes and display their stats dynamically.
+    public void DisplayCombatPanel(System.Action postCombatCallback) //Eventually pass in an array of enemy-classes and display their stats dynamically.
     {
         //CreateNewDialogueBox("You are under attack!");
         //combatPanel.gameObject.SetActive(true);
-        SceneManager.LoadScene("Combat", LoadSceneMode.Additive);
+        StartCoroutine(LoadCombatScene(postCombatCallback));
+
         CloseMenu();
         //combatPanel.CreateCombatPanel();
+    }
+
+    IEnumerator LoadCombatScene(System.Action postCombatCallback)
+    {
+        //bool loaded = SceneManager.LoadScene("Combat", LoadSceneMode.Additive);
+        var loaded = Application.LoadLevelAdditiveAsync("Combat");
+        yield return loaded;
+        if (postCombatCallback != null)
+            GameObject.FindGameObjectWithTag("CombatPanel").GetComponent<CombatPanel>().SetPostCombatCallback(postCombatCallback);
     }
 
     public void TestButton1() //Found on the Misc tab for now. Just for testing.
