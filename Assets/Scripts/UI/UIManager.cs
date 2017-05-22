@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
     public Text[] currencyTexts; //0-Gold, 1-Food, 2-Scrap
+    public GameObject emptyHeroCard;
+    public Transform heroCardAreaTransform;
     public List<HeroCard> heroCards = new List<HeroCard>();
     public Image[] heroIcons;
     int selectedHero = 0;
@@ -42,6 +44,7 @@ public class UIManager : MonoBehaviour
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
+        CreatePartyCards();
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
@@ -90,6 +93,21 @@ public class UIManager : MonoBehaviour
         UpdateAllHeroStats();
         inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         Canvas.ForceUpdateCanvases();
+    }
+
+    void CreatePartyCards()
+    {
+        foreach (HeroCard card in heroCards)
+            Destroy(card.gameObject);
+        heroCards.Clear();
+        foreach(BaseCharacter c in playerParty.characters)
+        {
+            GameObject tmp = Instantiate(emptyHeroCard, Vector3.zero, Quaternion.identity) as GameObject;
+            tmp.transform.SetParent(heroCardAreaTransform);
+            HeroCard card = tmp.GetComponent<HeroCard>();
+            heroCards.Add(card);
+            card.icon = c.Icon;
+        }
     }
 
     public int GetSelectedHero()
