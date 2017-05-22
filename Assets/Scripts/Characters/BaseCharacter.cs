@@ -20,6 +20,7 @@ public class BaseCharacter : MonoBehaviour
                 strength,
                 dexterity,
                 intelect,
+                foodConsumption,
                 experience,
                 maxExperience,
                 equipmentCapacity,
@@ -207,6 +208,11 @@ public class BaseCharacter : MonoBehaviour
     {
         get { return intelect; }
         set { intelect = value; }
+    }
+    public int FoodConsumption
+    {
+        get { return foodConsumption; }
+        set { foodConsumption = value; }
     }
     public int Experience
     {

@@ -82,6 +82,8 @@ public class TestCharacterFunctions : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
                 statusEffectManager.AddStatusEffect(playerParty.characters[0], 0);
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+                statusEffectManager.AddStatusEffect(playerParty.characters[0], 1);
         }
 
         //Add character to training area
