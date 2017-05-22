@@ -20,6 +20,7 @@ public class MapGenerator : MonoBehaviour
 
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
+    private List<Vector3> _takenPositions = new List<Vector3>();
 
     private GameObject _dungeonContainer = null;
 
@@ -48,12 +49,31 @@ public class MapGenerator : MonoBehaviour
     {
         _dungeonContainer = new GameObject();
         _dungeonContainer.name = "DungeonContainer";
+        
+        _SpawnStart();
+        Vector3 finalRoomPosition = _SpawnFinal();
 
-        Vector3 finalRoomPosition;
-        _SpawnStartAndFinalRooms(out finalRoomPosition);
         Grid grid = new Grid(width, height, 1f, finalRoomPosition);
-
         List<Node> path = grid.GetPath(new Vector3(width / 2f, 0f, height / 2f), finalRoomPosition);
+
+        _GenerateMainPath(path);
+        _GenerateUniqueBranches();
+
+        //_dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
+    }
+    
+    private void _GenerateUniqueBranches()
+    {
+        while (_uniqueRooms.Count > 0)
+        {
+            GameObject room = _SpawnUniqueRoom();
+            room.transform.position = _GetRandomRoomPosition();
+            _takenPositions.Add(room.transform.position);
+        }
+    }
+
+    private void _GenerateMainPath(List<Node> path)
+    {
         if (path != null)
         {
             for (int i = 0; i < path.Count; i++)
@@ -71,42 +91,53 @@ public class MapGenerator : MonoBehaviour
                 visualNode.transform.parent = _dungeonContainer.transform;
             }
         }
-        //_dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
     }
-    
-    private void _SpawnStartAndFinalRooms(out Vector3 finalTilePosition)
-    {
-        finalTilePosition = Vector3.zero;
 
+    private void _SpawnStart()
+    {
+        GameObject room = _SpawnUniqueRoom("Spawn");
+        room.transform.position = new Vector3(width / 2f, 0f, height / 2f);
+        _takenPositions.Add(room.transform.position);
+    }
+
+    private Vector3 _SpawnFinal()
+    {
+        GameObject room = _SpawnUniqueRoom("Final");
+        room.transform.position = _GetRandomRoomPosition();
+        _takenPositions.Add(room.transform.position);
+        return room.transform.position;
+    }
+
+    private GameObject _SpawnUniqueRoom(string name = "")
+    {
+        GameObject tempRoom = null;
         foreach (GameObject room in _uniqueRooms)
         {
-            if (room.gameObject.name.Contains("Spawn"))
+            if (room.gameObject.name.Contains(name))
             {
-                GameObject tempRoom = Instantiate(room);
-                tempRoom.transform.position = new Vector3(width / 2f, 0f, height / 2f);
+                tempRoom = Instantiate(room);
                 tempRoom.transform.parent = _dungeonContainer.transform;
-            }
-            else if (room.gameObject.name.Contains("Final"))
-            {
-                GameObject tempRoom = Instantiate(room);
-                tempRoom.transform.position = _GetRandomRoomPosition();
-                finalTilePosition = tempRoom.transform.position;
-                tempRoom.transform.parent = _dungeonContainer.transform;
+                _uniqueRooms.Remove(room);
+                break;
             }
         }
+        return tempRoom;
     }
 
     private Vector3 _GetRandomRoomPosition()
     {
         int x = (int)width / 2;
         int y = (int)height / 2;
+        Vector3 position = Vector3.zero;
 
-        while (x < minXDistance + (width / 2f) && x > -minXDistance + (width / 2f))
+        do
+        {
             x = Random.Range(1, width);
-        while (y < minYDistance + (height / 2f) && y > -minYDistance + (height / 2f))
             y = Random.Range(1, height);
+            position = new Vector3(x, 0f, y);
+        }
+        while (!NodeValidator.CanSpawnHere(_takenPositions, position, minXDistance));
 
-        Vector3 position = new Vector3(x, 0f, y);
         return position;
     }
 
