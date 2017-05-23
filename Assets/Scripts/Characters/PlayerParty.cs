@@ -153,7 +153,8 @@ public class PlayerParty : MonoBehaviour
             currentFood = 0;
 
             for (int i = 0; i < characters.Length; i++)
-                statusEffectManager.AddStatusEffect(characters[i], 2);
+                if (characters[i] != null)
+                    statusEffectManager.AddStatusEffect(characters[i], 1);
         }
     }
     Room GetRoom(Vector3 checkPosition)
