@@ -104,7 +104,7 @@ public class BaseCharacter : MonoBehaviour
                 break;
 
             default:
-                if (item.Types.ItemType != EItemType.AMULET)
+                if (item.Types.ItemType != EItemType.ACCESSORY)
                     break;
 
                 if (amulet != null)

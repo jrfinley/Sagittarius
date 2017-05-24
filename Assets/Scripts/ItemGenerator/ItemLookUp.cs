@@ -85,7 +85,7 @@ namespace ItemGeneratorHelpers {
         { EEquipmentType.AMULET, new Item(
                 "Amulet", "Feels magical", "Amulet",
                 new ItemStats(1, 1, 0, 0, 3, 0, 1, 10, 5, 5),
-                new ItemTypes(EItemType.AMULET, EEquipmentType.AMULET, EItemEquipSlot.AMULET, EItemWeightClass.NONE, EWeaponDamageType.NONE, EWeaponRange.NONE, EItemRarity.COMMON)
+                new ItemTypes(EItemType.ACCESSORY, EEquipmentType.AMULET, EItemEquipSlot.ACCESSORY, EItemWeightClass.NONE, EWeaponDamageType.NONE, EWeaponRange.NONE, EItemRarity.COMMON)
             ) },
         { EEquipmentType.TEST_QEUST_ITEM, new Item(
                 "Test Quest Item", "I suppose this is important since I can't drop it", "Test_Quest_Item",

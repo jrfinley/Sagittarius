@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ItemTypes {
     #region Varaibles
-    private EItemType itemType = EItemType.AMULET;
+    private EItemType itemType = EItemType.ACCESSORY;
     private EEquipmentType equipmentType = EEquipmentType.AMULET;
     private EItemEquipSlot equipSlot = EItemEquipSlot.NONE;
     private EItemWeightClass weightClass = EItemWeightClass.NONE;
