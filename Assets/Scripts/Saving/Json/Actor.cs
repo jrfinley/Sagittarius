@@ -51,8 +51,6 @@ public class Actor : MonoBehaviour
         //main
 
         StartCoroutine(AllowAutoAddParty());
-
-
     }
 
     #region coroutine call
@@ -262,7 +260,18 @@ public class Actor : MonoBehaviour
             data.characterInParty3 = false;
             data.character3PartyPosition = -5;
         }
+        StoreGameSparksData();
+    }
+    #endregion
 
+    void LoadData()
+    {
+        LoadMainData();
+        LoadTownData();     
+    }
+
+    void StoreGameSparksData()
+    {
         /*
           GameSparks, *NOTE: While gamesparks storage is working fine, i comment out this code during pushes because, if 
                        you don't start from gamesparks login scene, saving will give you errors, as it should, 
@@ -351,9 +360,11 @@ public class Actor : MonoBehaviour
                     }
                     else
                     {
+                        Debug.Log("Reponse Script Error :  " + response.ScriptData.GetGSData("container").GetGSDataList(jsonDataToSend.JSON)); 
                         //Debug.Log("GameSparks gold Value: " + response.ScriptData.GetNumber("GOLD").HasValue);
                         //data.goldValue = (float)jsonDataToSend.GetNumber("GOLD");
                     }
+
                 });
         }
         else
@@ -363,14 +374,11 @@ public class Actor : MonoBehaviour
         */
         #endregion
     }
-    #endregion
 
-    void LoadData()
+    public void GetGameSparksdata()
     {
-        LoadMainData();
-        LoadTownData();  
+        //
     }
-
 
     #region Load Main Scene Data
     public void LoadMainData()
@@ -714,6 +722,8 @@ public class ActorData
     public int firstRun = 0;
 
     public int seed;
+
+    //public string userId;
 
     //player party statistics
     public PlayerParty playerParty;

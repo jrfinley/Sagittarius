@@ -1,10 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using GameSparks.Core;
+using GameSparks.Api.Requests;
+using GameSparks.Api.Responses;
+using System.Text;
+using UnityEngine.Experimental.Networking;
+using UnityEngine.Networking.Match;
+using System.IO;
+using GameSparks.Api.Messages;
 
 public class AuthenticatePlayer : MonoBehaviour
 {
     public Text userNameInput, passwordInput;
+    private string userId;
 
     public void AuthorizePlayerButton()
     {
@@ -20,6 +29,7 @@ public class AuthenticatePlayer : MonoBehaviour
                 }
                 else
                 {
+                    userId = response.UserId;
                     Debug.Log("Error Authenticating Player... \n " + response.Errors.JSON.ToString());
                 }
             });
@@ -30,7 +40,7 @@ public class AuthenticatePlayer : MonoBehaviour
     {
         Debug.Log("Authenticating Device...");
         new GameSparks.Api.Requests.DeviceAuthenticationRequest()
-            .SetDisplayName("Phil")
+            .SetDisplayName("Name")
             .Send((response) =>
             {
                 if (!response.HasErrors)
