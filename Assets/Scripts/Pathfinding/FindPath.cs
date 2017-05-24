@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public class FindPath
 {
@@ -15,18 +16,21 @@ public class FindPath
     private HashSet<Node> openSetContainer;
     private HashSet<Node> closedSet;
     public List<Node> closedList;
+    private int _sizeOfGrid;
 
     public FindPath(Grid grid, int sizeOfGrid)
     {
         _grid = grid;
-        openSet = new Heap<Node>(sizeOfGrid);
-        openSetContainer = new HashSet<Node>();
-        closedSet = new HashSet<Node>();
-        closedList = new List<Node>();
+        _sizeOfGrid = sizeOfGrid;
     }
 
     public List<Node> GetPath(Node startNode, Node targetNode)
     {
+        openSet = new Heap<Node>(_sizeOfGrid);
+        openSetContainer = new HashSet<Node>();
+        closedSet = new HashSet<Node>();
+        closedList = new List<Node>();
+
         _startNode = startNode;
         _targetNode = targetNode;
 

@@ -21,6 +21,9 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
     private List<Vector3> _takenPositions = new List<Vector3>();
+    private List<Vector3> _uniquePositions = new List<Vector3>();
+    private List<Node> _path;
+    Grid _grid;
 
     private GameObject _dungeonContainer = null;
 
@@ -53,10 +56,10 @@ public class MapGenerator : MonoBehaviour
         _SpawnStart();
         Vector3 finalRoomPosition = _SpawnFinal();
 
-        Grid grid = new Grid(width, height, 1f, finalRoomPosition);
-        List<Node> path = grid.GetPath(new Vector3(width / 2f, 0f, height / 2f), finalRoomPosition);
+        _grid = new Grid(width, height, 1f, finalRoomPosition);
+        _path = _grid.GetPath(new Vector3(width / 2f, 0f, height / 2f), finalRoomPosition);
 
-        _GenerateMainPath(path);
+        _GenerateMainPath(_path);
         _GenerateUniqueBranches();
 
         //_dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
@@ -68,8 +71,17 @@ public class MapGenerator : MonoBehaviour
         {
             GameObject room = _SpawnUniqueRoom();
             room.transform.position = _GetRandomRoomPosition();
-            _takenPositions.Add(room.transform.position);
+            Vector3 start = _GetRandomNode();
+            _path = _grid.GetPath(start, room.transform.position);
+            _uniquePositions.Add(room.transform.position);
+            _GenerateMainPath(_path);
         }
+    }
+
+    private Vector3 _GetRandomNode()
+    {
+        int index = Random.Range(0, _takenPositions.Count);
+        return _takenPositions[index];
     }
 
     private void _GenerateMainPath(List<Node> path)
@@ -89,22 +101,25 @@ public class MapGenerator : MonoBehaviour
                 Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
                 visualNode.transform.rotation = rotation;
                 visualNode.transform.parent = _dungeonContainer.transform;
+                _takenPositions.Add(visualNode.transform.position);
             }
         }
+        path.Clear();
+        _path.Clear();
     }
 
     private void _SpawnStart()
     {
         GameObject room = _SpawnUniqueRoom("Spawn");
         room.transform.position = new Vector3(width / 2f, 0f, height / 2f);
-        _takenPositions.Add(room.transform.position);
+        _uniquePositions.Add(room.transform.position);
     }
 
     private Vector3 _SpawnFinal()
     {
         GameObject room = _SpawnUniqueRoom("Final");
         room.transform.position = _GetRandomRoomPosition();
-        _takenPositions.Add(room.transform.position);
+        _uniquePositions.Add(room.transform.position);
         return room.transform.position;
     }
 
@@ -136,7 +151,7 @@ public class MapGenerator : MonoBehaviour
             y = Random.Range(1, height);
             position = new Vector3(x, 0f, y);
         }
-        while (!NodeValidator.CanSpawnHere(_takenPositions, position, minXDistance));
+        while (!NodeValidator.CanSpawnHere(_uniquePositions, position, minXDistance));
 
         return position;
     }
