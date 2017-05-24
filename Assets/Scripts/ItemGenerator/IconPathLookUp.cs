@@ -14,7 +14,7 @@ namespace ItemGeneratorHelpers{
 
         public string GetPathName(EItemType itemType) {
             switch(itemType) {
-                case EItemType.AMULET:
+                case EItemType.ACCESSORY:
                     return itemPathRoot + amuletPath;
                 case EItemType.ARMOR:
                     return itemPathRoot + armorPath;
