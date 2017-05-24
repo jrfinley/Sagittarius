@@ -90,11 +90,14 @@ public class TestCharacterFunctions : MonoBehaviour
         if (testMode == TestModes.Character_Trainer)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
-                characterTrainer.AddCharacter(characterManager.allCharacters[0], timeToTrain, goldToUse, true, true, false, false);
+                characterTrainer.AddCharacter(characterManager.allCharacters[4], timeToTrain, goldToUse, 1, 1, 1, 1);
             else if (Input.GetKeyDown(KeyCode.Alpha2))
-                characterTrainer.AddCharacter(characterManager.allCharacters[1], timeToTrain, goldToUse, true, true, false, false);
+                characterTrainer.AddCharacter(characterManager.allCharacters[1], timeToTrain, goldToUse, 1, 1, 1, 1);
             if (Input.GetKeyDown(KeyCode.Alpha3))
-                characterTrainer.AddCharacter(characterManager.allCharacters[2], timeToTrain, goldToUse, true, true, false, false);
+                characterTrainer.AddCharacter(characterManager.allCharacters[2], timeToTrain, goldToUse, 1, 1, 1, 1);
+
+            if (characterTrainer.trainingCharacters.Count > 0)
+                print(characterTrainer.trainingCharacters[0].character.Name);
         }
     }
 }
