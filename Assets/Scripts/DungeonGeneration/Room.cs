@@ -25,6 +25,8 @@ public class Room : MonoBehaviour
     [SerializeField] protected ConnectionData _connections;
     public ConnectionData Connections { get { return _connections; } }
 
+    public bool normalSize;
+
     private void _RemoveConnection(Transform connectionToRemove)
     {
         List<Transform> list = _GetListToRemove(connectionToRemove);

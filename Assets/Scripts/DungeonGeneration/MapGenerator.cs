@@ -70,12 +70,34 @@ public class MapGenerator : MonoBehaviour
         while (_uniqueRooms.Count > 0)
         {
             GameObject room = _SpawnUniqueRoom();
+
             room.transform.position = _GetRandomRoomPosition();
+
+            if (!room.GetComponent<Room>().normalSize)
+            {
+                room.transform.position += _GetQuadOffset(room.transform.position);
+            }
+
             Vector3 start = _GetRandomNode();
             _path = _grid.GetPath(start, room.transform.position);
             _uniquePositions.Add(room.transform.position);
             _GenerateMainPath(_path);
         }
+    }
+
+    private Vector3 _GetQuadOffset(Vector3 onePosition)
+    {
+        float x = 0.5f;
+        float y = 0.5f;
+
+        if (Random.value > 0.5f)
+            x *= -1;
+        if (Random.value > 0.5f)
+            y *= -1;
+
+        Vector3 offset = new Vector3(x, 0f, y);
+        Debug.Log(offset);
+        return offset;
     }
 
     private Vector3 _GetRandomNode()
