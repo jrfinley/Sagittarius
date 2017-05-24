@@ -2,6 +2,6 @@
     CONSUMABLE,
     HELD,
     ARMOR,
-    AMULET,
+    ACCESSORY,
     QUEST
 };
