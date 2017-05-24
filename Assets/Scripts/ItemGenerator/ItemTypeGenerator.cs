@@ -23,7 +23,7 @@ namespace ItemGeneratorHelpers {
                     return (EEquipmentType)Random.Range(etHeld, etArmor);
                 case EItemType.ARMOR:
                     return (EEquipmentType)Random.Range(etArmor, etAmulet);
-                case EItemType.AMULET:
+                case EItemType.ACCESSORY:
                     return (EEquipmentType)Random.Range(etAmulet, etQuest);
                 case EItemType.QUEST:
                     return (EEquipmentType)Random.Range(etQuest, etEnd);
