@@ -5,31 +5,24 @@ using UnityEngine;
 
 public class BaseMonster : MonoBehaviour
 {
-    public EMonsterType monsterType;
-
-    public int level;
-
     private bool dead;
 
     public int maxHealth,
                 health,
                 attack,
+                monsterPosition,
+                level,
                 defense;
 
     public GameObject loot;
 
     [SerializeField]
     private Sprite icon;
-
-    void Start()
+    private string monsterName;
+    public void InitializeMonster(string _name, int _level)
     {
-        InitializeMonster();
-        
-    }
-
-    void InitializeMonster()
-    {       
-        SetStats();
+        Name = _name;
+        Level = _level;
     }
     void SetStats()
     {
@@ -115,6 +108,36 @@ public class BaseMonster : MonoBehaviour
     public void SetIcon(Sprite newIcon)
     {
         icon = newIcon;
+    }
+    public int PartyPosition
+    {
+        get { return monsterPosition; }
+        set { monsterPosition = value; }
+    }
+    public string Name
+    {
+        get { return monsterName; }
+        set { monsterName = value; }
+    }
+    public Sprite Icon
+    {
+        get { return icon; }
+        set { icon = value; }
+    }
+    public EMonsterType monsterType
+    {
+        get { return monsterType; }
+        set { monsterType = value; }
+    }
+
+    public int Level
+    {
+        get { return level; }
+        set
+        {
+            level = value;
+            SetStats();
+        }
     }
     public int Health
     {

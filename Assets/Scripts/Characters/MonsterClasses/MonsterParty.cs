@@ -28,16 +28,27 @@ public class MonsterParty : MonoBehaviour
     private bool isMoving;
 
     private Room currentRoom;
+
     private PlayerEventManager eventManager;
 
+    private MonsterManager monsterManager;
+   
     void Start ()
-    {        
+    {
+        InitializeParty();
+    }
+
+    void InitializeParty()
+    {
         rb = GetComponent<Rigidbody>();
         monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];
+
+
         movePosition = transform.position;
         eventManager = FindObjectOfType<PlayerEventManager>();
         //eventManager.OnPlayerMove += RandomizeMoveInput;
     }
+
     private void OnDisable()
     {
         eventManager.OnPlayerMove -= RandomizeMoveInput;
@@ -169,17 +180,6 @@ public class MonsterParty : MonoBehaviour
         get { return icon; }
         set { icon = value; }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     //Testing
     /*public void Move ()

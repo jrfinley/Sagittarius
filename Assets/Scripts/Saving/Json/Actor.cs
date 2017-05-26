@@ -11,6 +11,7 @@ using System.Text;
 using UnityEngine.Experimental.Networking;
 using UnityEngine.Networking.Match;
 using System.IO;
+using GameSparks.Api.Messages;
 
 // paste this to libraries - 
 
@@ -48,25 +49,34 @@ public class Actor : MonoBehaviour
     {
         gameController = FindObjectOfType<GameController>();
         //main
-        if (Application.loadedLevel == 2)
-        {
-            StartCoroutine(AllowAutoAddParty());
-        }
+
+        StartCoroutine(AllowAutoAddParty());
     }
 
     #region coroutine call
     IEnumerator AllowAutoAddParty()
     {
         yield return new WaitForSeconds(.31f);
-        characterManager = FindObjectOfType<CharacterManager>();
-        playerParty = FindObjectOfType<PlayerParty>();
-        data.playerParty = FindObjectOfType<PlayerParty>();
-        inventoryDisplay = FindObjectOfType<InventoryDisplay>();
-        inventoryItem = FindObjectsOfType<InventoryItem>();
-        currencyManager = GetComponent<CurrencyManager>();
-        currencyUI = FindObjectOfType<CurrencyUI>();
-        fogOfWar = FindObjectOfType<FOW>();
-        equipItems = FindObjectsOfType<EquipItems>();
+        if(Application.loadedLevel == 2)
+        {
+            characterManager = FindObjectOfType<CharacterManager>();
+            playerParty = FindObjectOfType<PlayerParty>();
+            data.playerParty = FindObjectOfType<PlayerParty>();
+            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
+            inventoryItem = FindObjectsOfType<InventoryItem>();
+            currencyManager = GetComponent<CurrencyManager>();
+            currencyUI = FindObjectOfType<CurrencyUI>();
+            fogOfWar = FindObjectOfType<FOW>();
+            equipItems = FindObjectsOfType<EquipItems>();
+        }
+        else if(Application.loadedLevel == 1)
+        {
+            characterManager = FindObjectOfType<CharacterManager>();
+            playerParty = FindObjectOfType<PlayerParty>();
+            currencyManager = GetComponent<CurrencyManager>();
+            currencyUI = FindObjectOfType<CurrencyUI>();
+        }
+
     }
     #endregion
 
@@ -88,7 +98,7 @@ public class Actor : MonoBehaviour
 
             //inventoryDisplay = FindObjectOfType<InventoryDisplay>();
             //inventoryItem = FindObjectsOfType<InventoryItem>();
-         
+
             //stores item/ inventory info
             if (inventoryDisplay != null)
             {
@@ -103,13 +113,8 @@ public class Actor : MonoBehaviour
                 }
             }
         }
-       
-       
-        
-
-        
-
         //Saves Character info
+
         //0
         data.characterName0 = characterManager.allCharacters[0].Name;
         data.characterLevel0 = characterManager.allCharacters[0].Level;
@@ -255,102 +260,124 @@ public class Actor : MonoBehaviour
             data.characterInParty3 = false;
             data.character3PartyPosition = -5;
         }
-
-        
-        /*
-          GameSparks, *NOTE: While gamesparks storage is working fine, i comment out this code during pushes because, if 
-                       you don't start from gamesparks login scene, saving will give you errors, as it should, 
-                       cause you are not able to save your info to the cloud if that is the case ;) 
-        */
-
-        #region GameSparks Code
-        /*if (System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "actors.json")))
-        {
-            GSRequestData DATA = new GSRequestData();
-            Debug.Log("DATA: " + DATA.ToString());
-
-            new GameSparks.Api.Requests.LogEventRequest()
-                .SetEventKey("actors")
-                .SetEventAttribute("POS", data.pos.ToString())
-                //currencies
-                .SetEventAttribute("GOLD", (long)data.goldValue)
-                .SetEventAttribute("SCRAP", (long)data.scrapValue)
-                .SetEventAttribute("FOOD", (long)data.foodValue)
-                //item info
-                .SetEventAttribute("IDS", data.ids)
-                .SetEventAttribute("ITEMS", data.items.ToString())
-                //seed
-                .SetEventAttribute("SEED", data.seed)
-                //character 0 info
-                .SetEventAttribute("CHARNAMEZERO", data.characterName0)
-                .SetEventAttribute("CHARLEVELZERO", data.characterLevel0)
-                .SetEventAttribute("CHARHealthZERO", data.characterHealth0)
-                .SetEventAttribute("CHARSTRENGTHZERO", data.characterStrength0)
-                .SetEventAttribute("CHARDEXTERITYZERO", data.characterDexterity0)
-                .SetEventAttribute("CHARINTELLECTZERO", data.characterIntellect0)
-                .SetEventAttribute("CHAREXPERIENCEZERO", data.characterExperience0)
-                .SetEventAttribute("CHAREQUIPCAPZERO", data.characterEquipCap0)
-                .SetEventAttribute("CHARUNLOCKEDZERO", data.characterUnlocked0.ToString())
-                .SetEventAttribute("CHARINPARTYZERO", data.characterInParty0.ToString())
-                .SetEventAttribute("CHARPARTYPOSITIONZERO", data.character0PartyPosition)
-                //character 1 info
-                .SetEventAttribute("CHARNAMEONE", data.characterName1)
-                .SetEventAttribute("CHARLEVELONE", data.characterLevel1)
-                .SetEventAttribute("CHARHealthONE", data.characterHealth1)
-                .SetEventAttribute("CHARSTRENGTHONE", data.characterStrength1)
-                .SetEventAttribute("CHARDEXTERITYONE", data.characterDexterity1)
-                .SetEventAttribute("CHARINTELLECTONE", data.characterIntellect1)
-                .SetEventAttribute("CHAREXPERIENCEONE", data.characterExperience1)
-                .SetEventAttribute("CHAREQUIPCAPONE", data.characterEquipCap1)
-                .SetEventAttribute("CHARUNLOCKEDONE", data.characterUnlocked1.ToString())
-                .SetEventAttribute("CHARINPARTYONE", data.characterInParty1.ToString())
-                .SetEventAttribute("CHARPARTYPOSITIONONE", data.character1PartyPosition)
-                //character 2 info
-                .SetEventAttribute("CHARNAMETWO", data.characterName2)
-                .SetEventAttribute("CHARLEVELTWO", data.characterLevel2)
-                .SetEventAttribute("CHARHealthTWO", data.characterHealth2)
-                .SetEventAttribute("CHARSTRENGTHTWO", data.characterStrength2)
-                .SetEventAttribute("CHARDEXTERITYTWO", data.characterDexterity2)
-                .SetEventAttribute("CHARINTELLECTTWO", data.characterIntellect2)
-                .SetEventAttribute("CHAREXPERIENCETWO", data.characterExperience2)
-                .SetEventAttribute("CHAREQUIPCAPTWO", data.characterEquipCap2)
-                .SetEventAttribute("CHARUNLOCKEDTWO", data.characterUnlocked2.ToString())
-                .SetEventAttribute("CHARINPARTYTWO", data.characterInParty2.ToString())
-                .SetEventAttribute("CHARPARTYPOSITIONTWO", data.character2PartyPosition)
-                //character 3 info
-                .SetEventAttribute("CHARNAMETHREE", data.characterName3)
-                .SetEventAttribute("CHARLEVELTHREE", data.characterLevel3)
-                .SetEventAttribute("CHARHealthTHREE", data.characterHealth3)
-                .SetEventAttribute("CHARSTRENGTHTHREE", data.characterStrength3)
-                .SetEventAttribute("CHARDEXTERITYTHREE", data.characterDexterity3)
-                .SetEventAttribute("CHARINTELLECTTHREE", data.characterIntellect3)
-                .SetEventAttribute("CHAREXPERIENCETHREE", data.characterExperience3)
-                .SetEventAttribute("CHAREQUIPCAPTHREE", data.characterEquipCap3)
-                .SetEventAttribute("CHARUNLOCKEDTHREE", data.characterUnlocked3.ToString())
-                .SetEventAttribute("CHARINPARTYTHREE", data.characterInParty3.ToString())
-                .SetEventAttribute("CHARPARTYPOSITIONTHREE", data.character3PartyPosition)
-
-                .Send((response) =>
-                {
-                    if (!response.HasErrors)
-                    {
-                        string gsData = response.BaseData.GetString(DATA.ToString());
-                        Debug.Log("my result is: " + gsData);
-                    }
-                    else
-                    {
-                        Debug.Log("There are errors " + response.Errors);
-                    }
-                });
-        }*/
-        #endregion
+        StoreGameSparksData();
     }
     #endregion
 
     void LoadData()
     {
         LoadMainData();
-        LoadTownData();       
+        LoadTownData();     
+    }
+
+    void StoreGameSparksData()
+    {
+        /*
+          GameSparks, *NOTE: While gamesparks storage is working fine, i comment out this code during pushes because, if 
+                       you don't start from gamesparks login scene, saving will give you errors, as it should, 
+                       cause you are not able to save your info to the cloud if that is the case ;) 
+        */
+        #region GameSparks Code
+        /*
+        if (System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "actors.json")))
+        {
+            GSRequestData jsonDataToSend = new GSRequestData();
+
+            jsonDataToSend.Add("POS", data.pos.ToString());
+            jsonDataToSend.Add("GOLD", (long)data.goldValue);
+            jsonDataToSend.Add("SCRAP", (long)data.scrapValue);
+            jsonDataToSend.Add("FOOD", (long)data.foodValue);
+            jsonDataToSend.Add("IDS", data.ids);
+            jsonDataToSend.Add("ITEMS", data.items.ToString());
+            jsonDataToSend.Add("SEED", data.seed);
+            jsonDataToSend.Add("CHARNAMEZERO", data.characterName0);
+            jsonDataToSend.Add("CHARLEVELZERO", data.characterLevel0);
+            jsonDataToSend.Add("CHARHealthZERO", data.characterHealth0);
+            jsonDataToSend.Add("CHARSTRENGTHZERO", data.characterStrength0);
+            jsonDataToSend.Add("CHARDEXTERITYZERO", data.characterDexterity0);
+            jsonDataToSend.Add("CHARINTELLECTZERO", data.characterIntellect0);
+            jsonDataToSend.Add("CHAREXPERIENCEZERO", data.characterExperience0);
+            jsonDataToSend.Add("CHAREQUIPCAPZERO", data.characterEquipCap0);
+            jsonDataToSend.Add("CHARUNLOCKEDZERO", data.characterUnlocked0.ToString());
+            jsonDataToSend.Add("CHARINPARTYZERO", data.characterInParty0.ToString());
+            jsonDataToSend.Add("CHARPARTYPOSITIONZERO", data.character0PartyPosition);
+
+            jsonDataToSend.Add("CHARNAMEONE", data.characterName1);
+            jsonDataToSend.Add("CHARLEVELONE", data.characterLevel1);
+            jsonDataToSend.Add("CHARHealthONE", data.characterHealth1);
+            jsonDataToSend.Add("CHARSTRENGTHONE", data.characterStrength1);
+            jsonDataToSend.Add("CHARDEXTERITYONE", data.characterDexterity1);
+            jsonDataToSend.Add("CHARINTELLECTONE", data.characterIntellect1);
+            jsonDataToSend.Add("CHAREXPERIENCEONE", data.characterExperience1);
+            jsonDataToSend.Add("CHAREQUIPCAPONE", data.characterEquipCap1);
+            jsonDataToSend.Add("CHARUNLOCKEDONE", data.characterUnlocked1.ToString());
+            jsonDataToSend.Add("CHARINPARTYONE", data.characterInParty1.ToString());
+            jsonDataToSend.Add("CHARPARTYPOSITIONONE", data.character1PartyPosition);
+
+            jsonDataToSend.Add("CHARNAMETWO", data.characterName2);
+            jsonDataToSend.Add("CHARLEVELTWO", data.characterLevel2);
+            jsonDataToSend.Add("CHARHealthTWO", data.characterHealth2);
+            jsonDataToSend.Add("CHARSTRENGTHTWO", data.characterStrength2);
+            jsonDataToSend.Add("CHARDEXTERITYTWO", data.characterDexterity2);
+            jsonDataToSend.Add("CHARINTELLECTTWO", data.characterIntellect2);
+            jsonDataToSend.Add("CHAREXPERIENCETWO", data.characterExperience2);
+            jsonDataToSend.Add("CHAREQUIPCAPTWO", data.characterEquipCap2);
+            jsonDataToSend.Add("CHARUNLOCKEDTWO", data.characterUnlocked2.ToString());
+            jsonDataToSend.Add("CHARINPARTYTWO", data.characterInParty2.ToString());
+            jsonDataToSend.Add("CHARPARTYPOSITIONTWO", data.character2PartyPosition);
+
+            jsonDataToSend.Add("CHARNAMETWO", data.characterName2);
+            jsonDataToSend.Add("CHARLEVELTWO", data.characterLevel2);
+            jsonDataToSend.Add("CHARHealthTWO", data.characterHealth2);
+            jsonDataToSend.Add("CHARSTRENGTHTWO", data.characterStrength2);
+            jsonDataToSend.Add("CHARDEXTERITYTWO", data.characterDexterity2);
+            jsonDataToSend.Add("CHARINTELLECTTWO", data.characterIntellect2);
+            jsonDataToSend.Add("CHAREXPERIENCETWO", data.characterExperience2);
+            jsonDataToSend.Add("CHAREQUIPCAPTWO", data.characterEquipCap2);
+            jsonDataToSend.Add("CHARUNLOCKEDTWO", data.characterUnlocked2.ToString());
+            jsonDataToSend.Add("CHARINPARTYTWO", data.characterInParty2.ToString());
+            jsonDataToSend.Add("CHARPARTYPOSITIONTWO", data.character2PartyPosition);
+
+            jsonDataToSend.Add("CHARNAMETHREE", data.characterName3);
+            jsonDataToSend.Add("CHARLEVELTHREE", data.characterLevel3);
+            jsonDataToSend.Add("CHARHealthTHREE", data.characterHealth3);
+            jsonDataToSend.Add("CHARSTRENGTHTHREE", data.characterStrength3);
+            jsonDataToSend.Add("CHARDEXTERITYTHREE", data.characterDexterity3);
+            jsonDataToSend.Add("CHARINTELLECTTHREE", data.characterIntellect3);
+            jsonDataToSend.Add("CHAREXPERIENCETHREE", data.characterExperience3);
+            jsonDataToSend.Add("CHAREQUIPCAPTHREE", data.characterEquipCap3);
+            jsonDataToSend.Add("CHARUNLOCKEDTHREE", data.characterUnlocked3.ToString());
+            jsonDataToSend.Add("CHARINPARTYTHREE", data.characterInParty3.ToString());
+            jsonDataToSend.Add("CHARPARTYPOSITIONTHREE", data.character3PartyPosition);
+
+            new LogEventRequest().SetEventKey("getPlayerData")
+                .SetEventAttribute("jsonData", jsonDataToSend)
+                .Send((response) =>
+                {
+                    if (response.HasErrors)
+                    {
+
+                    }
+                    else
+                    {
+                        Debug.Log("Reponse Script Error :  " + response.ScriptData.GetGSData("container").GetGSDataList(jsonDataToSend.JSON)); 
+                        //Debug.Log("GameSparks gold Value: " + response.ScriptData.GetNumber("GOLD").HasValue);
+                        //data.goldValue = (float)jsonDataToSend.GetNumber("GOLD");
+                    }
+
+                });
+        }
+        else
+        {
+            Debug.Log("Continue without Gamesparks Save");
+        }
+        */
+        #endregion
+    }
+
+    public void GetGameSparksdata()
+    {
+        //
     }
 
     #region Load Main Scene Data
@@ -367,18 +394,18 @@ public class Actor : MonoBehaviour
 
             playerParty = FindObjectOfType<PlayerParty>();
 
-            if(data.seed != 0)
+            if (data.seed != 0)
             {
                 mapGen = FindObjectOfType<MapGenerator>();
                 mapGen.GenerateMap(data.seed);
             }
-            
+
 
             inventoryDisplay = FindObjectOfType<InventoryDisplay>();
             //loads item/ inventory info
-            if(data.items != null)
+            if (data.items != null)
             {
-                InventoryItem[] inSceneITems = FindObjectsOfType<InventoryItem>(); 
+                InventoryItem[] inSceneITems = FindObjectsOfType<InventoryItem>();
                 /*foreach(InventoryItem item in inSceneITems)
                 {
                     inventoryDisplay.items.Add(item);
@@ -484,7 +511,7 @@ public class Actor : MonoBehaviour
             else
             {
                 characterManager.allCharacters[2].PartyPosition = -1;
-            }        
+            }
             //3
             characterManager.allCharacters[3].IsPartyMember = data.characterInParty3;
             if (characterManager.allCharacters[3].IsPartyMember == true)
@@ -537,7 +564,7 @@ public class Actor : MonoBehaviour
 
             foreach (string id in data.ids)
             {
-          
+
                 ids.Add(id);
             }
             foreach (EEquipmentType type in data.itemTypes)
@@ -695,6 +722,8 @@ public class ActorData
     public int firstRun = 0;
 
     public int seed;
+
+    //public string userId;
 
     //player party statistics
     public PlayerParty playerParty;

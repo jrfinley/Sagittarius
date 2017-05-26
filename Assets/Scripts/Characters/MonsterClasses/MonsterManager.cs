@@ -1,0 +1,65 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class MonsterManager : MonoBehaviour
+{
+    public List<BaseMonster> allMonsters;
+    public List<MonsterParty> monsters;
+
+    private MonsterParty monsterParty;
+
+    void Start()
+    {
+        InitializeMonsterParty();
+    }
+
+    void InitializeMonsterParty()
+    {
+        monsterParty = FindObjectOfType<MonsterParty>();
+        FindAllMonsters();
+    }
+
+    public void FindAllMonsters()
+    {
+        allMonsters.Clear();
+        allMonsters.AddRange(GetComponents<BaseMonster>());
+        SortMonsters();
+    }
+
+    public void CreateMonster(EMonsterType monsterType, string name, int level)
+    {
+        BaseMonster newMonster = new BaseMonster();
+
+        switch (monsterType)
+        {
+            case EMonsterType.E_TEMP_ONE:
+                newMonster.InitializeMonster(name, level);
+                AddMonster(newMonster);
+                break;
+
+            case EMonsterType.E_TEMP_TWO:
+                newMonster.InitializeMonster(name, level);
+                AddMonster(newMonster);
+                break;
+
+            case EMonsterType.E_TEMP_THREE:
+                newMonster.InitializeMonster(name, level);
+                AddMonster(newMonster);
+                break;
+
+            case EMonsterType.E_TEMP_BOSS:
+                newMonster.InitializeMonster(name, level);
+                AddMonster(newMonster);
+                break;
+        }
+    }
+    void SortMonsters()
+    {
+        monsters.Clear();
+    }
+    void AddMonster(BaseMonster newMonster)
+    {
+        //monsters.Add(newMonster);
+    }
+}

@@ -55,7 +55,7 @@ public class InventoryItemDisplay : MonoBehaviour
         if(ui != null)
         {
             Item _item = item.item;
-            if (_item.Types.ItemType == EItemType.AMULET || _item.Types.ItemType == EItemType.ARMOR)
+            if (_item.Types.ItemType == EItemType.ACCESSORY || _item.Types.ItemType == EItemType.ARMOR)
                 ui.AddRemoveEquippedItem(_item, this); 
         }
     }

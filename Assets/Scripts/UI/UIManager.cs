@@ -32,7 +32,9 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
-        playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
+        GameObject pPartyGO = GameObject.FindGameObjectWithTag("Player");
+        if(pPartyGO != null)
+            playerParty = pPartyGO.GetComponent<PlayerParty>();
     }
 
     void Start()
@@ -40,16 +42,16 @@ public class UIManager : MonoBehaviour
         canvasScaler = GetComponent<CanvasScaler>();
         MasterMenuBacking.gameObject.SetActive(true);
         dialogueBox.gameObject.SetActive(true);
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
-        CreatePartyCards();
+        //CreatePartyCards();
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
         SetCurrencyScrap(0);
-        inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
+        if(playerParty != null)
+            inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         UpdateAllHeroStats();
         Canvas.ForceUpdateCanvases();
     }
@@ -71,7 +73,6 @@ public class UIManager : MonoBehaviour
     public void ToggleMenu()
     {
         isMenuOpen = !isMenuOpen;
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, BottomMarker.rect.position.y);
         if (!isMenuOpen)
         {
             CloseMenu();
@@ -85,13 +86,13 @@ public class UIManager : MonoBehaviour
     public void OpenMenu()
     {
         isMenuOpen = true;
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, 0);
         MasterMenuBacking.transform.localScale = Vector3.one;
         menuToggleButtons[0].SetActive(false);
         menuToggleButtons[1].SetActive(true);
         SelectHero(selectedHero);
         UpdateAllHeroStats();
-        inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
+        if(playerParty != null)
+            inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         Canvas.ForceUpdateCanvases();
     }
 
@@ -100,13 +101,22 @@ public class UIManager : MonoBehaviour
         foreach (HeroCard card in heroCards)
             Destroy(card.gameObject);
         heroCards.Clear();
+        if(playerParty == null)
+        {
+            return;
+        }
         foreach(BaseCharacter c in playerParty.characters)
         {
             GameObject tmp = Instantiate(emptyHeroCard, Vector3.zero, Quaternion.identity) as GameObject;
             tmp.transform.SetParent(heroCardAreaTransform);
             HeroCard card = tmp.GetComponent<HeroCard>();
             heroCards.Add(card);
-            card.icon = c.Icon;
+            if (c == null)
+            {
+                Debug.LogError("Characters in player party are null!");
+            }
+
+            card.icon = Resources.Load("UIIcons/placeholderChar_1", typeof(Sprite)) as Sprite;
         }
     }
 
@@ -118,7 +128,6 @@ public class UIManager : MonoBehaviour
     public void CloseMenu()
     {
         isMenuOpen = false;
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
@@ -149,6 +158,8 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHeroStats(int hero)
     {
+        if (playerParty == null)
+            return;
         if (playerParty.characters.Length < 1 || playerParty.characters[hero] == null)
             Debug.LogWarning("Player party is empty or hero index is out of range! No stats updated.");
         else
@@ -190,7 +201,7 @@ public class UIManager : MonoBehaviour
                     itemDisplay.Remove();
                 }
                 break;
-            case EItemType.AMULET:
+            case EItemType.ACCESSORY:
                 if (selectedPlayer != itemDisplay.item.equippedBy)
                 {
                     if (itemDisplay.item.equippedBy != null)

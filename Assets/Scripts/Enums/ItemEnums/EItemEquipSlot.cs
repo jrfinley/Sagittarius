@@ -5,5 +5,5 @@
     ONE_HAND,
     TWO_HAND,
     SHIELD,
-    AMULET
+    ACCESSORY
 };
