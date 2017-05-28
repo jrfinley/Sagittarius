@@ -3,6 +3,8 @@ using System.Collections;
 using ItemGeneratorHelpers;
 
 public static class ItemGenerator {
+    //todo: remove stats from ids because base stats
+
     #region Variables
     private static Item item = new Item(false);
 
