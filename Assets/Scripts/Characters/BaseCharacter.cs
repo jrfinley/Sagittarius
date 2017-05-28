@@ -68,7 +68,9 @@ public class BaseCharacter : MonoBehaviour
     {
         StatusEffectManager effectManager = FindObjectOfType<StatusEffectManager>();
 
-        if (savedStatusEffects.Count > 0)
+        statusEffects = savedStatusEffects;
+
+        if (statusEffects.Count > 0)
             for (int i = 0; i < statusEffects.Count; i++)
                 effectManager.AddStatusEffect(this, statusEffects[i]);
     }
