@@ -20,9 +20,11 @@ public class BaseCharacter : MonoBehaviour
                 strength,
                 dexterity,
                 intelect,
+                foodConsumption,
                 experience,
                 maxExperience,
                 equipmentCapacity,
+                characterWeight,
                 partyPosition;
 
     private float expMultiplier = 1;
@@ -33,6 +35,8 @@ public class BaseCharacter : MonoBehaviour
     [SerializeField]
     private Sprite icon;
 
+    private PlayerParty playerParty;
+
     public bool isUnlocked = true;
     public bool hasStatusEffect = false;
 
@@ -42,7 +46,11 @@ public class BaseCharacter : MonoBehaviour
     public Item leftHand;
     public Item rightHand;
     public Item amulet;
-    
+
+    private void Start()
+    {
+        playerParty = FindObjectOfType<PlayerParty>();
+    }
     void SetStats()
     {
         dead = false;
@@ -165,6 +173,10 @@ public class BaseCharacter : MonoBehaviour
         get { return isTraining; }
         set { isTraining = value; }
     }
+    public bool Dead
+    {
+        get { return dead; }
+    }
     public int Level
     {
         get { return level; }
@@ -188,7 +200,11 @@ public class BaseCharacter : MonoBehaviour
             health = Mathf.Clamp(health, 0, maxHealth);
 
             if (health == 0)
+            {
                 dead = true;
+                if (IsPartyMember)
+                    playerParty.equipmentLoad += characterWeight;
+            }
             else
                 dead = false;
         }
@@ -207,6 +223,11 @@ public class BaseCharacter : MonoBehaviour
     {
         get { return intelect; }
         set { intelect = value; }
+    }
+    public int FoodConsumption
+    {
+        get { return foodConsumption; }
+        set { foodConsumption = value; }
     }
     public int Experience
     {
@@ -228,6 +249,11 @@ public class BaseCharacter : MonoBehaviour
     {
         get { return equipmentCapacity; }
         set { equipmentCapacity = value; }
+    }
+    public int CharacterWeight
+    {
+        get { return characterWeight; }
+        set { characterWeight = value; }
     }
     public int PartyPosition
     {

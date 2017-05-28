@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class PlayerParty : MonoBehaviour
 {
+    public bool lockMovement = false;
+
     public int maxEquipmentLoad,
                equipmentLoad,
-               maxPartySize;
+               maxPartySize,
+               currentFood,
+               foodPerMove;
 
     public float moveSpeed;
     public float moveXAmount;
@@ -20,11 +24,11 @@ public class PlayerParty : MonoBehaviour
     public Rigidbody rb;
 
     private bool isMoving;
-    public bool lockMovement = false;
 
     private Sprite icon;
 
     private CharacterManager characterManager;
+    private StatusEffectManager statusEffectManager;
     private PlayerEventManager eventManager;
     private Room currentRoom;
 
@@ -34,35 +38,10 @@ public class PlayerParty : MonoBehaviour
         characters = new BaseCharacter[maxPartySize];
         movePosition = transform.position;
         characterManager = FindObjectOfType<CharacterManager>();
+        statusEffectManager = FindObjectOfType<StatusEffectManager>();
         eventManager = GetComponent<PlayerEventManager>();
+        eventManager.OnPlayerMove += EatFood;
     }
-    
-    //public void NewSetMoveDirection(InputDirection inputDirection)
-    //{
-    //    Vector3 oldPosition = transform.position;
-    //    Hallway[] tileHallways = currentTile.hallways;
-    //    Hallway selectedHallway;
-
-    //    for (int i = 0; i < tileHallways.Length; i++)
-    //    {
-    //        if (tileHallways[i].direction == inputDirection)
-    //        {
-    //            selectedHallway = tileHallways[i];
-    //            movePosition = selectedHallway.transform.position;
-    //            StartCoroutine(MovePlayer());
-    //        }
-    //    }
-
-    //    if (selectedHallway.hasBlocker)
-    //    {
-    //        //Do stat check stuff.
-    //        if(failedStatCheck)
-    //        {
-    //            movePosition = oldPosition;
-    //            StartCoroutine(MovePlayer());
-    //        }
-    //    }
-    //}
 
     public void SetMoveDirection(Vector3 moveDirection)
     {
@@ -144,6 +123,7 @@ public class PlayerParty : MonoBehaviour
                 characterManager.allCharacters[i].IsPartyMember = true;
                 characterManager.allCharacters[i].PartyPosition = partyPosition + 1;
                 maxEquipmentLoad += characterManager.allCharacters[i].EquipmentCapacity;
+                foodPerMove += characterManager.allCharacters[i].FoodConsumption;
                 return;
             }
             else if (i == characterManager.allCharacters.Count - 1)
@@ -158,11 +138,27 @@ public class PlayerParty : MonoBehaviour
         if (characters[partyPosition] == null)
             return;
 
+        if (characters[partyPosition].Dead)
+            equipmentLoad -= characters[partyPosition].CharacterWeight;
         maxEquipmentLoad -= characters[partyPosition].EquipmentCapacity;
+        foodPerMove -= characterManager.allCharacters[partyPosition].FoodConsumption;
         characters[partyPosition].IsPartyMember = false;
         characters[partyPosition] = null;
     }
 
+    void EatFood()
+    {
+        currentFood -= foodPerMove;
+
+        if (currentFood <= 0)
+        {
+            currentFood = 0;
+
+            for (int i = 0; i < characters.Length; i++)
+                if (characters[i] != null)
+                    statusEffectManager.AddStatusEffect(characters[i], 1);
+        }
+    }
     Room GetRoom(Vector3 checkPosition)
     {
         Room room = null;
