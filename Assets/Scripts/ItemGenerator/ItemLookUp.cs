@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using JsonJunk;
 
 namespace ItemGeneratorHelpers {
     public class ItemLookUp {
@@ -98,8 +99,18 @@ namespace ItemGeneratorHelpers {
 
         #region Properties
         public Dictionary<EEquipmentType, Item> ItemLookUpTable {
-            get { return itemLookUpTable; }
+            get {
+                if(itemLookUpTable == null)
+                    Initialize("JsonFiles/Items/Items");
+                return itemLookUpTable;
+            }
         }
         #endregion
+
+
+        public void Initialize(string fileLocation) {
+            ItemSpredsheetRow[] rows = JsonUtility.FromJson<ItemSpredsheetRowWrapper>(Resources.Load<TextAsset>(fileLocation).text).ItemSpreadsheetRow;
+
+        }
     }
 }
