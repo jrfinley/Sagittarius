@@ -30,11 +30,11 @@ public class TestJsonLoad : MonoBehaviour {
     }
 
     private TextAsset file;
-    public JsonWrapper.ItemSpredsheetRow rows;
+    public JsonWrapper rows;
 
     private void Start() {
-        TextAsset file = Resources.Load<TextAsset>("JsonFiles/Items/Test"); //Resources.Load<TextAsset>("JsonFiles/Items/ItemSpreadsheet");
+        TextAsset file = Resources.Load<TextAsset>("JsonFiles/Items/ItemSpreadsheet");
         Debug.Log(file.text);
-        rows = JsonUtility.FromJson<JsonWrapper.ItemSpredsheetRow>(file.name); //JsonUtility.FromJson<JsonWrapper>(file.name);
+        rows = JsonUtility.FromJson<JsonWrapper>(file.text);
     }
 }
