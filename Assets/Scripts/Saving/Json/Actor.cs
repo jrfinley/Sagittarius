@@ -112,6 +112,35 @@ public class Actor : MonoBehaviour
                     Debug.Log("Saved items");
                 }
             }
+
+            
+            
+            
+            //status effects
+            if (playerParty.characters[0] != null)
+            {
+                if (playerParty.characters[0].hasStatusEffect == true)
+                {
+                    data.hasStatusEffectCharacter0 = true;
+                    data.statusEffectsOnCharacter0 = playerParty.characters[0].statusEffects;
+                }
+            }
+            if (playerParty.characters[1] != null)
+            {
+                if (playerParty.characters[1].hasStatusEffect == true)
+                {
+                    data.hasStatusEffectCharacter1 = true;
+                    data.statusEffectsOnCharacter1 = playerParty.characters[1].statusEffects;
+                }
+            }
+            if (playerParty.characters[2] != null)
+            {
+                if (playerParty.characters[2].hasStatusEffect == true)
+                {
+                    data.hasStatusEffectCharacter2 = true;
+                    data.statusEffectsOnCharacter2 = playerParty.characters[2].statusEffects;
+                }
+            }
         }
         //Saves Character info
 
@@ -377,7 +406,7 @@ public class Actor : MonoBehaviour
 
     public void GetGameSparksdata()
     {
-        //
+        
     }
 
     #region Load Main Scene Data
@@ -526,8 +555,6 @@ public class Actor : MonoBehaviour
             {
                 characterManager.allCharacters[3].PartyPosition = -1;
             }
-
-
             //safty net of adding player to party since theres bug where he one gets deleted
             if (playerParty.characters[0] == null)
             {
@@ -540,6 +567,28 @@ public class Actor : MonoBehaviour
             if (playerParty.characters[2] == null)
             {
                 playerParty.characters[2] = characterManager.allCharacters[2];
+            }
+
+
+            //re-attach status effects
+            if(data.hasStatusEffectCharacter0 == true)
+            {
+                playerParty.characters[0].hasStatusEffect = true;             
+                playerParty.characters[0].InitializeStatusEffects(data.statusEffectsOnCharacter0);
+                data.hasStatusEffectCharacter0 = false;            
+            }
+
+            if (data.hasStatusEffectCharacter1 == true)
+            {
+                playerParty.characters[1].hasStatusEffect = true;
+                playerParty.characters[1].InitializeStatusEffects(data.statusEffectsOnCharacter1);
+                data.hasStatusEffectCharacter1 = false;
+            }
+            if (data.hasStatusEffectCharacter2 == true)
+            {
+                playerParty.characters[2].hasStatusEffect = true;
+                playerParty.characters[2].InitializeStatusEffects(data.statusEffectsOnCharacter2);
+                data.hasStatusEffectCharacter2 = false;
             }
         }
     }
@@ -727,6 +776,14 @@ public class ActorData
 
     //player party statistics
     public PlayerParty playerParty;
+
+    public bool hasStatusEffectCharacter2;
+    public List<int> statusEffectsOnCharacter2 = new List<int>();
+    public bool hasStatusEffectCharacter1;
+    public List<int> statusEffectsOnCharacter1 = new List<int>();
+    public bool hasStatusEffectCharacter0;
+    public List<int> statusEffectsOnCharacter0 = new List<int>();
+
     //npc 0
     public string characterName0;
     public int characterLevel0;
@@ -740,7 +797,7 @@ public class ActorData
     public bool characterUnlocked0;
     public bool characterInParty0;
     public int character0PartyPosition;
-
+  
     //npc 1
     public string characterName1;
     public int characterLevel1;
@@ -754,7 +811,6 @@ public class ActorData
     public bool characterUnlocked1;
     public bool characterInParty1;
     public int character1PartyPosition;
-
 
     //npc 2
     public string characterName2;
@@ -770,7 +826,6 @@ public class ActorData
     public bool characterInParty2;
     public int character2PartyPosition;
 
-
     //npc 3
     public string characterName3;
     public int characterLevel3;
@@ -781,9 +836,8 @@ public class ActorData
     public int characterExperience3;
     public int characterEquipCap3;
     public ECharacterType characterType3;
-    public bool characterUnlocked3;
+    public bool characterUnlocked3; 
     public bool characterInParty3;
     public int character3PartyPosition;
-
 }
 #endregion
