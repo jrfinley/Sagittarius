@@ -569,27 +569,52 @@ public class Actor : MonoBehaviour
                 playerParty.characters[2] = characterManager.allCharacters[2];
             }
 
-
+            #region
             //re-attach status effects
-            if(data.hasStatusEffectCharacter0 == true)
+            StatusEffectManager statusEffectManager = FindObjectOfType<StatusEffectManager>();
+
+            if (data.hasStatusEffectCharacter0 == true)
             {
-                playerParty.characters[0].hasStatusEffect = true;             
-                playerParty.characters[0].InitializeStatusEffects(data.statusEffectsOnCharacter0);
+                playerParty.characters[0].hasStatusEffect = true;
+                if(data.statusEffectsOnCharacter0[0] == 0 || data.statusEffectsOnCharacter0[1] == 0)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[0], 0);
+                }
+                if(data.statusEffectsOnCharacter0[0] == 1 || data.statusEffectsOnCharacter0[1] == 1) 
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[0], 1);
+                }
                 data.hasStatusEffectCharacter0 = false;            
             }
-
+            /*
             if (data.hasStatusEffectCharacter1 == true)
             {
                 playerParty.characters[1].hasStatusEffect = true;
-                playerParty.characters[1].InitializeStatusEffects(data.statusEffectsOnCharacter1);
+                if (data.statusEffectsOnCharacter1[0] == 0 || data.statusEffectsOnCharacter1[1] == 0)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[1], 0);
+                }
+                else if (data.statusEffectsOnCharacter1[0] == 1 || data.statusEffectsOnCharacter1[1] == 1)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[1], 1);
+                }
                 data.hasStatusEffectCharacter1 = false;
             }
             if (data.hasStatusEffectCharacter2 == true)
             {
                 playerParty.characters[2].hasStatusEffect = true;
-                playerParty.characters[2].InitializeStatusEffects(data.statusEffectsOnCharacter2);
+                if (data.statusEffectsOnCharacter2[0] == 0 || data.statusEffectsOnCharacter2[1] == 0)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[2], 0);
+                }
+                else if (data.statusEffectsOnCharacter2[0] == 1 || data.statusEffectsOnCharacter2[1] == 1)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[2], 1);
+                }
                 data.hasStatusEffectCharacter2 = false;
             }
+            */
+            #endregion
         }
     }
     #endregion
