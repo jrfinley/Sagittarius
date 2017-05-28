@@ -138,6 +138,8 @@ public class PlayerParty : MonoBehaviour
         if (characters[partyPosition] == null)
             return;
 
+        if (characters[partyPosition].Dead)
+            equipmentLoad -= characters[partyPosition].CharacterWeight;
         maxEquipmentLoad -= characters[partyPosition].EquipmentCapacity;
         foodPerMove -= characterManager.allCharacters[partyPosition].FoodConsumption;
         characters[partyPosition].IsPartyMember = false;
