@@ -28,9 +28,11 @@ public class MonsterParty : MonoBehaviour
     private bool isMoving;
 
     private Room currentRoom;
+
     private PlayerEventManager eventManager;
 
-
+    private MonsterManager monsterManager;
+   
     void Start ()
     {
         InitializeParty();
@@ -41,10 +43,6 @@ public class MonsterParty : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];
 
-        foreach (BaseMonster monster in monsters)
-        {
-            //monsters = new BaseMonster[monster];
-        }
 
         movePosition = transform.position;
         eventManager = FindObjectOfType<PlayerEventManager>();

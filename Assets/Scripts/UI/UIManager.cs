@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     public GameObject[] menuToggleButtons = new GameObject[2]; //0-Up, 1-Down
     public GameObject[] contentPanels; //0-Stats, 1 Gear, 2 Inventory
     public Text[] currencyTexts; //0-Gold, 1-Food, 2-Scrap
+    public GameObject emptyHeroCard;
+    public Transform heroCardAreaTransform;
     public List<HeroCard> heroCards = new List<HeroCard>();
     public Image[] heroIcons;
     int selectedHero = 0;
@@ -22,13 +24,17 @@ public class UIManager : MonoBehaviour
     public CharacterStats characterStats;
     public GearStats gearStats;
     public Inventory inventory;
+    public InventoryDisplay inventoryDisplay;
+    public GearPanel gear;
     CanvasScaler canvasScaler;
     PlayerParty playerParty;
 
 
     void Awake()
     {
-        playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
+        GameObject pPartyGO = GameObject.FindGameObjectWithTag("Player");
+        if(pPartyGO != null)
+            playerParty = pPartyGO.GetComponent<PlayerParty>();
     }
 
     void Start()
@@ -36,15 +42,16 @@ public class UIManager : MonoBehaviour
         canvasScaler = GetComponent<CanvasScaler>();
         MasterMenuBacking.gameObject.SetActive(true);
         dialogueBox.gameObject.SetActive(true);
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
+        //CreatePartyCards();
         SelectHero(selectedHero);
         SetCurrencyGold(0);
         SetCurrencyFood(0);
         SetCurrencyScrap(0);
-        inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
+        if(playerParty != null)
+            inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         UpdateAllHeroStats();
         Canvas.ForceUpdateCanvases();
     }
@@ -66,7 +73,6 @@ public class UIManager : MonoBehaviour
     public void ToggleMenu()
     {
         isMenuOpen = !isMenuOpen;
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, BottomMarker.rect.position.y);
         if (!isMenuOpen)
         {
             CloseMenu();
@@ -80,13 +86,38 @@ public class UIManager : MonoBehaviour
     public void OpenMenu()
     {
         isMenuOpen = true;
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, 0);
         MasterMenuBacking.transform.localScale = Vector3.one;
         menuToggleButtons[0].SetActive(false);
         menuToggleButtons[1].SetActive(true);
         SelectHero(selectedHero);
         UpdateAllHeroStats();
+        if(playerParty != null)
+            inventory.SetCarryWeight(playerParty.maxEquipmentLoad, 0);
         Canvas.ForceUpdateCanvases();
+    }
+
+    void CreatePartyCards()
+    {
+        foreach (HeroCard card in heroCards)
+            Destroy(card.gameObject);
+        heroCards.Clear();
+        if(playerParty == null)
+        {
+            return;
+        }
+        foreach(BaseCharacter c in playerParty.characters)
+        {
+            GameObject tmp = Instantiate(emptyHeroCard, Vector3.zero, Quaternion.identity) as GameObject;
+            tmp.transform.SetParent(heroCardAreaTransform);
+            HeroCard card = tmp.GetComponent<HeroCard>();
+            heroCards.Add(card);
+            if (c == null)
+            {
+                Debug.LogError("Characters in player party are null!");
+            }
+
+            card.icon = Resources.Load("UIIcons/placeholderChar_1", typeof(Sprite)) as Sprite;
+        }
     }
 
     public int GetSelectedHero()
@@ -97,7 +128,6 @@ public class UIManager : MonoBehaviour
     public void CloseMenu()
     {
         isMenuOpen = false;
-        //MasterMenuBacking.offsetMax = new Vector2(MasterMenuBacking.offsetMax.x, -canvasScaler.referenceResolution.y);
         MasterMenuBacking.transform.localScale = Vector3.zero;
         menuToggleButtons[0].SetActive(true);
         menuToggleButtons[1].SetActive(false);
@@ -123,10 +153,13 @@ public class UIManager : MonoBehaviour
         toggle = heroIcons[selectedHero].GetComponent<Toggle>();
         heroIcons[hero].GetComponent<Image>().color = toggle.colors.pressedColor;
         UpdateHeroStats(hero);
+        //gear.UpdateGear();
     }
 
     public void UpdateHeroStats(int hero)
     {
+        if (playerParty == null)
+            return;
         if (playerParty.characters.Length < 1 || playerParty.characters[hero] == null)
             Debug.LogWarning("Player party is empty or hero index is out of range! No stats updated.");
         else
@@ -149,6 +182,60 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void AddRemoveEquippedItem(Item item, InventoryItemDisplay itemDisplay) //Entire inventory system needs to be completely refactored. This level of script cross-talk shouldn't be necessary.
+    {
+        BaseCharacter selectedPlayer = GetSelectedCharacter();
+        switch (item.Types.ItemType)
+        {
+            case EItemType.ARMOR:
+                if (selectedPlayer != itemDisplay.item.equippedBy)
+                {
+                    if(itemDisplay.item.equippedBy != null)
+                        itemDisplay.item.equippedBy.RemoveItem(1); //Remove from previous character
+                    selectedPlayer.EquipItem(item, 1);
+                    itemDisplay.Equip(selectedPlayer);
+                }
+                else
+                {
+                    selectedPlayer.RemoveItem(1);
+                    itemDisplay.Remove();
+                }
+                break;
+            case EItemType.ACCESSORY:
+                if (selectedPlayer != itemDisplay.item.equippedBy)
+                {
+                    if (itemDisplay.item.equippedBy != null)
+                        itemDisplay.item.equippedBy.RemoveItem(4); 
+                    selectedPlayer.EquipItem(item, 4);
+                    itemDisplay.Equip(selectedPlayer);
+                }
+                else
+                {
+                    selectedPlayer.RemoveItem(4);
+                    itemDisplay.Remove();
+                }
+                break;
+            //case EItemType.WEAPON:
+            //    if (selectedPlayer != itemDisplay.item.equippedBy)
+            //    {
+            //        if (itemDisplay.item.equippedBy != null)
+            //            itemDisplay.item.equippedBy.RemoveItem(3); 
+            //        selectedPlayer.EquipItem(item, 3);
+            //        itemDisplay.Equip(selectedPlayer);
+            //    }
+            //    else
+            //    {
+            //        selectedPlayer.RemoveItem(3);
+            //        itemDisplay.Remove();
+            //    }
+            //    break;
+            default:
+                Debug.LogError("Attempted to equip unknown item type: " + item.Types.EquipSlot.ToString());
+                break;
+        }
+
+    }
+
     public void DisplayStatsPanel()
     {
         HideAllContentPanels();
@@ -160,12 +247,15 @@ public class UIManager : MonoBehaviour
     public void DisplayGearPanel()
     {
         HideAllContentPanels();
+        //gear.UpdateGear();
         contentPanels[1].SetActive(true);
     }
 
     public void DisplayInventoryPanel()
     {
         HideAllContentPanels();
+        if(playerParty != null)
+            inventory.SetCarryWeight(playerParty.maxEquipmentLoad, playerParty.equipmentLoad);
         contentPanels[2].SetActive(true);
     }
 
@@ -232,5 +322,10 @@ public class UIManager : MonoBehaviour
     public void SetCurrencyScrap(int value)
     {
         currencyTexts[2].text = value.ToString();
+    }
+
+    public BaseCharacter GetSelectedCharacter()
+    {
+        return playerParty.characters[selectedHero];
     }
 }

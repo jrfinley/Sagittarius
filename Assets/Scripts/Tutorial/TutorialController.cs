@@ -21,8 +21,6 @@ public class TutorialController : MonoBehaviour
     public GameObject cutsceneCam;
     public GameObject mainCam;
     public UIManager ui;
-    
-    public string[] oracleDialogueSetIntro01;
 
     void Awake()
     {
@@ -44,6 +42,14 @@ public class TutorialController : MonoBehaviour
         }
     }
 
+    public void OracleSpeakIntro_01()
+    {
+        ui.CreateNewDialogueBox("Hey... Hey wake up!!");
+        ui.CreateNewDialogueBox("Come on you pink cylindrical freak!");
+        ui.CreateNewDialogueBox("Finally...");
+        ui.CreateNewDialogueBox("Come on! Let's get out of here!", BeginTutorialPlaySession);
+    }
+
     public void BeginTutorialPlaySession()
     {
         tutorialState = TutorialState.PLAY_SESSION_1;
@@ -52,14 +58,6 @@ public class TutorialController : MonoBehaviour
         player.lockMovement = false;
         transition.SetColor(Color.clear);
         ui.CreateNewDialogueBox("This way! Swipe up and down to walk down the hall!");
-    }
-
-    public void OracleSpeakIntro_01()
-    {
-        ui.CreateNewDialogueBox(oracleDialogueSetIntro01[0]);
-        ui.CreateNewDialogueBox(oracleDialogueSetIntro01[1]);
-        ui.CreateNewDialogueBox(oracleDialogueSetIntro01[2]);
-        ui.CreateNewDialogueBox(oracleDialogueSetIntro01[3], BeginTutorialPlaySession);
     }
 
     public void PlayerGetSword()
