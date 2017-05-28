@@ -422,7 +422,7 @@ public class Actor : MonoBehaviour
             currencyManager.Food.Value = data.foodValue;
 
             playerParty = FindObjectOfType<PlayerParty>();
-
+            data.playerParty = FindObjectOfType<PlayerParty>();
             if (data.seed != 0)
             {
                 mapGen = FindObjectOfType<MapGenerator>();
@@ -569,24 +569,54 @@ public class Actor : MonoBehaviour
                 playerParty.characters[2] = characterManager.allCharacters[2];
             }
 
-            #region
-            //re-attach status effects
-            StatusEffectManager statusEffectManager = FindObjectOfType<StatusEffectManager>();
 
+            //re-attach status effects
             if (data.hasStatusEffectCharacter0 == true)
             {
                 playerParty.characters[0].hasStatusEffect = true;
-                if(data.statusEffectsOnCharacter0[0] == 0 || data.statusEffectsOnCharacter0[1] == 0)
+                playerParty.characters[0].InitializeStatusEffects(data.statusEffectsOnCharacter0);
+                data.hasStatusEffectCharacter0 = false;
+            }
+
+            if (data.hasStatusEffectCharacter1 == true)
+            {
+                playerParty.characters[1].hasStatusEffect = true;
+                playerParty.characters[1].InitializeStatusEffects(data.statusEffectsOnCharacter1);
+                data.hasStatusEffectCharacter1 = false;
+            }
+            if (data.hasStatusEffectCharacter2 == true)
+            {
+                playerParty.characters[2].hasStatusEffect = true;
+                playerParty.characters[2].InitializeStatusEffects(data.statusEffectsOnCharacter2);
+                data.hasStatusEffectCharacter2 = false;
+            }
+            #region
+            //re-attach status effects
+            StatusEffectManager statusEffectManager = FindObjectOfType<StatusEffectManager>();
+            /*
+            if (data.hasStatusEffectCharacter0 == true)
+            {
+                playerParty.characters[0].hasStatusEffect = true;
+                if(data.statusEffectsOnCharacter0[0] == 0)
                 {
                     statusEffectManager.AddStatusEffect(playerParty.characters[0], 0);
                 }
-                if(data.statusEffectsOnCharacter0[0] == 1 || data.statusEffectsOnCharacter0[1] == 1) 
+                else if (data.statusEffectsOnCharacter0[0] == 1)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[0], 1);
+                }
+
+                if (data.statusEffectsOnCharacter0[1] == 0)
+                {
+                    statusEffectManager.AddStatusEffect(playerParty.characters[0], 0);
+
+                } 
+                else if(data.statusEffectsOnCharacter0[1] == 1)
                 {
                     statusEffectManager.AddStatusEffect(playerParty.characters[0], 1);
                 }
                 data.hasStatusEffectCharacter0 = false;            
-            }
-            /*
+            }          
             if (data.hasStatusEffectCharacter1 == true)
             {
                 playerParty.characters[1].hasStatusEffect = true;
@@ -808,6 +838,17 @@ public class ActorData
     public List<int> statusEffectsOnCharacter1 = new List<int>();
     public bool hasStatusEffectCharacter0;
     public List<int> statusEffectsOnCharacter0 = new List<int>();
+
+    //character training values
+    public float characterTraining0Time;
+    public float characterTraining1Time;
+    public float characterTraining2Time;
+    public float characterTraining3Time;
+    public bool characterIsTraning0;
+    public bool characterIsTraning1;
+    public bool characterIsTraning2;
+    public bool characterIsTraning3;
+
 
     //npc 0
     public string characterName0;

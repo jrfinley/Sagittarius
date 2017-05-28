@@ -105,6 +105,7 @@ public class GenerateLoader : MonoBehaviour
     {
         yield return new WaitForSeconds(.21f);
         Instantiate(actorObj, transform.position, Quaternion.identity);
+        Destroy(gameObject);
         //dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
     }
 
