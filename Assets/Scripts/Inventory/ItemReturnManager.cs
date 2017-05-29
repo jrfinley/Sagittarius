@@ -27,11 +27,6 @@ public class ItemReturnManager : MonoBehaviour
             inventoryDisplay = FindObjectOfType<InventoryDisplay>();
             StartCoroutine(BeginReturningIDS());
         }
-        else if(Application.loadedLevel == 1)
-        {
-            //send info to reforge
-        }
-
         Actor[] actors = FindObjectsOfType<Actor>();
         for(int i = 1; i < actors.Length; i++)
         {
@@ -40,6 +35,18 @@ public class ItemReturnManager : MonoBehaviour
        
 	}
 
+    public void ItemReturnTown()
+    {
+        if (Application.loadedLevel == 1)
+        {
+            actor = FindObjectOfType<Actor>();
+            targetTransform = GameObject.Find("InventoryDisplay").transform;
+            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
+            StartCoroutine(BeginReturningIDS());
+            //send info to reforge
+        }
+    }
+
     IEnumerator BeginReturningIDS()
     {
         yield return new WaitForSeconds(.3f);
@@ -47,6 +54,7 @@ public class ItemReturnManager : MonoBehaviour
         foreach(string id in actor.data.ids)
         {
             ids.Add(id);
+            Debug.Log("Got to id");
         }
         foreach (EEquipmentType equipmentType in actor.data.itemTypes)
         {

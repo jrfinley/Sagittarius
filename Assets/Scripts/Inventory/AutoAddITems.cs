@@ -17,7 +17,8 @@ public class AutoAddITems : MonoBehaviour
 
     void Start()
     {
-        inventoryDisplay = GameObject.FindGameObjectWithTag("UI").GetComponent<UIManager>().inventoryDisplay;
+        inventoryDisplay = FindObjectOfType<InventoryDisplay>();
+        //inventoryDisplay = GameObject.FindGameObjectWithTag("UI").GetComponent<UIManager>().inventoryDisplay;
     }
 
     void OnTriggerEnter(Collider other)

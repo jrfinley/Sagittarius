@@ -18,4 +18,10 @@ public class InventoryDisplay : MonoBehaviour
             display.Prime(item);
         }
     }
+
+    public void ShowInventoryInTown()
+    {
+        ItemReturnManager itemReturn = FindObjectOfType<ItemReturnManager>();
+        itemReturn.ItemReturnTown();
+    }
 }

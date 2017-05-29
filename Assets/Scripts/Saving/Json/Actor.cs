@@ -12,7 +12,6 @@ using UnityEngine.Experimental.Networking;
 using UnityEngine.Networking.Match;
 using System.IO;
 using GameSparks.Api.Messages;
-
 // paste this to libraries - 
 
 public class Actor : MonoBehaviour
@@ -83,6 +82,30 @@ public class Actor : MonoBehaviour
     #region Save Data
     public void StoreData()
     {
+        //character training
+        CharacterTrainer trainingStruct = FindObjectOfType<CharacterTrainer>();
+        if(characterManager.allCharacters[0].IsTraining == true)
+        {
+            data.characterIsTraning0 = true;
+            data.characterTraining0Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+        }
+        if(characterManager.allCharacters[1].IsTraining == true)
+        {
+            data.characterIsTraning1 = true;
+            data.characterTraining1Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+        }
+        if (characterManager.allCharacters[2].IsTraining == true)
+        {
+            data.characterIsTraning2 = true;
+            data.characterTraining2Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+        }
+        if (characterManager.allCharacters[3].IsTraining == true)
+        {
+            data.characterIsTraning3 = true;
+            data.characterTraining3Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+        }
+
+
         if (Application.loadedLevel == 2)
         {
             string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
@@ -113,8 +136,6 @@ public class Actor : MonoBehaviour
                 }
             }
 
-            
-            
             
             //status effects
             if (playerParty.characters[0] != null)
@@ -296,7 +317,33 @@ public class Actor : MonoBehaviour
     void LoadData()
     {
         LoadMainData();
-        LoadTownData();     
+        LoadTownData();
+
+        CharacterTrainer trainingStruct = FindObjectOfType<CharacterTrainer>();
+        if (data.characterIsTraning0 == true)
+        {
+            trainingStruct.AddCharacter(characterManager.allCharacters[0], 1000, (int)currencyManager.Gold.Value,
+                characterManager.allCharacters[0].MaxHealth, characterManager.allCharacters[0].Dexterity, 
+                characterManager.allCharacters[0].Strength, characterManager.allCharacters[0].Intelect);
+        }
+        if (data.characterIsTraning1 == true)
+        {
+            trainingStruct.AddCharacter(characterManager.allCharacters[1], 1000, (int)currencyManager.Gold.Value,
+                characterManager.allCharacters[1].MaxHealth, characterManager.allCharacters[1].Dexterity, 
+                characterManager.allCharacters[1].Strength, characterManager.allCharacters[1].Intelect);
+        }
+        if (data.characterIsTraning2 == true)
+        {
+            trainingStruct.AddCharacter(characterManager.allCharacters[2], 1000, (int)currencyManager.Gold.Value,
+                characterManager.allCharacters[2].MaxHealth, characterManager.allCharacters[2].Dexterity, 
+                characterManager.allCharacters[2].Strength, characterManager.allCharacters[2].Intelect);
+        }
+        if (data.characterIsTraning3 == true)
+        {
+            trainingStruct.AddCharacter(characterManager.allCharacters[3], 1000, (int)currencyManager.Gold.Value,
+                characterManager.allCharacters[3].MaxHealth, characterManager.allCharacters[3].Dexterity, 
+                characterManager.allCharacters[3].Strength, characterManager.allCharacters[3].Intelect);
+        }
     }
 
     void StoreGameSparksData()
@@ -840,10 +887,10 @@ public class ActorData
     public List<int> statusEffectsOnCharacter0 = new List<int>();
 
     //character training values
-    public float characterTraining0Time;
-    public float characterTraining1Time;
-    public float characterTraining2Time;
-    public float characterTraining3Time;
+    public DateTime characterTraining0Time;
+    public DateTime characterTraining1Time;
+    public DateTime characterTraining2Time;
+    public DateTime characterTraining3Time;
     public bool characterIsTraning0;
     public bool characterIsTraning1;
     public bool characterIsTraning2;
