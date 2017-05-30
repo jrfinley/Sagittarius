@@ -202,8 +202,11 @@ public class BaseCharacter : MonoBehaviour
             if (health == 0)
             {
                 dead = true;
-                if (IsPartyMember)
-                    playerParty.equipmentLoad += characterWeight;
+
+                if (playerParty == null)
+                    playerParty = FindObjectOfType<PlayerParty>();
+
+                playerParty.equipmentLoad += characterWeight;
             }
             else
                 dead = false;
