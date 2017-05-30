@@ -10,7 +10,6 @@ public static class ItemGenerator {
     #region Variables
     private static Item item = new Item(false);
 
-    private static IconPathLookUp iconPathLookUp = new IconPathLookUp();
     private static ItemTypeGenerator itemTypeGenerator = new ItemTypeGenerator();
     private static ItemModifyerGenerator itemModifyerGenerator = new ItemModifyerGenerator();
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
@@ -22,6 +21,14 @@ public static class ItemGenerator {
     private static Dictionary<EEquipmentType, Item> baseItems = null;
 
     private static string baseItemsJsonPath = "JsonFiles/Items/BaseItems";
+
+    private static string itemIconPathRoot = "ItemIcons/";
+    private static string amuletIconsPath = "Amulets/";
+    private static string armorIconsPath = "Armor/";
+    private static string consumablesIconsPath = "Consumables/";
+    private static string weaponsIconsPath = "Weapons/";
+    private static string questIconsPath = "Quest/";
+    private static string defaultIcon = "Default_Icon";
     #endregion
 
     #region Properties
@@ -175,8 +182,22 @@ public static class ItemGenerator {
     private static EEquipmentType GenerateEquipmentType() {
         return itemTypeGenerator.GenereteRandomEquipmentType(itemTypeGenerator.GenerateRandomItemType());
     }
-    private static string GetIconPath(EItemType itemType, string baseIconPath) {
-        return iconPathLookUp.GetPathName(itemType) + baseIconPath;
+    private static string GetIconPath(EItemType itemType, string baseIconName) {
+        switch(itemType) {
+            case EItemType.ACCESSORY:
+                return itemIconPathRoot + amuletIconsPath + baseIconName;
+            case EItemType.ARMOR:
+                return itemIconPathRoot + armorIconsPath + baseIconName;
+            case EItemType.CONSUMABLE:
+                return itemIconPathRoot + consumablesIconsPath + baseIconName;
+            case EItemType.QUEST:
+                return itemIconPathRoot + questIconsPath + baseIconName;
+            case EItemType.HELD:
+                return itemIconPathRoot + weaponsIconsPath + baseIconName;
+            default:
+                Debug.LogError("Invalid item type");
+                return itemIconPathRoot + defaultIcon;
+        }
     }
 
     private static EItemRarity GenerateItemRarity() {
