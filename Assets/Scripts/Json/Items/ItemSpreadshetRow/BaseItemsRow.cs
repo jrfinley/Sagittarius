@@ -1,6 +1,6 @@
 ﻿namespace JsonJunk {
     [System.Serializable]
-    public class ItemSpredsheetRow {
+    public class BaseItemsRow {
         public string EEquipmentType;
         public string ItemName;
         public string FlavorText;
