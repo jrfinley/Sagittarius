@@ -63,6 +63,26 @@ public class CharacterTrainer : MonoBehaviour
             trainingCharacters.Add(_trainingCharacter);
         }
     }
+    public void LoadCharacter(BaseCharacter character, DateTime endTime, int healthIncrease, int dexterityIncrease, 
+                               int strengthIncrease, int intelectIncrease)
+    {
+        for (int i = 0; i < trainingCharacters.Count; i++)
+            if (trainingCharacters[i].character == character || character.IsPartyMember)
+                return;
+
+        TrainingCharacter _trainingCharacter = new TrainingCharacter();
+
+        character.IsTraining = true;
+        _trainingCharacter.character = character;
+        _trainingCharacter.startTime = DateTime.Now;
+        _trainingCharacter.endTime = endTime;
+        _trainingCharacter.healthIncrease = healthIncrease;
+        _trainingCharacter.dexterityIncrease = dexterityIncrease;
+        _trainingCharacter.strengthIncrease = strengthIncrease;
+        _trainingCharacter.intelectIncrease = intelectIncrease;
+
+        trainingCharacters.Add(_trainingCharacter);
+    }
 
     void RemoveCharacter(TrainingCharacter _trainingCharacter)
     {
