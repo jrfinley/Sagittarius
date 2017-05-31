@@ -92,7 +92,7 @@ public class ItemTypes {
     #region Contructors
     public ItemTypes() { }
     public ItemTypes(EItemType itemType, EEquipmentType equipmentType, EItemEquipSlot equipSlot, EItemWeightClass weightClass,
-            EWeaponDamageType damageType, EWeaponRange weaponRange, EItemRarity itemRarity, 
+            EWeaponDamageType damageType, EWeaponRange weaponRange, EItemRarity itemRarity = EItemRarity.COMMON, 
             EItemModifyer prefixItemModifyer = EItemModifyer.NONE, EItemModifyer suffixItemModifyer = EItemModifyer.NONE) {
         this.itemType = itemType;
         this.equipmentType = equipmentType;
@@ -100,6 +100,7 @@ public class ItemTypes {
         this.weightClass = weightClass;
         this.damageType = damageType;
         this.weaponRange = weaponRange;
+        //Following have defaults
         this.itemRarity = itemRarity;
         this.prefixItemModifyer = prefixItemModifyer;
         this.suffixItemModifyer = suffixItemModifyer;
