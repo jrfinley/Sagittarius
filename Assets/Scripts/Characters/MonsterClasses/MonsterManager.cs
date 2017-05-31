@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class MonsterManager : MonoBehaviour
 {
-    public List<BaseMonster> allMonsters;
-    public List<MonsterParty> monsters;
+    public List<BaseMonster> monsters;
 
     private MonsterParty monsterParty;
 
@@ -22,14 +21,14 @@ public class MonsterManager : MonoBehaviour
 
     public void FindAllMonsters()
     {
-        allMonsters.Clear();
-        allMonsters.AddRange(GetComponents<BaseMonster>());
-        SortMonsters();
+        monsters.AddRange(GetComponents<BaseMonster>());
+        //SortMonsters();
     }
 
     public void CreateMonster(EMonsterType monsterType, string name, int level)
     {
         BaseMonster newMonster = new BaseMonster();
+
 
         switch (monsterType)
         {
@@ -60,6 +59,6 @@ public class MonsterManager : MonoBehaviour
     }
     void AddMonster(BaseMonster newMonster)
     {
-        //monsters.Add(newMonster);
+        monsters.Add(newMonster);
     }
 }

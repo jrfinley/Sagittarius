@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class BaseMonster : MonoBehaviour
 {
+    private MonsterParty monsterParty;
+    private MonsterManager monsterManager;
+
     private bool dead;
 
     public int maxHealth,

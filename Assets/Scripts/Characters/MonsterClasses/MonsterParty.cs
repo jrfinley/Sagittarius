@@ -6,7 +6,8 @@ public class MonsterParty : MonoBehaviour
     public float moveXAmount,
                  moveZAmount;
 
-    public BaseMonster[] monsters;
+    public int minPartySize = 1,
+           maxPartySize = 6;
 
     public Rigidbody rb;
 
@@ -16,10 +17,8 @@ public class MonsterParty : MonoBehaviour
 
     private float rotationDamping = 10;
 
-    public int minPartySize = 1,
-               maxPartySize = 6;
-
     public float moveSpeed;
+
     public float posSnapDistance;
 
     [SerializeField]
@@ -32,7 +31,9 @@ public class MonsterParty : MonoBehaviour
     private PlayerEventManager eventManager;
 
     private MonsterManager monsterManager;
-   
+
+    public BaseMonster[] baseMonsters;
+
     void Start ()
     {
         InitializeParty();
@@ -41,8 +42,7 @@ public class MonsterParty : MonoBehaviour
     void InitializeParty()
     {
         rb = GetComponent<Rigidbody>();
-        monsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];
-
+        baseMonsters = new BaseMonster[Random.Range(minPartySize, maxPartySize)];
 
         movePosition = transform.position;
         eventManager = FindObjectOfType<PlayerEventManager>();
@@ -215,8 +215,10 @@ public class MonsterParty : MonoBehaviour
             Move();
         }
 
-    }*/
+    }
+        Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
 
-    //Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
+    */
+
 
 }
