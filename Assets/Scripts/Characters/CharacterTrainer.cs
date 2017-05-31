@@ -64,7 +64,7 @@ public class CharacterTrainer : MonoBehaviour
         }
     }
     public void LoadCharacter(BaseCharacter character, DateTime endTime, int healthIncrease, int dexterityIncrease, 
-                               int strengthIncrease, int intelectIncrease)
+                              int strengthIncrease, int intelectIncrease)
     {
         for (int i = 0; i < trainingCharacters.Count; i++)
             if (trainingCharacters[i].character == character || character.IsPartyMember)

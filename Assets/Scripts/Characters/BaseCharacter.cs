@@ -183,7 +183,7 @@ public class BaseCharacter : MonoBehaviour
         set
         {
             level = value;
-            SetStats();
+            //SetStats();
         }
     }
     public int MaxHealth
