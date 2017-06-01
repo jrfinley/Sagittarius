@@ -12,7 +12,6 @@ public static class ItemGenerator {
 
     private static ItemTypeGenerator itemTypeGenerator = new ItemTypeGenerator();
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
-    private static PredefinedItems predefinedItems = new PredefinedItems();
 
     private static int idVersion = 0;
     private static char seperationChar = '|';
@@ -21,10 +20,12 @@ public static class ItemGenerator {
 
     private static Dictionary<EEquipmentType, Item> baseItems = null;
     private static Dictionary<EItemModifyer, ItemModifyer> itemModifyers = null;
+    private static Dictionary<EPredefinedItem, PredefinedItem> predefinedItems = null;
 
     #region ResourcePaths
     private static string baseItemsJsonPath = "JsonFiles/Items/BaseItems";
     private static string itemModifyersJsonPath = "JsonFiles/Items/ItemModifyers";
+    private static string predefinedItemsJsonPath = "JsonFiles/Items/PredefinedItems";
 
     private static string itemIconPathRoot = "ItemIcons/";
     private static string amuletIconsPath = "Amulets/";
@@ -34,10 +35,6 @@ public static class ItemGenerator {
     private static string questIconsPath = "Quest/";
     private static string defaultIcon = "Default_Icon";
     #endregion
-    #endregion
-
-    #region Properties
-    public static PredefinedItems PredefinedItems { get { return predefinedItems; } }
     #endregion
 
     static ItemGenerator() {
@@ -108,13 +105,41 @@ public static class ItemGenerator {
         }
     }
     private static void InitializePredefinedItems() {
-
+        PredefinedItemRow[] rows = JsonUtility.FromJson<PredefinedItemRowWrapper>(Resources.Load<TextAsset>(predefinedItemsJsonPath).text).PredefinedItemsRow;
+        ItemStats stats = new ItemStats();
+        EPredefinedItem predefinedItem;
+        EEquipmentType equipmentType;
+        EItemRarity rarity;
+        EItemModifyer prefixModifyer;
+        EItemModifyer suffixModifyer;
+        predefinedItems = new Dictionary<EPredefinedItem, PredefinedItem>();
+        foreach(PredefinedItemRow row in rows) {
+            //Set stats values
+            stats.Health = row.Health;
+            stats.Attack = row.Attack;
+            stats.Strength = row.Strength;
+            stats.Intelect = row.Intelect;
+            stats.Dexterity = row.Dexterity;
+            stats.Durability = row.Durability;
+            stats.Weight = row.Weight;
+            stats.EquipLoad = row.EquipLoad;
+            stats.GoldValue = row.GoldValue;
+            stats.ScrapValue = row.ScrapValue;
+            //Parse enums
+            predefinedItem = (EPredefinedItem)System.Enum.Parse(typeof(EPredefinedItem), row.EPredefinedItem);
+            equipmentType = (EEquipmentType)System.Enum.Parse(typeof(EEquipmentType), row.EEquipmentType);
+            rarity = (EItemRarity)System.Enum.Parse(typeof(EItemRarity), row.Rarity);
+            prefixModifyer = (EItemModifyer)System.Enum.Parse(typeof(EItemModifyer), row.PrefixModifyer);
+            suffixModifyer = (EItemModifyer)System.Enum.Parse(typeof(EItemModifyer), row.SuffixModifyer);
+            //Create new PredefinedItem and add to dictionary
+            predefinedItems.Add(predefinedItem, new PredefinedItem(row.Level, row.Seed, equipmentType, rarity, prefixModifyer, suffixModifyer, row.PrefixIndex, row.SuffexIndex, row.OverrideBaseStats, stats));
+        }
     }
     #endregion
 
     #region ItemGeneration
     public static Item GeneratePredefinedItem(EPredefinedItem predefinedItem) {
-        PredefinedItem pdItem = predefinedItems.PredefinedItem[predefinedItem];
+        PredefinedItem pdItem = predefinedItems[predefinedItem];
         item = new Item(baseItems[pdItem.EquipmentType]);
         item.Seed = pdItem.Seed;
         item.Types.Rarity = pdItem.Rarity;

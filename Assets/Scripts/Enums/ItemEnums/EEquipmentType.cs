@@ -15,5 +15,5 @@
     HELMET,
     ARMOR,
     AMULET,
-    TEST_QEUST_ITEM
+    TEST_QUEST_ITEM
 };

@@ -3,10 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class TestItem : MonoBehaviour {
-    public KeyCode predefinedOne = KeyCode.Alpha1;
-    public KeyCode predefinedTwo = KeyCode.Alpha2;
-    public KeyCode predefinedThree = KeyCode.Alpha3;
-    public KeyCode predefinedFour = KeyCode.Alpha4;
+    public KeyCode predefinedKey = KeyCode.Alpha1;
     public KeyCode generateItemKey = KeyCode.Space;
     public KeyCode idToItem = KeyCode.Tab;
     private Item item;
@@ -25,14 +22,8 @@ public class TestItem : MonoBehaviour {
             GenerateNewItem();
         if(Input.GetKeyDown(idToItem))
             RecreateItem();
-        if(Input.GetKeyDown(predefinedOne))
-            GeneratePredefinedNoMods();
-        if(Input.GetKeyDown(predefinedTwo))
-            GeneratePredefinedMods();
-        if(Input.GetKeyDown(predefinedThree))
-            GeneratePredefinedBaseNoMods();
-        if(Input.GetKeyDown(predefinedFour))
-            GeneratePredefinedBaseMods();
+        if(Input.GetKeyDown(predefinedKey))
+            GeneratePredefined();
     }
 
     private void GenerateNewItem() {
@@ -43,20 +34,8 @@ public class TestItem : MonoBehaviour {
         item = ItemGenerator.IDToItem(item.ID);
         DebugAndDisplay();
     }
-    private void GeneratePredefinedNoMods() {
-        item = ItemGenerator.GeneratePredefinedItem(EPredefinedItem.TEST_QUEST_NO_MODS);
-        DebugAndDisplay();
-    }
-    private void GeneratePredefinedMods() {
-        item = ItemGenerator.GeneratePredefinedItem(EPredefinedItem.TEST_QUEST_MODS);
-        DebugAndDisplay();
-    }
-    private void GeneratePredefinedBaseNoMods() {
-        item = ItemGenerator.GeneratePredefinedItem(EPredefinedItem.TEST_QUEST_BASE_NO_MODS);
-        DebugAndDisplay();
-    }
-    private void GeneratePredefinedBaseMods() {
-        item = ItemGenerator.GeneratePredefinedItem(EPredefinedItem.TEST_QUEST_BASE_MODS);
+    private void GeneratePredefined() {
+        item = ItemGenerator.GeneratePredefinedItem(EPredefinedItem.TEST_QUEST);
         DebugAndDisplay();
     }
 
