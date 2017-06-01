@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using ItemGeneratorHelpers;
 using JsonJunk;
 
 public static class ItemGenerator {
@@ -9,8 +7,6 @@ public static class ItemGenerator {
 
     #region Variables
     private static Item item = new Item(false);
-
-    private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
 
     private static int idVersion = 0;
     private static char seperationChar = '|';
@@ -240,7 +236,7 @@ public static class ItemGenerator {
     }
     #endregion
 
-    #region ItemModifyers
+    #region ItemModifyersGenerator
     private static void GenerateIM(EItemRarity rarity, out EItemModifyer prefixIM, out EItemModifyer suffixIM) {
         bool getSuffix;
         int imToGen = Mathf.Clamp((int)rarity - 1, 0, 2);
@@ -299,7 +295,7 @@ public static class ItemGenerator {
     }
     #endregion
 
-    #region RandomTypeMethods
+    #region RandomTypesGenerator
     private static EEquipmentType GenerateEquipmentType() {
         return GenereteRandomEquipmentType(GenerateRandomItemType());
     }
@@ -325,6 +321,21 @@ public static class ItemGenerator {
     }
     private static EItemRarity GenerateItemRarity() {
         return (EItemRarity)(Random.Range((int)0, 4));
+    }
+    #endregion
+
+    #region ItemStatsCalculator
+    private static ItemStats CalculateItemStats(Item item) {
+        return CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
+    }
+    private static ItemStats CalculateItemStats(ItemStats baseStats, EItemRarity itemRarity, int itemLevel, int itemSeed) {
+        Random.seed = itemSeed;
+
+        baseStats.AddToAll((float)itemRarity * 2f);
+        baseStats.MultiplyByAll(Mathf.Sqrt(itemLevel + 1) + Random.Range(.8f, 1.2f));
+
+        Random.seed = (int)System.DateTime.Now.Ticks;
+        return new ItemStats(baseStats);
     }
     #endregion
 
@@ -370,10 +381,6 @@ public static class ItemGenerator {
 
     private static int GenerateItemLevel() {
         return Random.Range((int)0, 100);
-    }
-    
-    private static ItemStats CalculateItemStats(Item item) {
-        return itemStatsCalculator.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
     }
     #endregion
 }
