@@ -3,16 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ItemModifyer {
+    #region Variables
     private ItemStats statModifyer;
     private List<string> prefixes = new List<string>();
     private List<string> suffixes = new List<string>();
-    
+    #endregion
+
+    #region Properties
     public ItemStats StatModifyer {
         get { return statModifyer; }
         private set { statModifyer = value; }
     }
+    #endregion
 
-    public ItemModifyer() { }
+    #region Constructors
     public ItemModifyer(ItemStats statModifyer, string[] prefixes, string[] suffixes) {
         this.statModifyer = new ItemStats(statModifyer);
         this.prefixes.Capacity = prefixes.Length;
@@ -24,7 +28,9 @@ public class ItemModifyer {
             this.suffixes.Add(str);
         }
     }
+    #endregion
 
+    #region Mothods
     public string GetPrefix(out int i) {
         int r = Random.Range(0, prefixes.Count);
         i = r;
@@ -41,4 +47,5 @@ public class ItemModifyer {
     public string GetSuffix(int i) {
         return suffixes[i];
     }
+    #endregion
 }

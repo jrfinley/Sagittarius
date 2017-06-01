@@ -11,16 +11,20 @@ public static class ItemGenerator {
     private static Item item = new Item(false);
 
     private static ItemTypeGenerator itemTypeGenerator = new ItemTypeGenerator();
-    private static ItemModifyerGenerator itemModifyerGenerator = new ItemModifyerGenerator();
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
     private static PredefinedItems predefinedItems = new PredefinedItems();
 
     private static int idVersion = 0;
     private static char seperationChar = '|';
 
-    private static Dictionary<EEquipmentType, Item> baseItems = null;
+    private static char itemModifyerNameSplitChar = '%';
 
+    private static Dictionary<EEquipmentType, Item> baseItems = null;
+    private static Dictionary<EItemModifyer, ItemModifyer> itemModifyers = null;
+
+    #region ResourcePaths
     private static string baseItemsJsonPath = "JsonFiles/Items/BaseItems";
+    private static string itemModifyersJsonPath = "JsonFiles/Items/ItemModifyers";
 
     private static string itemIconPathRoot = "ItemIcons/";
     private static string amuletIconsPath = "Amulets/";
@@ -30,13 +34,21 @@ public static class ItemGenerator {
     private static string questIconsPath = "Quest/";
     private static string defaultIcon = "Default_Icon";
     #endregion
+    #endregion
 
     #region Properties
     public static PredefinedItems PredefinedItems { get { return predefinedItems; } }
     #endregion
 
     static ItemGenerator() {
-        //Initialize ItemLookUpTable
+        InitializeBaseItems();
+        InitializeItemModifyers();
+        InitializePredefinedItems();
+    }
+
+    #region Methods
+    #region InitializationMethods
+    private static void InitializeBaseItems() {
         BaseItemsRow[] rows = JsonUtility.FromJson<BaseItemsRowWrapper>(Resources.Load<TextAsset>(baseItemsJsonPath).text).BaseItemsRow;
         Item tmpItem = new Item(false);
         baseItems = new Dictionary<EEquipmentType, Item>();
@@ -67,8 +79,40 @@ public static class ItemGenerator {
             baseItems.Add(tmpItem.Types.EquipmentType, new Item(tmpItem));
         }
     }
+    private static void InitializeItemModifyers() {
+        ItemModifyersRow[] rows = JsonUtility.FromJson<ItemModifyersRowWrapper>(Resources.Load<TextAsset>(itemModifyersJsonPath).text).ItemModifyersRow;
+        ItemStats stats = new ItemStats();
+        string[] prefixes;
+        string[] suffixes;
+        EItemModifyer itemModifyer;
+        itemModifyers = new Dictionary<EItemModifyer, ItemModifyer>();
+        foreach(ItemModifyersRow row in rows) {
+            //Split PrefixNames and SuffixNames to get array of name modifyers
+            prefixes = row.PrefixNames.Split(itemModifyerNameSplitChar);
+            suffixes = row.SuffixNames.Split(itemModifyerNameSplitChar);
+            //Set values of stats
+            stats.Health = row.Health;
+            stats.Attack = row.Attack;
+            stats.Strength = row.Strength;
+            stats.Intelect = row.Intelect;
+            stats.Dexterity = row.Dexterity;
+            stats.Durability = row.Durability;
+            stats.Weight = row.Weight;
+            stats.EquipLoad = row.EquipLoad;
+            stats.GoldValue = row.GoldValue;
+            stats.ScrapValue = row.ScrapValue;
+            //Parse EItemModifyer
+            itemModifyer = (EItemModifyer)System.Enum.Parse(typeof(EItemModifyer), row.EItemModifyer);
+            //Create new ItemModifyer and add to dictionary
+            itemModifyers.Add(itemModifyer, new ItemModifyer(stats, prefixes, suffixes));
+        }
+    }
+    private static void InitializePredefinedItems() {
 
-    #region Methods
+    }
+    #endregion
+
+    #region ItemGeneration
     public static Item GeneratePredefinedItem(EPredefinedItem predefinedItem) {
         PredefinedItem pdItem = predefinedItems.PredefinedItem[predefinedItem];
         item = new Item(baseItems[pdItem.EquipmentType]);
@@ -82,8 +126,8 @@ public static class ItemGenerator {
         if(pdItem.OverrideBaseStats)
             item.Stats = new ItemStats(pdItem.Stats);
 
-        item.Name = itemModifyerGenerator.GetIMName(item.Name, pdItem.PrefixModifyer, pdItem.SuffixModifyer, pdItem.PrefixIndex, pdItem.SuffixIndex);
-        item.Stats = GetIMStats(item.Stats, pdItem.PrefixModifyer, pdItem.SuffixModifyer);
+        item.Name = GetItemModifyerName(item.Name, pdItem.PrefixModifyer, pdItem.SuffixModifyer, pdItem.PrefixIndex, pdItem.SuffixIndex);
+        item.Stats = GetItemModifyerStats(item.Stats, pdItem.PrefixModifyer, pdItem.SuffixModifyer);
         item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
         item.ID = GenerateID(item);
@@ -91,19 +135,24 @@ public static class ItemGenerator {
         return new Item(item, true);
     }
     public static Item GenerateRandomItem() {
+        EItemModifyer prefixIM = EItemModifyer.NONE;
+        EItemModifyer suffixIM = EItemModifyer.NONE;
         int prefixIndex = 0;
         int suffixIndex = 0;
 
         item = new Item(baseItems[GenerateEquipmentType()]);
         item.Level = GenerateItemLevel();
         item.Types.Rarity = GenerateItemRarity();
-        GenerateIM();
 
-        item.Name = GetIMName(item.Name, item.Types.PrefixModifyer, item.Types.SuffixModifyer, out prefixIndex, out suffixIndex);
+        GenerateIM(item.Types.Rarity, out prefixIM, out suffixIM);
+        item.Types.PrefixModifyer = prefixIM;
+        item.Types.SuffixModifyer = suffixIM;
+
+        item.Name = GetItemModifyerName(item.Name, item.Types.PrefixModifyer, item.Types.SuffixModifyer, out prefixIndex, out suffixIndex);
         item.PrefixIndex = prefixIndex;
         item.SuffixIndex = suffixIndex;
 
-        item.Stats = GetIMStats(item.Stats, item.Types.PrefixModifyer, item.Types.SuffixModifyer);
+        item.Stats = GetItemModifyerStats(item.Stats, item.Types.PrefixModifyer, item.Types.SuffixModifyer);
         item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
         item.Seed = Random.Range(0, 9999);
@@ -114,7 +163,14 @@ public static class ItemGenerator {
 
         return new Item(item, true);
     }
+    public static Item ReforgeItem(Item item, float successChance) {
+        item = new Item(item, false);
+        item.Types.Rarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.Types.Rarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
+        item.ID = GenerateID(item);
+        item.Stats = CalculateItemStats(item);
 
+        return new Item(item, true);
+    }
     public static Item IDToItem(string id) {
         string[] splits = id.Split(seperationChar);
         int[] values = new int[16];
@@ -138,7 +194,7 @@ public static class ItemGenerator {
         item.Types.SuffixModifyer = (EItemModifyer)values[4];
         item.PrefixIndex = values[5];
         item.SuffixIndex = values[6];
-        item.Name = itemModifyerGenerator.GetIMName(item.Name, item.Types.PrefixModifyer, item.Types.SuffixModifyer, values[5], values[6]);
+        item.Name = GetItemModifyerName(item.Name, item.Types.PrefixModifyer, item.Types.SuffixModifyer, values[5], values[6]);
         item.Stats = new ItemStats(item.Stats.Weight, values[7], values[8], values[9], values[10], values[11], item.Stats.EquipLoad, values[12], values[13], values[14]);
         item.Seed = values[15];
         item.Stats = CalculateItemStats(item);
@@ -147,6 +203,68 @@ public static class ItemGenerator {
         item.ID = id;
         return new Item(item, true);
     }
+    #endregion
+
+
+    #region ItemModifyers
+    private static void GenerateIM(EItemRarity rarity, out EItemModifyer prefixIM, out EItemModifyer suffixIM) {
+        bool getSuffix;
+        int imToGen = Mathf.Clamp((int)rarity - 1, 0, 2);
+
+        if(imToGen <= 0) {
+            prefixIM = EItemModifyer.NONE;
+            suffixIM = EItemModifyer.NONE;
+        }
+        else {
+            getSuffix = (Random.Range((int)0, 2) == 0);
+
+            if(imToGen == 1) {
+                if(getSuffix) {
+                    prefixIM = EItemModifyer.NONE;
+                    suffixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                }
+                else {
+                    suffixIM = EItemModifyer.NONE;
+                    prefixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                }
+            }
+            else {
+                suffixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+                prefixIM = (EItemModifyer)Random.Range(1, System.Enum.GetValues(typeof(EItemModifyer)).Length);
+            }
+        }
+    }
+    private static string GetItemModifyerName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, out int prefixIndex, out int suffixIndex) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputName = itemModifyers[prefixIM].GetPrefix(out prefixIndex) + " " + inputName;
+        else
+            prefixIndex = 0;
+        if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(out suffixIndex);
+        else
+            suffixIndex = 0;
+        return inputName;
+    }
+    private static string GetItemModifyerName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, int prefixIndex, int suffixIndex) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputName = itemModifyers[prefixIM].GetPrefix(prefixIndex) + " " + inputName;
+        if(suffixIM != EItemModifyer.NONE)
+            inputName = inputName + " " + itemModifyers[suffixIM].GetSuffix(suffixIndex);
+        return inputName;
+    }
+    private static ItemStats GetItemModifyerStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
+        if(prefixIM != EItemModifyer.NONE)
+            inputStats.AddStats(itemModifyers[prefixIM].StatModifyer);
+        else if(suffixIM != EItemModifyer.NONE)
+            inputStats.AddStats(itemModifyers[suffixIM].StatModifyer);
+        return inputStats;
+    }
+
+    private static ItemModifyer GetItemModifyer(EItemModifyer modifyer) {
+        return itemModifyers[modifyer];
+    }
+    #endregion
+
     private static string GenerateID(Item item) {
         return (
             idVersion.ToString("D3") + seperationChar +
@@ -167,16 +285,6 @@ public static class ItemGenerator {
             Mathf.FloorToInt(item.Stats.ScrapValue).ToString("D4") + seperationChar + //14
             item.Seed.ToString("D4") //15
         );
-    }
-
-    public static Item ReforgeItem(Item item, float successChance)
-    {
-        item = new Item(item, false);
-        item.Types.Rarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.Types.Rarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
-        item.ID = GenerateID(item);
-        item.Stats = CalculateItemStats(item);
-
-        return new Item(item, true);
     }
 
     private static EEquipmentType GenerateEquipmentType() {
@@ -205,21 +313,6 @@ public static class ItemGenerator {
     }
     private static int GenerateItemLevel() {
         return Random.Range((int)0, 100);
-    }
-    public static void GenerateIM() {
-        EItemModifyer prefixIM = EItemModifyer.NONE;
-        EItemModifyer suffixIM = EItemModifyer.NONE;
-
-        itemModifyerGenerator.GenerateIM(item.Types.Rarity, out prefixIM, out suffixIM);
-
-        item.Types.PrefixModifyer = prefixIM;
-        item.Types.SuffixModifyer = suffixIM;
-    }
-    public static string GetIMName(string inputName, EItemModifyer prefixIM, EItemModifyer suffixIM, out int prefixIndex, out int suffixIndex) {
-        return itemModifyerGenerator.GetIMName(inputName, prefixIM, suffixIM, out prefixIndex, out suffixIndex);
-    }
-    public static ItemStats GetIMStats(ItemStats inputStats, EItemModifyer prefixIM, EItemModifyer suffixIM) {
-        return itemModifyerGenerator.GetIMStats(inputStats, prefixIM, suffixIM);
     }
     
     private static ItemStats CalculateItemStats(Item item) {

@@ -1,4 +1,5 @@
 ﻿namespace JsonJunk {
+    [System.Serializable]
     public class PredefinedItemRow {
         public string EPredefinedItem;
         public string EEquipmentType;
