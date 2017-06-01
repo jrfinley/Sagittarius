@@ -10,7 +10,6 @@ public static class ItemGenerator {
     #region Variables
     private static Item item = new Item(false);
 
-    private static ItemTypeGenerator itemTypeGenerator = new ItemTypeGenerator();
     private static ItemStatsCalculator itemStatsCalculator = new ItemStatsCalculator();
 
     private static int idVersion = 0;
@@ -18,9 +17,20 @@ public static class ItemGenerator {
 
     private static char itemModifyerNameSplitChar = '%';
 
+    #region EquipmentTypeIndexes
+    private static int etConsumable = 0;
+    private static int etHeld = 2;
+    private static int etArmor = 13;
+    private static int etAmulet = 15;
+    private static int etQuest = 16;
+    private static int etEnd = 17;
+    #endregion
+
+    #region Dictionaries
     private static Dictionary<EEquipmentType, Item> baseItems = null;
     private static Dictionary<EItemModifyer, ItemModifyer> itemModifyers = null;
     private static Dictionary<EPredefinedItem, PredefinedItem> predefinedItems = null;
+    #endregion
 
     #region ResourcePaths
     private static string baseItemsJsonPath = "JsonFiles/Items/BaseItems";
@@ -230,7 +240,6 @@ public static class ItemGenerator {
     }
     #endregion
 
-
     #region ItemModifyers
     private static void GenerateIM(EItemRarity rarity, out EItemModifyer prefixIM, out EItemModifyer suffixIM) {
         bool getSuffix;
@@ -290,6 +299,35 @@ public static class ItemGenerator {
     }
     #endregion
 
+    #region RandomTypeMethods
+    private static EEquipmentType GenerateEquipmentType() {
+        return GenereteRandomEquipmentType(GenerateRandomItemType());
+    }
+    private static EItemType GenerateRandomItemType() {
+        return (EItemType)Random.Range(0, 4);
+    }
+    private static EEquipmentType GenereteRandomEquipmentType(EItemType itemType) {
+        switch(itemType) {
+            case EItemType.CONSUMABLE:
+                return (EEquipmentType)Random.Range(etConsumable, etHeld);
+            case EItemType.HELD:
+                return (EEquipmentType)Random.Range(etHeld, etArmor);
+            case EItemType.ARMOR:
+                return (EEquipmentType)Random.Range(etArmor, etAmulet);
+            case EItemType.ACCESSORY:
+                return (EEquipmentType)Random.Range(etAmulet, etQuest);
+            case EItemType.QUEST:
+                return (EEquipmentType)Random.Range(etQuest, etEnd);
+            default:
+                Debug.LogError("Invalid case.");
+                return EEquipmentType.AMULET;
+        }
+    }
+    private static EItemRarity GenerateItemRarity() {
+        return (EItemRarity)(Random.Range((int)0, 4));
+    }
+    #endregion
+
     private static string GenerateID(Item item) {
         return (
             idVersion.ToString("D3") + seperationChar +
@@ -312,9 +350,6 @@ public static class ItemGenerator {
         );
     }
 
-    private static EEquipmentType GenerateEquipmentType() {
-        return itemTypeGenerator.GenereteRandomEquipmentType(itemTypeGenerator.GenerateRandomItemType());
-    }
     private static string GetIconPath(EItemType itemType, string baseIconName) {
         switch(itemType) {
             case EItemType.ACCESSORY:
@@ -333,9 +368,6 @@ public static class ItemGenerator {
         }
     }
 
-    private static EItemRarity GenerateItemRarity() {
-        return (EItemRarity)(Random.Range((int)0, 4));
-    }
     private static int GenerateItemLevel() {
         return Random.Range((int)0, 100);
     }
