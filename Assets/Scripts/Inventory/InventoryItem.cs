@@ -24,20 +24,23 @@ public class InventoryItem : MonoBehaviour
 
     public Item item;
 
-    void Awake()
+    void Start()
     {
-        item = ItemGenerator.GenerateRandomItem();
+        if(tag == "Item")
+        {
+            item = ItemGenerator.GenerateRandomItem();
 
-        displayName = item.Name;
-        desc = item.FlavorText;
-        strength = (int)item.Stats.Strength;
-        intellect = (int)item.Stats.Intelect;
-        dexterity = (int)item.Stats.Dexterity;
-        gold = (int)item.Stats.GoldValue;
-        scrap = (int)item.Stats.ScrapValue;
-        itemType = item.Types.EquipmentType;
-        health = (int)item.Stats.Health;
+            displayName = item.Name;
+            desc = item.FlavorText;
+            strength = (int)item.Stats.Strength;
+            intellect = (int)item.Stats.Intelect;
+            dexterity = (int)item.Stats.Dexterity;
+            gold = (int)item.Stats.GoldValue;
+            scrap = (int)item.Stats.ScrapValue;
+            itemType = item.Types.EquipmentType;
+            health = (int)item.Stats.Health;
 
-        id = item.ID;
+            id = item.ID;
+        }
     }
 }

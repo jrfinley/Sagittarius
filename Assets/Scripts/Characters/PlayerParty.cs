@@ -40,7 +40,10 @@ public class PlayerParty : MonoBehaviour
         characterManager = FindObjectOfType<CharacterManager>();
         statusEffectManager = FindObjectOfType<StatusEffectManager>();
         eventManager = GetComponent<PlayerEventManager>();
-        eventManager.OnPlayerMove += EatFood;
+        if(Application.loadedLevel == 2)
+        {
+            eventManager.OnPlayerMove += EatFood;
+        }
     }
 
     public void SetMoveDirection(Vector3 moveDirection)

@@ -27,7 +27,6 @@ public class InventoryItemDisplay : MonoBehaviour
         {
             Prime(item);
         }
-
     }
 
     public void Prime(InventoryItem item)
@@ -65,7 +64,7 @@ public class InventoryItemDisplay : MonoBehaviour
         item.equippedBy = equippingCharacter;
         background.color = Color.gray;
     }
-
+    
     public void Remove()
     {
         item.equippedBy = null;

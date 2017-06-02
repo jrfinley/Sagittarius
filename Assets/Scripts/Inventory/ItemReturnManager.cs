@@ -61,7 +61,7 @@ public class ItemReturnManager : MonoBehaviour
             types.Add(equipmentType);
         }
 
-        for(int i = 0; i < ids.Count; i++)
+        for (int i = 0; i < ids.Count; i++)
         {
             Item item = ItemGenerator.IDToItem(ids[i]);
             InventoryItemDisplay display = (InventoryItemDisplay)Instantiate(inventoryItemDisplayPrefab);
@@ -77,6 +77,25 @@ public class ItemReturnManager : MonoBehaviour
             display.scrap.text = "Scrap: " + (int)item.Stats.ScrapValue;
             display.health.text = "Health " + (int)item.Stats.Health;
             display.sprite.sprite = item.GetSprite();
+
+
+            InventoryItem returnInventoryItem = display.GetComponent<InventoryItem>();
+            
+            returnInventoryItem.displayName = item.Name;
+            returnInventoryItem.desc = item.FlavorText;
+            returnInventoryItem.strength = (int)item.Stats.Strength;
+            returnInventoryItem.dexterity = (int)item.Stats.Dexterity;
+            returnInventoryItem.intellect = (int)item.Stats.Intelect;
+            returnInventoryItem.gold = (int)item.Stats.GoldValue;
+            returnInventoryItem.scrap = (int)item.Stats.ScrapValue;
+            returnInventoryItem.health = (int)item.Stats.Health;
+
+            display.item = returnInventoryItem;
+
+            if (display.textName.text != returnInventoryItem.displayName)
+            {
+                Debug.LogError("Fuck!");
+            }
         }
     }
 }
