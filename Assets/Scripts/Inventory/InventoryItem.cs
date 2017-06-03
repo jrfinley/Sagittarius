@@ -42,5 +42,9 @@ public class InventoryItem : MonoBehaviour
 
             id = item.ID;
         }
+        else if(tag == "TutorialItem")
+        {
+            Debug.Log("Is predefined item");
+        }
     }
 }

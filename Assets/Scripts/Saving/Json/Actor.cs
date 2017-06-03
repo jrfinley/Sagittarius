@@ -96,22 +96,38 @@ public class Actor : MonoBehaviour
         if(characterManager.allCharacters[0].IsTraining == true)
         {
             data.characterIsTraning0 = true;
-            data.characterTraining0Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+            data.characterTraining0Time = trainingStruct.trainingCharacters[0].endTime;
+            data.healthIncrease0 = trainingStruct.trainingCharacters[0].healthIncrease;
+            data.dexterityIncrease0 = trainingStruct.trainingCharacters[0].dexterityIncrease;
+            data.strengthIncrease0 = trainingStruct.trainingCharacters[0].strengthIncrease;
+            data.intellectIncrease0 = trainingStruct.trainingCharacters[0].intelectIncrease;
         }
-        if(characterManager.allCharacters[1].IsTraining == true)
+        if (characterManager.allCharacters[1].IsTraining == true)
         {
             data.characterIsTraning1 = true;
-            data.characterTraining1Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+            data.characterTraining1Time = trainingStruct.trainingCharacters[1].endTime;
+            data.healthIncrease1 = trainingStruct.trainingCharacters[1].healthIncrease;
+            data.dexterityIncrease1 = trainingStruct.trainingCharacters[1].dexterityIncrease;
+            data.strengthIncrease1 = trainingStruct.trainingCharacters[1].strengthIncrease;
+            data.intellectIncrease1 = trainingStruct.trainingCharacters[1].intelectIncrease;
         }
         if (characterManager.allCharacters[2].IsTraining == true)
         {
             data.characterIsTraning2 = true;
-            data.characterTraining2Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+            data.characterTraining2Time = trainingStruct.trainingCharacters[2].endTime;
+            data.healthIncrease2 = trainingStruct.trainingCharacters[2].healthIncrease;
+            data.dexterityIncrease2 = trainingStruct.trainingCharacters[2].dexterityIncrease;
+            data.strengthIncrease2 = trainingStruct.trainingCharacters[2].strengthIncrease;
+            data.intellectIncrease2 = trainingStruct.trainingCharacters[2].intelectIncrease;
         }
         if (characterManager.allCharacters[3].IsTraining == true)
         {
             data.characterIsTraning3 = true;
-            data.characterTraining3Time = trainingStruct.GetComponent<TrainingCharacter>().startTime;
+            data.characterTraining3Time = trainingStruct.trainingCharacters[3].endTime;
+            data.healthIncrease3 = trainingStruct.trainingCharacters[3].healthIncrease;
+            data.dexterityIncrease3 = trainingStruct.trainingCharacters[3].dexterityIncrease;
+            data.strengthIncrease3 = trainingStruct.trainingCharacters[3].strengthIncrease;
+            data.intellectIncrease3 = trainingStruct.trainingCharacters[3].intelectIncrease;
         }
 
         string dataPath = System.IO.Path.Combine(Application.persistentDataPath, "actors.json");
@@ -330,27 +346,23 @@ public class Actor : MonoBehaviour
         CharacterTrainer trainingStruct = FindObjectOfType<CharacterTrainer>();
         if (data.characterIsTraning0 == true)
         {
-            trainingStruct.AddCharacter(characterManager.allCharacters[0], 1000, (int)currencyManager.Gold.Value,
-                characterManager.allCharacters[0].MaxHealth, characterManager.allCharacters[0].Dexterity, 
-                characterManager.allCharacters[0].Strength, characterManager.allCharacters[0].Intelect);
+            trainingStruct.LoadCharacter(characterManager.allCharacters[0], data.characterTraining0Time,
+                data.healthIncrease0, data.dexterityIncrease0, data.strengthIncrease0, data.intellectIncrease0);
         }
         if (data.characterIsTraning1 == true)
         {
-            trainingStruct.AddCharacter(characterManager.allCharacters[1], 1000, (int)currencyManager.Gold.Value,
-                characterManager.allCharacters[1].MaxHealth, characterManager.allCharacters[1].Dexterity, 
-                characterManager.allCharacters[1].Strength, characterManager.allCharacters[1].Intelect);
+            trainingStruct.LoadCharacter(characterManager.allCharacters[1], data.characterTraining1Time,
+                data.healthIncrease1, data.dexterityIncrease1, data.strengthIncrease1, data.intellectIncrease1);
         }
         if (data.characterIsTraning2 == true)
         {
-            trainingStruct.AddCharacter(characterManager.allCharacters[2], 1000, (int)currencyManager.Gold.Value,
-                characterManager.allCharacters[2].MaxHealth, characterManager.allCharacters[2].Dexterity, 
-                characterManager.allCharacters[2].Strength, characterManager.allCharacters[2].Intelect);
+            trainingStruct.LoadCharacter(characterManager.allCharacters[2], data.characterTraining2Time,
+                data.healthIncrease2, data.dexterityIncrease2, data.strengthIncrease2, data.intellectIncrease2);
         }
         if (data.characterIsTraning3 == true)
         {
-            trainingStruct.AddCharacter(characterManager.allCharacters[3], 1000, (int)currencyManager.Gold.Value,
-                characterManager.allCharacters[3].MaxHealth, characterManager.allCharacters[3].Dexterity, 
-                characterManager.allCharacters[3].Strength, characterManager.allCharacters[3].Intelect);
+            trainingStruct.LoadCharacter(characterManager.allCharacters[3], data.characterTraining3Time,
+                data.healthIncrease3, data.dexterityIncrease3, data.strengthIncrease3, data.intellectIncrease3);
         }
     }
 
@@ -783,16 +795,37 @@ public class ActorData
     public bool hasStatusEffectCharacter0;
     public List<int> statusEffectsOnCharacter0 = new List<int>();
 
-    //character training values
+    //character 0 training info
     public DateTime characterTraining0Time;
-    public DateTime characterTraining1Time;
-    public DateTime characterTraining2Time;
-    public DateTime characterTraining3Time;
     public bool characterIsTraning0;
-    public bool characterIsTraning1;
-    public bool characterIsTraning2;
-    public bool characterIsTraning3;
+    public int healthIncrease0;
+    public int dexterityIncrease0;
+    public int strengthIncrease0;
+    public int intellectIncrease0;
 
+    //character 1 training info
+    public DateTime characterTraining1Time;
+    public bool characterIsTraning1;
+    public int healthIncrease1;
+    public int dexterityIncrease1;
+    public int strengthIncrease1;
+    public int intellectIncrease1;
+
+    //character 1 training info
+    public DateTime characterTraining2Time;
+    public bool characterIsTraning2;
+    public int healthIncrease2;
+    public int dexterityIncrease2;
+    public int strengthIncrease2;
+    public int intellectIncrease2;
+
+    //character 1 training info
+    public DateTime characterTraining3Time;
+    public bool characterIsTraning3;
+    public int healthIncrease3;
+    public int dexterityIncrease3;
+    public int strengthIncrease3;
+    public int intellectIncrease3;
 
     //npc 0
     public string characterName0;
