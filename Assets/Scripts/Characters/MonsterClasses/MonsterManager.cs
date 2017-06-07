@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class MonsterManager : MonoBehaviour
 {
-    public List<BaseMonster> monsters;
+    public List<GameObject> monsters;
 
     private MonsterParty monsterParty;
 
@@ -21,7 +21,7 @@ public class MonsterManager : MonoBehaviour
 
     public void FindAllMonsters()
     {
-        monsters.AddRange(GetComponents<BaseMonster>());
+        monsters.AddRange(GameObject.FindGameObjectsWithTag("MonsterParty"));
         //SortMonsters();
     }
 
@@ -33,23 +33,23 @@ public class MonsterManager : MonoBehaviour
         switch (monsterType)
         {
             case EMonsterType.E_TEMP_ONE:
-                newMonster.InitializeMonster(name, level);
-                AddMonster(newMonster);
+                //newMonster.InitializeMonster(name, level);
+                //AddMonster(newMonster);
                 break;
 
             case EMonsterType.E_TEMP_TWO:
-                newMonster.InitializeMonster(name, level);
-                AddMonster(newMonster);
+                //newMonster.InitializeMonster(name, level);
+                //AddMonster(newMonster);
                 break;
 
             case EMonsterType.E_TEMP_THREE:
-                newMonster.InitializeMonster(name, level);
-                AddMonster(newMonster);
+                //newMonster.InitializeMonster(name, level);
+                //AddMonster(newMonster);
                 break;
 
             case EMonsterType.E_TEMP_BOSS:
-                newMonster.InitializeMonster(name, level);
-                AddMonster(newMonster);
+                //newMonster.InitializeMonster(name, level);
+                //AddMonster(newMonster);
                 break;
         }
     }
@@ -59,6 +59,6 @@ public class MonsterManager : MonoBehaviour
     }
     void AddMonster(BaseMonster newMonster)
     {
-        monsters.Add(newMonster);
+        //monsters.Add(newMonster);
     }
 }

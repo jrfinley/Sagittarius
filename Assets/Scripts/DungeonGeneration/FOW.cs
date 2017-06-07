@@ -5,6 +5,8 @@ public class FOW : MonoBehaviour
 {
     private Renderer rend;
 
+    public GameObject[] doors;
+
     private Color unLit = new Color32(0x1D, 0x1D, 0x1D, 0xFF);
     private Color lit = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
     private Color kindaLit = new Color32(0x68, 0x68, 0x68, 0xFF);
@@ -20,9 +22,14 @@ public class FOW : MonoBehaviour
 
     void Start ()
     {
-        rend = GetComponent<Renderer>();   
+        InitializeFogOfWar();
+    }
+
+    void InitializeFogOfWar()
+    {
+        rend = GetComponent<Renderer>();
         this.rend.material.color = unLit;
-        currentState = STATE.Unseen;       
+        currentState = STATE.Unseen;
     }
 
     void OnTriggerEnter(Collider other)
@@ -58,11 +65,11 @@ public class FOW : MonoBehaviour
         else
             targetColor = kindaLit;
 
-
         while (this.rend.material.color != targetColor)
         {
             if (loopBreak < 5f)
                 this.rend.material.color = Color32.Lerp(this.rend.material.color, targetColor, speed);
+
             else
                 Debug.LogError("ChangeFOW reached loop break cutoff");
 

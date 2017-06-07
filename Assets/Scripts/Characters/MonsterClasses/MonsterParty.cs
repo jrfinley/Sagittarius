@@ -3,6 +3,8 @@ using System.Collections;
 
 public class MonsterParty : MonoBehaviour
 {
+    //Instantiate(monsterParty, transform.position, transform.rotation); //Spawning, throw this somewhere in WorldGen where monster rooms are selected
+
     public float moveXAmount,
                  moveZAmount;
 
@@ -216,7 +218,7 @@ public class MonsterParty : MonoBehaviour
         }
 
     }
-        Instantiate(monsterParty, transform.position, transform.rotation); //By Steven for testing
+        
 
     */
 
