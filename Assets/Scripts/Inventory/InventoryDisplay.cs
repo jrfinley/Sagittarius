@@ -20,8 +20,8 @@ public class InventoryDisplay : MonoBehaviour
     }
 
     public void ShowInventoryInTown()
-    {
+    {    
         ItemReturnManager itemReturn = FindObjectOfType<ItemReturnManager>();
-        itemReturn.ItemReturnTown();
+        itemReturn.ItemReturnTown();    
     }
 }

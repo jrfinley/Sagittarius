@@ -17,6 +17,8 @@ public class ItemReturnManager : MonoBehaviour
     private List<string> ids = new List<string>();
     private List<EEquipmentType> types = new List<EEquipmentType>();
 
+    public bool hasAddedItems;
+
     void Start ()
     {
         if(Application.loadedLevel == 2)
@@ -32,18 +34,22 @@ public class ItemReturnManager : MonoBehaviour
         {
             Destroy(actors[i].gameObject);
         }
-       
 	}
 
     public void ItemReturnTown()
     {
         if (Application.loadedLevel == 1)
         {
-            actor = FindObjectOfType<Actor>();
-            targetTransform = GameObject.Find("InventoryDisplay").transform;
-            inventoryDisplay = FindObjectOfType<InventoryDisplay>();
-            StartCoroutine(BeginReturningIDS());
-            //send info to reforge
+            if(hasAddedItems == false)
+            {
+                actor = FindObjectOfType<Actor>();
+                targetTransform = GameObject.Find("InventoryDisplay").transform;
+                inventoryDisplay = FindObjectOfType<InventoryDisplay>();
+                StartCoroutine(BeginReturningIDS());
+                hasAddedItems = true;
+                //send info to reforge
+            }
+
         }
     }
 
