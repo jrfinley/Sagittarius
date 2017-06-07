@@ -13,8 +13,9 @@ public class Grid
 
     private FindPath _path = null;
     private Node[,] _grid = null;
+    private HashSet<Node> _unwalkableNodes = new HashSet<Node>();
 
-    public Grid(int width, int height, float nodeUnitSize, Vector3 finalRoomPosition)
+    public Grid(int width, int height, float nodeUnitSize)
     {
         _width = width;
         _height = height;
@@ -22,10 +23,10 @@ public class Grid
 
         _grid = new Node[_width, _height];
         _path = new FindPath(this, _width * _height);
-        _CreateGrid(finalRoomPosition);
+        _CreateGrid();
     }
 
-    private void _CreateGrid(Vector3 finalTilePosition)
+    private void _CreateGrid()
     {
         GameObject parent = new GameObject("Nodes");
         for (int x = 0; x < _width; x++)
@@ -40,12 +41,12 @@ public class Grid
 
     private void _CreateNode(Vector3 position, int x, int y, GameObject parent)
     {
-        GameObject visualNode = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        visualNode.transform.position = position;
-        visualNode.transform.parent = parent.transform;
-        visualNode.transform.localScale -= new Vector3(0.75f, 0.75f, 0.75f);
-        Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
-        visualNode.transform.rotation = rotation;
+        //GameObject visualNode = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        //visualNode.transform.position = position;
+        //visualNode.transform.parent = parent.transform;
+        //visualNode.transform.localScale -= new Vector3(0.75f, 0.75f, 0.75f);
+        //Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
+        //visualNode.transform.rotation = rotation;
 
         _grid[x, y] = new Node(position, x, y, 1f);
 
@@ -53,17 +54,17 @@ public class Grid
             _grid[x, y].movementPenalty = 500;
         else
             _grid[x, y].movementPenalty = UnityEngine.Random.Range(0, 100);
-        
-        if (_grid[x, y].movementPenalty == 500)
-            visualNode.GetComponent<MeshRenderer>().material.color = Color.black;
-        else if (_grid[x, y].movementPenalty > 75)
-            visualNode.GetComponent<MeshRenderer>().material.color = Color.red;
-        else if (_grid[x, y].movementPenalty > 50)
-            visualNode.GetComponent<MeshRenderer>().material.color = Color.yellow;
-        else if (_grid[x, y].movementPenalty > 25)
-            visualNode.GetComponent<MeshRenderer>().material.color = Color.green;
-        else
-            visualNode.GetComponent<MeshRenderer>().material.color = Color.cyan;
+
+        //if (_grid[x, y].movementPenalty == 500)
+        //    visualNode.GetComponent<MeshRenderer>().material.color = Color.black;
+        //else if (_grid[x, y].movementPenalty > 75)
+        //    visualNode.GetComponent<MeshRenderer>().material.color = Color.red;
+        //else if (_grid[x, y].movementPenalty > 50)
+        //    visualNode.GetComponent<MeshRenderer>().material.color = Color.yellow;
+        //else if (_grid[x, y].movementPenalty > 25)
+        //    visualNode.GetComponent<MeshRenderer>().material.color = Color.green;
+        //else
+        //    visualNode.GetComponent<MeshRenderer>().material.color = Color.cyan;
     }
 
     public List<Node> GetNeighbours(Node currentNode)
@@ -73,10 +74,10 @@ public class Grid
         {
             for (int y = -1; y <= 1; y++)
             {
-                if (Mathf.Abs(x) == Mathf.Abs(y))
+                if (Mathf.Abs(x) != Mathf.Abs(y))
                     continue;
 
-                if (IsWalkable(x + currentNode.x, y + currentNode.y))
+                if (IsWalkable(x + currentNode.x, y + currentNode.y, GetNodeFromPoint(x + currentNode.x, y + currentNode.y)))
                     neighbours.Add(_grid[x + currentNode.x, y + currentNode.y]);
             }
         }
@@ -97,15 +98,17 @@ public class Grid
         return _grid[x, y];
     }
 
-    public List<Node> GetPath(Vector3 startPosition, Vector3 targetPosition)
+    public List<Node> GetPath(Vector3 startPosition, Vector3 targetPosition, Vector3 start, Vector3 target)
     {
         Node startNode = GetNodeFromPoint((int)startPosition.x, (int)startPosition.z);
         Node targetNode = GetNodeFromPoint((int)targetPosition.x, (int)targetPosition.z);
+        _unwalkableNodes.Add(GetNodeFromPoint((int)start.x, (int)start.z));
+        _unwalkableNodes.Add(GetNodeFromPoint((int)target.x, (int)target.z));
         return _path.GetPath(startNode, targetNode);
     }
 
-    public bool IsWalkable(int x, int y)
+    public bool IsWalkable(int x, int y, Node node)
     {
-        return (x >= 0 && x < _width) && (y >= 0 && y < _height);
+        return (x >= 0 && x < _width) && (y >= 0 && y < _height) && !_unwalkableNodes.Contains(node);
     }
 }

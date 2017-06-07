@@ -8,77 +8,66 @@ public class Room : MonoBehaviour
     [System.Serializable]
     public struct ConnectionData
     {
-        public List<Transform> northConnections;
-        public List<Transform> southConnections;
-        public List<Transform> eastConnections;
-        public List<Transform> westConnections;
-
+        public List<Transform> connections;
         public List<Transform> closedConnections;
         public List<Transform> openConnections;
-
-        public List<Transform> AllConnections()
-        {
-            return northConnections.Concat(southConnections).Concat(eastConnections).Concat(westConnections).ToList();
-        }
+        public List<Transform> joinedConnections;
     }
 
     [SerializeField] protected ConnectionData _connections;
     public ConnectionData Connections { get { return _connections; } }
 
-    public bool normalSize;
+    public Room parentRoom;
+    public Vector3 position;
+    public bool quadRoom;
+
+    public Transform GetRandomOpenConnection()
+    {
+        if (_connections.openConnections.Count == 0)
+            return null;
+        return Connections.openConnections[Random.Range(0, _connections.openConnections.Count)];
+    }
 
     private void _RemoveConnection(Transform connectionToRemove)
     {
-        List<Transform> list = _GetListToRemove(connectionToRemove);
-        list.Remove(connectionToRemove);
+        _connections.connections.Remove(connectionToRemove);
     }
 
     private void _OpenConnection(Transform connectionToOpen)
     {
-        List<Transform> list = _GetListToRemove(connectionToOpen);
-        list.Remove(connectionToOpen);
+        _connections.connections.Remove(connectionToOpen);
         _connections.openConnections.Add(connectionToOpen);
     }
 
-    public void JoinConnection(Vector3 connectionToClose)
+    private void _JoinConnection(Transform connectionToJoin)
     {
-        foreach (Transform connection in _connections.AllConnections())
-        {
-            if (connection.localPosition == connectionToClose)
-            {
-                _connections.closedConnections.Add(connection);
-                connection.GetComponent<ConnectionGizmos>().color = Color.green;
-                _RemoveConnection(connection);
-                break;
-            }
-        }
+        _connections.connections.Remove(connectionToJoin);
+        _connections.openConnections.Remove(connectionToJoin);
+        _connections.joinedConnections.Add(connectionToJoin);
     }
 
-    public void BlockConnection(Transform connectionToBlock)
+    public void Connect(Room otherRoom)
     {
-        foreach (Transform connection in _connections.AllConnections())
-        {
-            if (connection == connectionToBlock)
-            {
-                _connections.closedConnections.Add(connection);
-                connection.GetComponent<ConnectionGizmos>().color = Color.red;
-                _RemoveConnection(connection);
-                break;
-            }
-        }
+        Transform connectionToConnect = _GetClosestTransform(otherRoom);
+        _JoinConnection(connectionToConnect);
+        connectionToConnect.gameObject.GetComponent<ConnectionGizmos>().color = Color.green;
     }
 
-    public void BranchConnection(Vector3 connectionToOpen)
+    private Transform _GetClosestTransform(Room otherRoom)
     {
-        foreach (Transform connection in _connections.AllConnections())
+        float closest = 100f;
+        float dist;
+        Transform closestTransform = null;
+        foreach (Transform connection in _connections.connections)
         {
-            if (connection.localPosition == connectionToOpen)
+            dist = Vector3.Distance(connection.position, otherRoom.position);
+            if (dist < closest)
             {
-                connection.GetComponent<ConnectionGizmos>().color = Color.cyan;
-                _OpenConnection(connection);
-                break;
+                closestTransform = connection;
+                closest = dist;
             }
         }
+        return closestTransform;
     }
 
     public void BecomeMonsterRoom()
@@ -96,18 +85,19 @@ public class Room : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().material.color = Color.black;
     }
 
-    private List<Transform> _GetListToRemove(Transform connectionToRemove)
+    private Vector3 _GetDirection(Vector3 direction)
     {
-        if (connectionToRemove.localPosition.x > 0)
-            return _connections.eastConnections;
-        else if (connectionToRemove.localPosition.x < 0)
-            return _connections.westConnections;
-        else if (connectionToRemove.localPosition.z > 0)
-            return _connections.northConnections;
-        else if (connectionToRemove.localPosition.z < 0)
-            return _connections.southConnections;
+        Vector3 dir = Vector3.zero;
 
-        Debug.Log("Couldn't find connection direction to remove");
-        return null;
+        if (direction.x > 0)
+            dir.x += 0.25f;
+        else if (direction.x < 0)
+            dir.x -= 0.25f;
+        if (direction.z > 0)
+            dir.z += 0.25f;
+        else if (direction.z < 0)
+            dir.z -= 0.25f;
+
+        return dir;
     }
 }

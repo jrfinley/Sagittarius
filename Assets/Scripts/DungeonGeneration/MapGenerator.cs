@@ -10,8 +10,7 @@ public class MapGenerator : MonoBehaviour
 {
     private int width = 10;
     private int height = 10;
-    private int minXDistance = 3;
-    private int minYDistance = 3;
+    private float spawnThreshold = 2.5f;
 
     private int _seed = 0;
     public int Seed { get { return _seed; } }
@@ -20,9 +19,10 @@ public class MapGenerator : MonoBehaviour
 
     private List<GameObject> _normalRooms = new List<GameObject>();
     private List<GameObject> _uniqueRooms = new List<GameObject>();
-    private List<Vector3> _takenPositions = new List<Vector3>();
+    private List<Room> _unqueRoomsInDungeon = new List<Room>();
+    private List<Room> _roomsInDungeon = new List<Room>();
     private List<Vector3> _uniquePositions = new List<Vector3>();
-    private List<Node> _path;
+
     Grid _grid;
 
     private GameObject _dungeonContainer = null;
@@ -32,9 +32,7 @@ public class MapGenerator : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        //1752787940
-        //1857710287
-        //-688597782
+        //-270179143
         GenerateMap();
 
         sw.Stop();
@@ -52,100 +50,166 @@ public class MapGenerator : MonoBehaviour
     {
         _dungeonContainer = new GameObject();
         _dungeonContainer.name = "DungeonContainer";
-        
-        _SpawnStart();
-        Vector3 finalRoomPosition = _SpawnFinal();
 
-        _grid = new Grid(width, height, 1f, finalRoomPosition);
-        _path = _grid.GetPath(new Vector3(width / 2f, 0f, height / 2f), finalRoomPosition);
+        Room startRoom;
+        Room finalRoom;
 
-        _GenerateMainPath(_path);
-        _GenerateUniqueBranches();
+        _InjectUniqueRooms(out startRoom, out finalRoom);
+        _SetUpGrid();
 
-        //_dungeonContainer.transform.Rotate(new Vector3(0f, 45f, 0f));
+        _GeneratePath(startRoom, finalRoom);
+        _ConnectUniqueRooms();
     }
-    
-    private void _GenerateUniqueBranches()
+
+    private void _ConnectUniqueRooms()
     {
-        while (_uniqueRooms.Count > 0)
+        foreach (Room uniqueRoom in _unqueRoomsInDungeon)
         {
-            GameObject room = _SpawnUniqueRoom();
-
-            room.transform.position = _GetRandomRoomPosition();
-
-            if (!room.GetComponent<Room>().normalSize)
-            {
-                room.transform.position += _GetQuadOffset(room.transform.position);
-            }
-
-            Vector3 start = _GetRandomNode();
-            _path = _grid.GetPath(start, room.transform.position);
-            _uniquePositions.Add(room.transform.position);
-            _GenerateMainPath(_path);
+            _GeneratePath(_GetRandomRoom(), uniqueRoom);
         }
     }
 
-    private Vector3 _GetQuadOffset(Vector3 onePosition)
+    private Room _GetRandomRoom()
     {
-        float x = 0.5f;
-        float y = 0.5f;
+        int index = 0;
+        do
+        {
+            index = Random.Range(0, _roomsInDungeon.Count);
+        } while (!RoomValidator.EnoughConnections(_roomsInDungeon[index]));
 
-        if (Random.value > 0.5f)
-            x *= -1;
-        if (Random.value > 0.5f)
-            y *= -1;
-
-        Vector3 offset = new Vector3(x, 0f, y);
-        Debug.Log(offset);
-        return offset;
+        return _roomsInDungeon[index];
     }
 
-    private Vector3 _GetRandomNode()
+    private void _GeneratePath(Room startRoom, Room finalRoom)
     {
-        int index = Random.Range(0, _takenPositions.Count);
-        return _takenPositions[index];
+        Room secondStart;
+        Room secondFinal;
+        Vector3 startPosition = _GetConnectionNeighbour(startRoom, out secondStart);
+        Vector3 finalPosition = _GetConnectionNeighbour(finalRoom, out secondFinal);
+
+        _uniquePositions.Add(startPosition);
+        _uniquePositions.Add(finalPosition);
+
+        List<Node> _path = _grid.GetPath(startPosition, finalPosition, startRoom.transform.position, finalRoom.transform.position);
+
+        _CreateRooms(_path, secondStart, secondFinal);
     }
 
-    private void _GenerateMainPath(List<Node> path)
+    private Vector3 _GetConnectionNeighbour(Room room, out Room secondRoom)
     {
+        Transform connection = room.GetRandomOpenConnection();
+
+        if (connection == null)
+        {
+            Debug.LogError("Error, no connection available from: " + room.gameObject.name);
+        }
+
+        Vector3 position = room.transform.position + connection.forward;
+        position = new Vector3(Mathf.RoundToInt(position.x), 0f, Mathf.RoundToInt(position.z));
+
+        secondRoom = _ForceNeighbour(position, connection.localPosition, room);
+
+        return position;
+    }
+
+    private Room _ForceNeighbour(Vector3 position, Vector3 connectionPosition, Room parent)
+    {
+        GameObject roomObject = Instantiate(_normalRooms[1], position, Quaternion.Euler(90f, 0f, 0f)) as GameObject;
+        Room roomData = roomObject.GetComponent<Room>();
+        roomData.position = position;
+        roomData.parentRoom = parent;
+        roomObject.transform.parent = _dungeonContainer.transform;
+        _roomsInDungeon.Add(roomData);
+
+        _ConnectRooms(roomData);
+
+        return roomData;
+    }
+
+    private void _ConnectRooms(Room room)
+    {
+        Room parent = room.parentRoom;
+        room.Connect(parent);
+        parent.Connect(room);
+    }
+
+    private void _CreateRooms(List<Node> path, Room parentRoom, Room finalRoom)
+    {
+        Room previousRoom = parentRoom;
+        GameObject hitObject = null;
         if (path != null)
         {
             for (int i = 0; i < path.Count; i++)
             {
-                GameObject visualNode = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                visualNode.transform.position = path[i].worldPosition;
-                //visualNode.transform.position = new Vector3(path[i].x, 0f, path[i].y);
-                visualNode.transform.localScale -= new Vector3(0.5f, 0.5f, 0.5f);
-                visualNode.GetComponent<MeshRenderer>().material.color = Color.black;
-                if (i == 0)
-                    visualNode.GetComponent<MeshRenderer>().material.color = Color.cyan;
+                if (!RoomValidator.CanSpawn(path[i].worldPosition, out hitObject))
+                {
+                    if (hitObject.GetComponent<Room>() != null)
+                    {
+                        _MergeRooms(hitObject, previousRoom);
+                    }
+                    continue;
+                }
 
-                Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
-                visualNode.transform.rotation = rotation;
-                visualNode.transform.parent = _dungeonContainer.transform;
-                _takenPositions.Add(visualNode.transform.position);
+                GameObject room = Instantiate(_normalRooms[1], path[i].worldPosition, Quaternion.Euler(90f, 0f, 0f)) as GameObject;
+                Room roomData = room.GetComponent<Room>();
+                roomData.position = path[i].worldPosition;
+                roomData.parentRoom = previousRoom;
+                room.transform.parent = _dungeonContainer.transform;
+
+                _roomsInDungeon.Add(roomData);
+
+                _ConnectRooms(roomData);
+
+                previousRoom = roomData;
             }
         }
+        else
+        {
+            Debug.LogError("Path is NULL");
+        }
         path.Clear();
-        _path.Clear();
     }
 
-    private void _SpawnStart()
+    private void _MergeRooms(GameObject placedRoom, Room previousRoom)
     {
-        GameObject room = _SpawnUniqueRoom("Spawn");
-        room.transform.position = new Vector3(width / 2f, 0f, height / 2f);
-        _uniquePositions.Add(room.transform.position);
+        Room hitRoom = placedRoom.GetComponent<Room>();
+        hitRoom.parentRoom = previousRoom;
+
+        hitRoom.Connect(previousRoom);
+        previousRoom.Connect(hitRoom);
     }
 
-    private Vector3 _SpawnFinal()
+    private void _SetUpGrid()
     {
-        GameObject room = _SpawnUniqueRoom("Final");
-        room.transform.position = _GetRandomRoomPosition();
-        _uniquePositions.Add(room.transform.position);
-        return room.transform.position;
+        _grid = new Grid(width, height, 1f);
     }
 
-    private GameObject _SpawnUniqueRoom(string name = "")
+    private void _InjectUniqueRooms(out Room startRoom, out Room finalRoom)
+    {
+        startRoom = _SpawnUnique(new Vector3(width / 2f, 0f, height / 2f), "Spawn");
+        finalRoom = _SpawnUnique(_GetRandomRoomPosition(), "Final");
+
+        while (_uniqueRooms.Count > 0)
+        {
+            _unqueRoomsInDungeon.Add(_SpawnUnique(_GetRandomRoomPosition()));
+        }
+    }
+
+    private Room _SpawnUnique(Vector3 position, string name = "")
+    {
+        GameObject room = _InstantiateUniqueRoom(name);
+        room.transform.position = position;
+
+        Room roomData = room.GetComponent<Room>();
+        if (roomData.quadRoom)
+            room.transform.position += _GetQuadOffset();
+        roomData.position = position;
+
+        _uniquePositions.Add(room.transform.position);
+        return roomData;
+    }
+
+    private GameObject _InstantiateUniqueRoom(string name = "")
     {
         GameObject tempRoom = null;
         foreach (GameObject room in _uniqueRooms)
@@ -161,6 +225,20 @@ public class MapGenerator : MonoBehaviour
         return tempRoom;
     }
 
+    private Vector3 _GetQuadOffset()
+    {
+        float x = 0.5f;
+        float y = 0.5f;
+
+        if (Random.value > 0.5f)
+            x *= -1;
+        if (Random.value > 0.5f)
+            y *= -1;
+
+        Vector3 offset = new Vector3(x, 0f, y);
+        return offset;
+    }
+
     private Vector3 _GetRandomRoomPosition()
     {
         int x = (int)width / 2;
@@ -169,11 +247,11 @@ public class MapGenerator : MonoBehaviour
 
         do
         {
-            x = Random.Range(1, width);
-            y = Random.Range(1, height);
+            x = Random.Range(2, width - 2);
+            y = Random.Range(2, height - 2);
             position = new Vector3(x, 0f, y);
         }
-        while (!NodeValidator.CanSpawnHere(_uniquePositions, position, minXDistance));
+        while (!NodeValidator.CanSpawnHere(_uniquePositions, position, spawnThreshold));
 
         return position;
     }
