@@ -1,6 +1,6 @@
 ﻿namespace JsonJunk {
     [System.Serializable]
-    public class ItemModifyersRow {
+    public struct ItemModifyersRow {
         public string EItemModifyer;
         public string PrefixNames;
         public string SuffixNames;

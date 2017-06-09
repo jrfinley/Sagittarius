@@ -1,6 +1,6 @@
 ﻿namespace JsonJunk {
     [System.Serializable]
-    public class PredefinedItemRow {
+    public struct PredefinedItemRow {
         public string EPredefinedItem;
         public string EEquipmentType;
         public int Level;
