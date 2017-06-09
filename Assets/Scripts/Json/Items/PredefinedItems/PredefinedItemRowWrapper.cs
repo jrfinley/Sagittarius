@@ -1,6 +1,6 @@
 ﻿namespace JsonJunk {
     [System.Serializable]
-    public class PredefinedItemRowWrapper {
+    public struct PredefinedItemRowWrapper {
         public PredefinedItemRow[] PredefinedItemsRow;
     }
 }
