@@ -7,6 +7,11 @@ public static class FormulaManager {
     #region Variables
     private static Dictionary<EFormula, string> rawFormulas;
     private static string formulaJsonPath = "JsonFiles/Formulas";
+
+    private static string keyBASE = "BASE";
+    private static string keyRARITY = "RARITY";
+    private static string keyITMLVL = "ITMLVL";
+    private static string keyFRAND = "FRAND";
     #endregion
 
     #region Properties
@@ -38,10 +43,6 @@ public static class FormulaManager {
     public static ItemStats CalculateItemStats(ItemStats baseStats, EItemRarity rarity, int itemLevel, int seed) {
         ItemStats outputStats = new ItemStats(baseStats);
         string formula = rawFormulas[EFormula.ITEM_STATS];
-        string keyBASE = "BASE";
-        string keyRARITY = "RARITY";
-        string keyITMLVL = "ITMLVL";
-        string keyFRAND = "FRAND";
 
         //replace the constants
         formula = formula.Replace(keyRARITY, ((int)rarity).ToString());
