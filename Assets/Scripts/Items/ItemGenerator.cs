@@ -162,7 +162,7 @@ public static class ItemGenerator {
         item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
         item.ID = GenerateID(item);
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
         return new Item(item, true);
     }
     public static Item GenerateRandomItem() {
@@ -190,7 +190,7 @@ public static class ItemGenerator {
 
         //following need to be called last to override base stats in id>item, and save base stats in id
         item.ID = GenerateID(item); 
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
 
         return new Item(item, true);
     }
@@ -198,7 +198,7 @@ public static class ItemGenerator {
         item = new Item(item, false);
         item.Types.Rarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.Types.Rarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
         item.ID = GenerateID(item);
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
 
         return new Item(item, true);
     }
@@ -228,7 +228,7 @@ public static class ItemGenerator {
         item.Name = GetItemModifyerName(item.Name, item.Types.PrefixModifyer, item.Types.SuffixModifyer, values[5], values[6]);
         item.Stats = new ItemStats(item.Stats.Weight, values[7], values[8], values[9], values[10], values[11], item.Stats.EquipLoad, values[12], values[13], values[14]);
         item.Seed = values[15];
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
 
         item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
         item.ID = id;
@@ -321,21 +321,6 @@ public static class ItemGenerator {
     }
     private static EItemRarity GenerateItemRarity() {
         return (EItemRarity)(Random.Range((int)0, 4));
-    }
-    #endregion
-
-    #region ItemStatsCalculator
-    private static ItemStats CalculateItemStats(Item item) {
-        return CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
-    }
-    private static ItemStats CalculateItemStats(ItemStats baseStats, EItemRarity itemRarity, int itemLevel, int itemSeed) {
-        Random.seed = itemSeed;
-
-        baseStats.AddToAll((float)itemRarity * 2f);
-        baseStats.MultiplyByAll(Mathf.Sqrt(itemLevel + 1) + Random.Range(.8f, 1.2f));
-
-        Random.seed = (int)System.DateTime.Now.Ticks;
-        return new ItemStats(baseStats);
     }
     #endregion
 
