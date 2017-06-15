@@ -1,0 +1,1 @@
+{"FormulasRow":[{"EFormula":"ITEM_STATS", "Formula":"(BASE + RARITY * 1.5) * (ITMLVL + 1) * (FRAND * 0.4 + 0.8)"}]}

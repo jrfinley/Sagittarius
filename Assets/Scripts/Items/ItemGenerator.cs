@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using JsonJunk;
 
 public static class ItemGenerator {
-    //todo: remove stats from ids because base stats
-
     #region Variables
     private static Item item = new Item(false);
 
@@ -162,7 +160,7 @@ public static class ItemGenerator {
         item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
 
         item.ID = GenerateID(item);
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
         return new Item(item, true);
     }
     public static Item GenerateRandomItem() {
@@ -190,7 +188,7 @@ public static class ItemGenerator {
 
         //following need to be called last to override base stats in id>item, and save base stats in id
         item.ID = GenerateID(item); 
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
 
         return new Item(item, true);
     }
@@ -198,18 +196,19 @@ public static class ItemGenerator {
         item = new Item(item, false);
         item.Types.Rarity = (EItemRarity)(int)(Mathf.Clamp(Mathf.Floor((float)item.Types.Rarity) + (Random.Range(-1.5f + successChance, 2)), 0, 3));
         item.ID = GenerateID(item);
-        item.Stats = CalculateItemStats(item);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
 
         return new Item(item, true);
     }
     public static Item IDToItem(string id) {
+        int numOfIdValues = 9;
         string[] splits = id.Split(seperationChar);
-        int[] values = new int[16];
-        if(splits.Length != 17)
+        int[] values = new int[numOfIdValues - 1];
+        if(splits.Length != numOfIdValues)
             Debug.LogError("Split failed!");
         //hard coded length because it needs to be that value
 
-        for(int i = 1; i < 17; i++) {
+        for(int i = 1; i < numOfIdValues; i++) {
             try {
                 values[i - 1] = int.Parse(splits[i]);
             }
@@ -226,10 +225,9 @@ public static class ItemGenerator {
         item.PrefixIndex = values[5];
         item.SuffixIndex = values[6];
         item.Name = GetItemModifyerName(item.Name, item.Types.PrefixModifyer, item.Types.SuffixModifyer, values[5], values[6]);
-        item.Stats = new ItemStats(item.Stats.Weight, values[7], values[8], values[9], values[10], values[11], item.Stats.EquipLoad, values[12], values[13], values[14]);
-        item.Seed = values[15];
-        item.Stats = CalculateItemStats(item);
-
+        item.Seed = values[7];
+        item.Stats = GetItemModifyerStats(item.Stats, item.Types.PrefixModifyer, item.Types.SuffixModifyer);
+        item.Stats = FormulaManager.CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
         item.IconPath = GetIconPath(item.Types.ItemType, item.IconPath);
         item.ID = id;
         return new Item(item, true);
@@ -324,21 +322,6 @@ public static class ItemGenerator {
     }
     #endregion
 
-    #region ItemStatsCalculator
-    private static ItemStats CalculateItemStats(Item item) {
-        return CalculateItemStats(item.Stats, item.Types.Rarity, item.Level, item.Seed);
-    }
-    private static ItemStats CalculateItemStats(ItemStats baseStats, EItemRarity itemRarity, int itemLevel, int itemSeed) {
-        Random.seed = itemSeed;
-
-        baseStats.AddToAll((float)itemRarity * 2f);
-        baseStats.MultiplyByAll(Mathf.Sqrt(itemLevel + 1) + Random.Range(.8f, 1.2f));
-
-        Random.seed = (int)System.DateTime.Now.Ticks;
-        return new ItemStats(baseStats);
-    }
-    #endregion
-
     private static string GenerateID(Item item) {
         return (
             idVersion.ToString("D3") + seperationChar +
@@ -349,15 +332,7 @@ public static class ItemGenerator {
             ((int)item.Types.SuffixModifyer).ToString("D3") + seperationChar + //4
             item.PrefixIndex.ToString("D3") + seperationChar + //5
             item.SuffixIndex.ToString("D3") + seperationChar + //6
-            Mathf.FloorToInt(item.Stats.Health).ToString("D4") + seperationChar + //7
-            Mathf.FloorToInt(item.Stats.Attack).ToString("D4") + seperationChar + //8
-            Mathf.FloorToInt(item.Stats.Strength).ToString("D4") + seperationChar + //9
-            Mathf.FloorToInt(item.Stats.Intelect).ToString("D4") + seperationChar + //10
-            Mathf.FloorToInt(item.Stats.Dexterity).ToString("D4") + seperationChar + //11
-            Mathf.FloorToInt(item.Stats.Durability).ToString("D4") + seperationChar + //12
-            Mathf.FloorToInt(item.Stats.GoldValue).ToString("D4") + seperationChar + //13
-            Mathf.FloorToInt(item.Stats.ScrapValue).ToString("D4") + seperationChar + //14
-            item.Seed.ToString("D4") //15
+            item.Seed.ToString("D4") //7
         );
     }
 
