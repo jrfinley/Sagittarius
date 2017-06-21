@@ -18,12 +18,14 @@ public class Room : MonoBehaviour
     public ConnectionData Connections { get { return _connections; } }
 
     private Dictionary<normalRoomConnections, Transform> _directionToTransform = new Dictionary<normalRoomConnections, Transform>();
-    private enum normalRoomConnections { North, South, East, West }
+    public enum normalRoomConnections { North, South, East, West }
+    public enum quadRoomConnections { WNorth, ENorth, WSouth, ESouth, NWest, SWest, NEast, SEast }
 
     public Room parentRoom;
     public Vector3 position;
     public bool quadRoom;
 
+    //TODO: change this to constructor and remove testing code
     void Start()
     {
         _connections = new ConnectionData();
@@ -42,6 +44,8 @@ public class Room : MonoBehaviour
                 _directionToTransform.Add(_GetConnectionOrientation(connection.localPosition), connection);
         }
 
+        BlockConnection(normalRoomConnections.North);
+
         if (roomToFind != null)
         {
             Connect(roomToFind);
@@ -58,36 +62,38 @@ public class Room : MonoBehaviour
         return Connections.unusedConnections[Random.Range(0, _connections.unusedConnections.Count)];
     }
 
-    private void _RemoveConnection(Transform connectionToRemove)
+    public bool Connect(Room otherRoom)
     {
-        //_connections.connections.Remove(connectionToRemove);
+        Transform connectionToConnect = _GetClosestTransform(otherRoom);
+
+        if (_connections.blockedConnections.Contains(connectionToConnect))
+        {
+            Debug.Log("Connection is blocked, cannot connect rooms");
+            return false;
+        }
+
+        _JoinConnection(connectionToConnect);
+        connectionToConnect.gameObject.GetComponent<ConnectionGizmos>().color = Color.green;
+        return true;
     }
 
-    private void _OpenConnection(Transform connectionToOpen)
+    public void BlockConnection(normalRoomConnections direction)
     {
-        //_connections.connections.Remove(connectionToOpen);
-        //_connections.openConnections.Add(connectionToOpen);
+        Transform connection = _directionToTransform[direction];
+        _connections.unusedConnections.Remove(connection);
+        _connections.blockedConnections.Add(connection);
+        connection.gameObject.GetComponent<ConnectionGizmos>().color = Color.red;
     }
 
     private void _JoinConnection(Transform connectionToJoin)
     {
         _connections.unusedConnections.Remove(connectionToJoin);
         _connections.joinedConnections.Add(connectionToJoin);
-
-        //Debug.Log("Added joined connection: " + connectionToJoin.transform.localPosition);
-    }
-
-    public void Connect(Room otherRoom)
-    {
-        Transform connectionToConnect = _GetClosestTransform(otherRoom);
-        _JoinConnection(connectionToConnect);
-        connectionToConnect.gameObject.GetComponent<ConnectionGizmos>().color = Color.green;
     }
 
     private Transform _GetClosestTransform(Room otherRoom)
     {
         normalRoomConnections direction = _GetDirectionToRoom(otherRoom);
-        //Debug.Log("Closest Transform is: " + direction);
         return _directionToTransform[direction];
     }
 
@@ -117,24 +123,6 @@ public class Room : MonoBehaviour
         Debug.LogError("Couldn't find the connection direction, defaulting to North");
         return normalRoomConnections.North;
     }
-
-    //private Vector3 _GetDirection(Room otherRoom)
-    //{
-    //    Vector3 secondRoom = otherRoom.gameObject.transform.position;
-    //    Vector3 direction = secondRoom - this.transform.position;
-
-    //    if (direction.x > 0 && direction.z > 0)
-    //        return new Vector3(1, 0, 1);
-    //    else if (direction.x < 0 && direction.z < 0)
-    //        return new Vector3(-1, 0, -1);
-    //    else if (direction.x < 0 && direction.z > 0)
-    //        return new Vector3(-1, 0, 1);
-    //    else if (direction.x > 0 && direction.z < 0)
-    //        return new Vector3(1, 0, -1);
-
-    //    Debug.Log("Couldn't get direction, returning Vector3.zero");
-    //    return Vector3.zero;
-    //}
 
     public void BecomeMonsterRoom()
     {
