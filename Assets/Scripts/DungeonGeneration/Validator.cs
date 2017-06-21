@@ -20,8 +20,8 @@ namespace Validator
 
         public static bool EnoughConnections(Room room)
         {
-            if (room.Connections.openConnections.Count > 0)
-                return true;
+            //if (room.Connections.openConnections.Count > 0)
+            //    return true;
             return false;
         }
     }

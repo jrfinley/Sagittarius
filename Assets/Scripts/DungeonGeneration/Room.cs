@@ -5,45 +5,58 @@ using System.Linq;
 
 public class Room : MonoBehaviour
 {
-    [System.Serializable]
+    [SerializeField] private Transform connectionContainer;
     public struct ConnectionData
     {
-        public List<Transform> connections;
-        public List<Transform> closedConnections;
-        public List<Transform> openConnections;
+        public List<Transform> allConnections;
+        public List<Transform> blockedConnections;
         public List<Transform> joinedConnections;
+        public List<Transform> unusedConnections;
     }
 
-    [SerializeField] protected ConnectionData _connections;
+    private ConnectionData _connections;
     public ConnectionData Connections { get { return _connections; } }
 
     public Room parentRoom;
     public Vector3 position;
     public bool quadRoom;
 
-    public Transform GetRandomOpenConnection()
+    public void Start()
     {
-        if (_connections.openConnections.Count == 0)
+        _connections = new ConnectionData();
+        _connections.allConnections = connectionContainer.GetComponentsInChildren<Transform>().ToList();
+        _connections.unusedConnections = new List<Transform>();
+
+        foreach (Transform connection in _connections.allConnections)
+            _connections.unusedConnections.Add(connection);
+    }
+
+    public Transform GetRandomUnusedConnection()
+    {
+        if (_connections.unusedConnections.Count == 0)
+        {
+            Debug.LogError("Connection count is 0!");
             return null;
-        return Connections.openConnections[Random.Range(0, _connections.openConnections.Count)];
+        }
+        return Connections.unusedConnections[Random.Range(0, _connections.unusedConnections.Count)];
     }
 
     private void _RemoveConnection(Transform connectionToRemove)
     {
-        _connections.connections.Remove(connectionToRemove);
+        //_connections.connections.Remove(connectionToRemove);
     }
 
     private void _OpenConnection(Transform connectionToOpen)
     {
-        _connections.connections.Remove(connectionToOpen);
-        _connections.openConnections.Add(connectionToOpen);
+        //_connections.connections.Remove(connectionToOpen);
+        //_connections.openConnections.Add(connectionToOpen);
     }
 
     private void _JoinConnection(Transform connectionToJoin)
     {
-        _connections.connections.Remove(connectionToJoin);
-        _connections.openConnections.Remove(connectionToJoin);
-        _connections.joinedConnections.Add(connectionToJoin);
+        //_connections.connections.Remove(connectionToJoin);
+        //_connections.openConnections.Remove(connectionToJoin);
+        //_connections.joinedConnections.Add(connectionToJoin);
     }
 
     public void Connect(Room otherRoom)
@@ -55,19 +68,20 @@ public class Room : MonoBehaviour
 
     private Transform _GetClosestTransform(Room otherRoom)
     {
-        float closest = 100f;
-        float dist;
-        Transform closestTransform = null;
-        foreach (Transform connection in _connections.connections)
-        {
-            dist = Vector3.Distance(connection.position, otherRoom.position);
-            if (dist < closest)
-            {
-                closestTransform = connection;
-                closest = dist;
-            }
-        }
-        return closestTransform;
+        //float closest = 100f;
+        //float dist;
+        //Transform closestTransform = null;
+        //foreach (Transform connection in _connections.connections)
+        //{
+        //    dist = Vector3.Distance(connection.position, otherRoom.position);
+        //    if (dist < closest)
+        //    {
+        //        closestTransform = connection;
+        //        closest = dist;
+        //    }
+        //}
+        //return closestTransform;
+        return null;
     }
 
     public void BecomeMonsterRoom()

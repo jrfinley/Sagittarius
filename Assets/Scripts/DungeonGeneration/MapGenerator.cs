@@ -58,7 +58,7 @@ public class MapGenerator : MonoBehaviour
         _SetUpGrid();
 
         _GeneratePath(startRoom, finalRoom);
-        _ConnectUniqueRooms();
+        //_ConnectUniqueRooms();
     }
 
     private void _ConnectUniqueRooms()
@@ -97,7 +97,7 @@ public class MapGenerator : MonoBehaviour
 
     private Vector3 _GetConnectionNeighbour(Room room, out Room secondRoom)
     {
-        Transform connection = room.GetRandomOpenConnection();
+        Transform connection = room.GetRandomUnusedConnection();
 
         if (connection == null)
         {
@@ -189,10 +189,10 @@ public class MapGenerator : MonoBehaviour
         startRoom = _SpawnUnique(new Vector3(width / 2f, 0f, height / 2f), "Spawn");
         finalRoom = _SpawnUnique(_GetRandomRoomPosition(), "Final");
 
-        while (_uniqueRooms.Count > 0)
-        {
-            _unqueRoomsInDungeon.Add(_SpawnUnique(_GetRandomRoomPosition()));
-        }
+        //while (_uniqueRooms.Count > 0)
+        //{
+        //    _unqueRoomsInDungeon.Add(_SpawnUnique(_GetRandomRoomPosition()));
+        //}
     }
 
     private Room _SpawnUnique(Vector3 position, string name = "")
